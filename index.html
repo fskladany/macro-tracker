@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macro Tracker</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      /* Prevent scrolling */
+    }
+
+    .main-container {
+      position: relative;
+      /* Container for draggable elements */
+      width: 100%;
+      max-width: 1200px;
+      /* Adjust based on your layout */
+    }
+
+    .draggable {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      z-index: 10;
+      resize: both;
+      overflow: auto;
+      max-width: 100%;
+      max-height: 90vh;
+      min-width: 300px;
+      min-height: 200px;
+    }
+
+    .draggable h1,
+    .draggable h2 {
+      margin-top: 0;
+    }
+
+    input,
+    button,
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      font-size: 20px;
+    }
+
+    button {
+      background-color: #008CBA;
+      color: white;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .totals {
+      margin-top: 20px;
+    }
+
+    .total-item {
+      margin-bottom: 10px;
+    }
+
+    /* Adjust initial positions for the draggable windows */
+    #addEntryWindow {
+      width: 500px;
+    }
+
+    #historyWindowParent {
+      top: 70px;
+      left: 40px;
+      width: 600px;
+    }
+
+    #todaySumWindow {
+      top: 10px;
+      right: 10px;
+      font-size: 34px;
+    }
+
+    #dailyTotalsContainerParent {
+      top: 600px;
+      right: -50px;
+    }
+
+    .goal-reached {
+      background-color: green;
+      color: white;
+    }
+
+    .halfway-there {
+      background-color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="addEntryWindow" class="draggable container">
+    <h1>Macro Tracker</h1>
+
+    <label for="templateSelect">Choose a template:</label>
+    <select id="templateSelect" onchange="handleTemplateSelection()">
+      <option value="">Select a template...</option>
+      <!-- Add more options as needed -->
+    </select>
+    <label for="multiplier">Multiplier (e.g., 0.3 for 30%):</label>
+    <input type="number" id="multiplier" placeholder="Enter multiplier (e.g., 0.3 for 30%)" step="0.05"
+      onchange="handleTemplateSelection(true)">
+
+    <label for="carbs">Carbs (g)</label>
+    <input type="number" id="carbs" placeholder="Carbs (g)">
+
+    <label for="protein">Protein (g)</label>
+    <input type="number" id="protein" placeholder="Protein (g)">
+
+    <label for="fat">Fat (g)</label>
+    <input type="number" id="fat" placeholder="Fat (g)">
+
+    <label for="fiber">Fiber (g)</label>
+    <input type="number" id="fiber" placeholder="Fiber (g)">
+
+    <label for="comment">Comment</label>
+    <textarea id="comment" placeholder="Add a comment..."></textarea>
+
+    <button onclick="addEntry()">Add Entry</button>
+    <button onclick="clearLocalStorage()">Clear Data</button>
+    <button onclick="undoLastEntry()">Undo Last Entry</button>
+
+  </div>
+
+  <div id="historyWindowParent" class="draggable container">
+    <h3>History</h3>
+    <div id="historyWindow">
+      <table id="entries">
+        <tr>
+          <th>Date</th>
+          <th>Carbs</th>
+          <th>Protein</th>
+          <th>Fat</th>
+          <th>Fiber</th>
+          <th>Note</th>
+        </tr>
+        <!-- Entries will go here -->
+      </table>
+    </div>
+  </div>
+
+  <div id="dailyTotalsContainerParent" class="draggable container">
+    <h3>Days</h3>
+    <div id="dailyTotalsContainer"></div>
+  </div>
+
+  <div id="todaySumWindow" class="draggable sidebar">
+    <h2>Today's Totals</h2>
+    <div class="totals">
+      <div class="total-item">Carbs: <span id="totalCarbs">0</span>g</div>
+      <div class="total-item">Protein: <span id="totalProtein">0</span>g</div>
+      <div class="total-item">Fat: <span id="totalFat">0</span>g</div>
+      <div class="total-item">Fiber: <span id="totalFiber">0</span>g</div>
+      <div class="total-item">Total Weight: <span id="totalWeight">0</span>g</div>
+      <div class="total-item">Total Calories: <span id="totalCalories">0</span>kcal</div>
+
+    </div>
+  </div>
+
+  <script>
+    // Check for Local Storage support
+    const templates = {
+      egg: { carbs: 0.7, protein: 12.6, fat: 9.6, fiber: 0, name: 'Egg' },
+      friedPotato: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'FrenchFries' },
+      bakedPotato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'BakedPotato' },
+      maltodextrin: { carbs: 95, protein: 0, fat: 0, fiber: 0, name: 'maltodextrin', servingSize: 25 },
+      dextrose: { carbs: 91, protein: 0, fat: 0, fiber: 0, name: 'dextrose', servingSize: 25 },
+      soy: { carbs: 6, protein: 87, fat: 0.5, fiber: 0, name: 'soy protein', servingSize: 50 },
+      // Add more templates as needed
+    };
+    const dailyGoals = {
+      carbs: 400, // Example goal
+      protein: 200, // Example goal
+      fat: 70, // Example goal
+      fiber: 40 // Example goal
+    };
+
+
+    if (typeof (Storage) !== "undefined") {
+
+      // Function to add an entry
+      function addEntry() {
+        const carbs = parseFloat(document.getElementById('carbs').value) || 0;
+        const protein = parseFloat(document.getElementById('protein').value) || 0;
+        const fat = parseFloat(document.getElementById('fat').value) || 0;
+        const fiber = parseFloat(document.getElementById('fiber').value) || 0;
+        const comment = document.getElementById('comment').value;
+        const date = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
+        // Create entry object
+        const entry = { date, carbs, protein, fat, fiber, comment };
+
+        // Get existing entries from local storage or initialize an empty array if none exist
+        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+        entries.push(entry); // Add new entry to array
+
+        // Save back to local storage
+        localStorage.setItem('macroEntries', JSON.stringify(entries));
+
+        // Update the table and totals
+        updateTable();
+        updateTotals();
+      }
+
+      // Function to update the table with entries
+      function updateTable() {
+        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+        const table = document.getElementById('entries');
+
+        // Sort entries by date in descending order
+        entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Clear all rows except the header
+        table.innerHTML = table.rows[0].innerHTML;
+
+        // Add each entry to the table
+        entries.forEach(entry => {
+          const row = table.insertRow();
+          // Convert entry object to an array of its values
+          const entryValues = Object.values(entry);
+          // Iterate over each entry value
+          entryValues.forEach((value, index) => {
+            const cell = row.insertCell();
+            // Check if the current cell is not the comment cell
+            // Assuming comment is the last in the entry object, hence the last index
+            if (index < entryValues.length - 1 && index != 0) {
+              cell.textContent = value + 'g'; // Add 'g' for gram
+            } else {
+              cell.textContent = value; // No 'g' for the comment
+            }
+          });
+        });
+      }
+
+      // Function to update the totals in the sidebar
+      function updateTotals() {
+        const today = new Date().toISOString().split('T')[0];
+        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+        let totalCarbs = 0, totalProtein = 0, totalFat = 0, totalFiber = 0;
+        let totalWeight = 0; // More accurate total weight
+        let totalCalories = 0; // Total calories
+
+        const todaysEntries = entries.filter(entry => entry.date === today);
+        // Calculate total weight and calories
+        todaysEntries.forEach(entry => {
+          totalCarbs += parseFloat(entry.carbs);
+          totalProtein += parseFloat(entry.protein);
+          totalFat += parseFloat(entry.fat);
+          totalFiber += parseFloat(entry.fiber);
+
+          // Calculate calories
+          totalCalories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9;
+        });
+
+        // Calculate a more accurate weight using the approximations
+        totalWeight = (totalCarbs + totalFiber) * 1 + totalProtein * 1.35 + totalFat * 1.1;
+
+        // Update the sidebar with the totals
+        document.getElementById('totalCarbs').textContent = totalCarbs.toFixed(2);
+        document.getElementById('totalProtein').textContent = totalProtein.toFixed(2);
+        document.getElementById('totalFat').textContent = totalFat.toFixed(2);
+        document.getElementById('totalFiber').textContent = totalFiber.toFixed(2);
+        document.getElementById('totalWeight').textContent = totalWeight.toFixed(0);
+        document.getElementById('totalCalories').textContent = totalCalories.toFixed(0);
+
+        updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
+        updateTotalWithThreshold('totalProtein', totalProtein, dailyGoals.protein);
+        updateTotalWithThreshold('totalFat', totalFat, dailyGoals.fat);
+        updateTotalWithThreshold('totalFiber', totalFiber, dailyGoals.fiber);
+        DisplayDailyTotals();
+      }
+
+
+      // Function to update the total with a threshold
+      function updateTotalWithThreshold(elementId, total, goal) {
+        const element = document.getElementById(elementId);
+        element.textContent = total.toFixed(0);
+        const percentage = (total / goal) * 100;
+
+        // Reset class
+        element.className = '';
+
+        // Change color based on the percentage of the goal reached
+        if (percentage >= 100) {
+          element.classList.add('goal-reached');
+        } else if (percentage >= 50) {
+          element.classList.add('halfway-there');
+        }
+      }
+
+      // Function to fill the form with a template
+      function fillTemplate(templateKey) {
+        const nutrients = templates[templateKey];
+        const multiplierInput = document.getElementById('multiplier').value;
+        const multiplier = multiplierInput || (nutrients.servingSize || 100) / 100;
+        if (nutrients) {
+          document.getElementById('carbs').value = (nutrients.carbs * multiplier).toFixed(2) || '';
+          document.getElementById('protein').value = (nutrients.protein * multiplier).toFixed(2) || '';
+          document.getElementById('fat').value = (nutrients.fat * multiplier).toFixed(2) || '';
+          document.getElementById('fiber').value = (nutrients.fiber * multiplier).toFixed(2) || '';
+          document.getElementById('comment').value = `${nutrients.name} (${(100 * multiplier).toFixed(0)}g)`;
+        }
+      }
+
+      // Function to handle the template selection and multiplier input
+      function handleTemplateSelection(bypass = false) {
+        const templateKey = document.getElementById('templateSelect').value;
+
+        var multiplier = (templates[templateKey].servingSize || 100);
+        if (bypass === true) {
+          multiplier = document.getElementById('multiplier').value;
+        } else {
+          document.getElementById('multiplier').value = multiplier / 100;
+        }
+
+        fillTemplate(templateKey, multiplier);
+      }
+
+      // Function to clear local storage
+      function clearLocalStorage() {
+        if (confirm('Are you sure you want to delete all entries? This cannot be undone.')) {
+          localStorage.removeItem('macroEntries');
+          updateTable();
+          updateTotals();
+        }
+      }
+
+      // Function to make elements draggable
+      function dragElement(element) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        const dragMouseDown = function (e) {
+          e = e || window.event;
+          e.preventDefault();
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          document.onmouseup = closeDragElement;
+          document.onmousemove = elementDrag;
+        }
+
+        const elementDrag = function (e) {
+          e = e || window.event;
+          e.preventDefault();
+          pos1 = pos3 - e.clientX;
+          pos2 = pos4 - e.clientY;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          element.style.top = (element.offsetTop - pos2) + "px";
+          element.style.left = (element.offsetLeft - pos1) + "px";
+        }
+
+        const closeDragElement = function () {
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+
+        if (document.getElementById(element.id + "Header")) {
+          document.getElementById(element.id + "Header").onmousedown = dragMouseDown;
+        } else {
+          element.onmousedown = dragMouseDown;
+        }
+      }
+
+      // Activate the drag function for the draggable elements
+
+      dragElement(document.getElementById("historyWindowParent"));
+      dragElement(document.getElementById("todaySumWindow"));
+      dragElement(document.getElementById("dailyTotalsContainerParent"));
+      // Initial table and totals update
+      updateTable();
+      updateTotals();
+
+    } else {
+      alert("Sorry, your browser does not support Web Storage...");
+    }
+
+    // Function to populate the template select dropdown
+    function populateTemplateSelect() {
+      const select = document.getElementById('templateSelect');
+      Object.keys(templates).forEach(key => {
+        const option = document.createElement('option');
+        option.value = key;
+        const multiplier = (templates[key].servingSize || 100);
+        option.textContent = templates[key].name + ' (' + multiplier + 'g)';
+        select.appendChild(option);
+      });
+    }
+
+    // Call this function on page load to populate the select dropdown
+    window.addEventListener('load', populateTemplateSelect);
+    function undoLastEntry() {
+      // Get the current list of entries from localStorage
+      let entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+
+      // Check if there are any entries to undo
+      if (entries.length > 0) {
+        // Remove the last entry
+        entries.pop();
+
+        // Save the updated entries back to localStorage
+        localStorage.setItem('macroEntries', JSON.stringify(entries));
+
+        // Update the table and totals to reflect the change
+        updateTable();
+        updateTotals();
+      } else {
+        alert("No entries to undo.");
+      }
+    }
+
+    function calculateDailyTotals(entries) {
+      const dailyTotals = {};
+
+      entries.forEach(entry => {
+        const { date, carbs, protein, fat, fiber } = entry;
+        // Initialize the object for the date if it doesn't exist
+        if (!dailyTotals[date]) {
+          dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, fiber: 0, calories: 0, weight: 0 };
+        }
+        // Add checks to ensure the properties are numbers
+        dailyTotals[date].carbs += Number(carbs) || 0;
+        dailyTotals[date].protein += Number(protein) || 0;
+        dailyTotals[date].fat += Number(fat) || 0;
+        dailyTotals[date].fiber += Number(fiber) || 0;
+        // Calculate calories and weight
+        dailyTotals[date].calories += ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
+        dailyTotals[date].weight += (Number(carbs) || 0) + (Number(fiber) || 0) * 1 + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
+      });
+
+      return dailyTotals;
+    }
+
+
+    function createDailyTotalsTable(dailyTotals) {
+      const table = document.createElement('table');
+      const thead = table.createTHead();
+      const headerRow = thead.insertRow();
+      const headers = ['Date', 'Carbs (g)', 'Protein (g)', 'Fat (g)', 'Fiber (g)', 'Total Weight (g)', 'Total Calories (kcal)'];
+
+      headers.forEach(headerText => {
+        const header = document.createElement('th');
+        header.textContent = headerText;
+        headerRow.appendChild(header);
+      });
+
+      const tbody = table.createTBody();
+
+      Object.keys(dailyTotals).forEach(date => {
+        const row = tbody.insertRow();
+        const totals = dailyTotals[date];
+        row.insertCell().textContent = date;
+        row.insertCell().textContent = totals.carbs.toFixed(0);
+        row.insertCell().textContent = totals.protein.toFixed(0);;
+        row.insertCell().textContent = totals.fat.toFixed(0);;
+        row.insertCell().textContent = totals.fiber.toFixed(0);;
+        row.insertCell().textContent = dailyTotals[date].weight.toFixed(0); // Add weight
+        row.insertCell().textContent = dailyTotals[date].calories.toFixed(0); // Add calories
+      });
+
+      return table;
+    }
+
+    function DisplayDailyTotals() {
+      const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+      const dailyTotals = calculateDailyTotals(entries);
+      const dailyTotalsTable = createDailyTotalsTable(dailyTotals);
+      const dailyTotalsContainer = document.getElementById('dailyTotalsContainer');
+      dailyTotalsContainer.innerHTML = ''; // Clear any existing table
+      dailyTotalsContainer.appendChild(dailyTotalsTable);
+    }
+
+
+
+    DisplayDailyTotals();
+
+
+
+  </script>
+
+</body>
+
+</html>
