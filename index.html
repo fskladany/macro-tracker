@@ -9,6 +9,7 @@ Changes:
 
 
 -->
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,8 +54,7 @@ Changes:
     .draggable h1,
     .draggable h2,
     .draggable h3,
-    .draggable h4
-    {
+    .draggable h4 {
       margin-top: 0;
       margin-bottom: 0;
     }
@@ -113,7 +113,7 @@ Changes:
       top: 70px;
       left: 40px;
       width: 400px;
-     
+
     }
 
     #todaySumWindow {
@@ -138,7 +138,7 @@ Changes:
 
     .totals div,
     .totals24 div {
-        font-size: 26px;
+      font-size: 26px;
     }
   </style>
 </head>
@@ -149,19 +149,19 @@ Changes:
     <h1 style="margin-bottom:20px">Macro Tracker</h1>
 
     <label for="templateSelect" style="float: left">Choose a template:</label>
-    <label style="float: right;" for="multiplier" >Amount:</label>
+    <label style="float: right;" for="multiplier">Amount:</label>
     <select id="templateSelect" style="float: left;width:70%; left:0;" onchange="handleFoodItemSelection()">
       <option value="">Select a template...</option>
 
       <!-- Add more options as needed -->
     </select>
- 
+
     <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
       onchange="handleFoodItemSelection(true)" value="1s">
     <button onclick="addEntry()">Add Entry</button>
     <button onclick="undoLastEntry()">Undo Last Entry</button>
 
-    
+
     <label for="fat">Fat (g)</label>
     <input type="number" id="fat" placeholder="Fat (g)">
 
@@ -175,17 +175,17 @@ Changes:
     <label for="comment">Comment</label>
     <textarea id="comment" placeholder="Add a comment..."></textarea>
 
-   
+
 
 
   </div>
 
   <div id="historyWindowParent" class="draggable sidebar" style="top:5%; left:1%">
     <h3 style="float:left">History</h3>
-    <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px"  onchange="displayHistoryTable()">
+    <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
     <label for="allHistoryChk">all history</label>
-   <div id="historyWindow">
-      <table id="entries" >
+    <div id="historyWindow">
+      <table id="entries">
         <tr>
           <th>Date</th>
           <th>Carbs</th>
@@ -225,25 +225,25 @@ Changes:
   <script>
     // Check for Local Storage support
     const templates = {
-        _1: { name: "--- carbs ---", servingSize: 0},
-      
+      _1: { name: "--- carbs ---", servingSize: 0 },
+
       apple: { carbs: 13.8, fiber: 2.4, protein: 0.3, fat: 0.2, servingSize: 250, name: 'apple' },
       banana: { carbs: 23, protein: 1.1, fat: 0.3, fiber: 2.6, name: 'banana', servingSize: 154 },
       rice: { carbs: 77, protein: 8, fat: 0.3, name: 'rice (Máyna, uncooked)' },
       bread: { carbs: 41.5, protein: 8.3, fat: 1.3, name: 'bread (Vamex)', servingSize: 60 },
       Potato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'potato' },
       friedPotato: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'french fries' },
-      breadRoll: {name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50},
-     
-      _2: { name: "--- protein ---", servingSize: 0},
-      egg: { carbs: 0.7, protein: 12.6, fat: 9.6, fiber: 0.1, name: 'egg' , servingSize: 50 },
+      breadRoll: { name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50 },
+
+      _2: { name: "--- protein ---", servingSize: 0 },
+      egg: { carbs: 0.7, protein: 12.6, fat: 9.6, fiber: 0.1, name: 'egg', servingSize: 50 },
       chicken: { carbs: 0.3, protein: 31, fat: 3, fiber: 0.1, name: 'chicken' },
       sausage: { carbs: 1, protein: 15, fat: 30, fiber: 0.1, name: 'sausage', servingSize: 40 },
       fish: { fat: 3, protein: 17.1, carbs: 0.16, fiber: 0.05, servingSize: 170, name: 'fish' },
 
-      _3: { name: "--- fats ---", servingSize: 0},
+      _3: { name: "--- fats ---", servingSize: 0 },
       sausage: { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
-      butter: { fat: 80, name: 'butter' , servingSize: 20 },
+      butter: { fat: 80, name: 'butter', servingSize: 20 },
 
       // Add more templates as needed
     };
@@ -285,47 +285,47 @@ Changes:
       function displayHistoryTable() {
         const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
         entries.forEach(entry => {
-            if (entry.date) {
-                entry['ts'] = new Date(entry.date).getTime()
-            }
+          if (entry.date) {
+            entry['ts'] = new Date(entry.date).getTime()
+          }
         })
-         // Save back to local storage
-         localStorage.setItem('macroEntries', JSON.stringify(entries));
+        // Save back to local storage
+        localStorage.setItem('macroEntries', JSON.stringify(entries));
 
         const table = document.getElementById('entries');
 
         // Sort entries by date in descending order
         entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-        
+
         // Clear all rows except the header
         table.innerHTML = table.rows[0].innerHTML;
 
         // Add each entry to the table
 
         entries.forEach(entry => {
-            
+
           const row = table.insertRow();
           delete entry["fiber"] // legacy data workaround
           delete entry["date"]
           // Convert entry object to an array of its values
           let tsdate = new Date(entry.ts)
-         var ndate = 0;
-            console.log(new Date().getTime() - entry.ts );
-           
-            
-          if (new Date().getTime() - entry.ts < 24*60*60*1000){
+          var ndate = 0;
+          console.log(new Date().getTime() - entry.ts);
+
+
+          if (new Date().getTime() - entry.ts < 24 * 60 * 60 * 1000) {
             const pad = num => ("0" + num).slice(-2);
             let hours = tsdate.getHours(),
-            minutes = tsdate.getMinutes()
+              minutes = tsdate.getMinutes()
             ndate = pad(hours) + ":" + pad(minutes)
-          }else{
-            if (document.getElementById('allHistoryChk').checked == false){
+          } else {
+            if (document.getElementById('allHistoryChk').checked == false) {
               return;
             }
-          
+
             ndate = new Date().toLocaleString();
           }
-          entry = {date: ndate, ...entry}
+          entry = { date: ndate, ...entry }
           delete entry["ts"]
           const entryValues = Object.values(entry);
           // Iterate over each entry value
@@ -333,7 +333,7 @@ Changes:
             const cell = row.insertCell();
             // Check if the current cell is not the comment cell
             // Assuming comment is the last in the entry object, hence the last index
-            if (index < entryValues.length - 1 && index != 0 ) {
+            if (index < entryValues.length - 1 && index != 0) {
               cell.textContent = value + 'g'; // Add 'g' for gram
             } else {
               cell.textContent = value; // No 'g' for the comment
@@ -352,13 +352,13 @@ Changes:
 
 
         const ts = new Date().getTime();
-        const todaysEntries = entries.filter(entry =>{
-            return new Date(entry.ts).toISOString().split('T')[0] == today
+        const todaysEntries = entries.filter(entry => {
+          return new Date(entry.ts).toISOString().split('T')[0] == today
         });
 
         const totals24 = entries.filter(entry => {
 
-            return ts - new Date(entry.ts).getTime()  < 24*60*60*1000
+          return ts - new Date(entry.ts).getTime() < 24 * 60 * 60 * 1000
         });
 
 
@@ -401,7 +401,7 @@ Changes:
         });
 
         totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
-        
+
         document.getElementById('t24weight').textContent = totalWeight.toFixed(0);
         updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
 
@@ -451,10 +451,10 @@ Changes:
         } else {
           document.getElementById('multiplier').value = multiplier / 100;
         }
-        if (multiplier != 0){
+        if (multiplier != 0) {
 
 
-            makeFoodItemTemplate(templateKey, multiplier);
+          makeFoodItemTemplate(templateKey, multiplier);
         }
       }
 
@@ -515,11 +515,11 @@ Changes:
         option.value = key;
         var multiplier = templates[key].servingSize
 
-        if (multiplier == 0) option.disabled=true
+        if (multiplier == 0) option.disabled = true
         if (!multiplier && multiplier != 0) multiplier = 100;
-        option.textContent = templates[key].name 
+        option.textContent = templates[key].name
         if (multiplier != 0) {
-            option.textContent +=' (' + multiplier + 'g)';
+          option.textContent += ' (' + multiplier + 'g)';
         }
         select.appendChild(option);
       });
@@ -533,7 +533,7 @@ Changes:
       // Get the current list of entries from localStorage
       let entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
 
-      
+
 
       // Check if there are any entries to undo
       if (entries.length > 0) {
@@ -556,7 +556,7 @@ Changes:
       entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
       entries.forEach(entry => {
         const { ts, carbs, protein, fat } = entry;
-        const date= new Date(ts).toISOString().split('T')[0]
+        const date = new Date(ts).toISOString().split('T')[0]
         // Initialize the object for the date if it doesn't exist
         if (!dailyTotals[date]) {
           dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, fiber: 0, calories: 0, weight: 0 };
@@ -592,19 +592,19 @@ Changes:
         const row = tbody.insertRow();
         const totals = dailyTotals[date];
         row.insertCell().textContent = date;
-        const caloreis = row.insertCell().textContent = (totals.carbs+totals.fat+totals.protein).toFixed(0);
+        const caloreis = row.insertCell().textContent = (totals.carbs + totals.fat + totals.protein).toFixed(0);
         const prot = row.insertCell()
         prot.textContent = totals.protein.toFixed(0);
-        if (totals.protein >= dailyGoals.protein){
-        prot.style="background-color:green; color:white"
-        
+        if (totals.protein >= dailyGoals.protein) {
+          prot.style = "background-color:green; color:white"
+
         }
 
         const calories = row.insertCell()
         calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
-        if (totals.calories >= dailyGoals.calories){
-          calories.style="background-color:green; color:white"
-        
+        if (totals.calories >= dailyGoals.calories) {
+          calories.style = "background-color:green; color:white"
+
         }
       });
 
@@ -620,11 +620,11 @@ Changes:
       dayListOverview.appendChild(dailyTotalsTable);
     }
 
-    document.getElementById('addEntryWindow').addEventListener('keydown', function(event) {
-  if (event.key === 'Enter') {
-    addEntry();
-  }
-});
+    document.getElementById('addEntryWindow').addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        addEntry();
+      }
+    });
 
     DisplayDailyTotals();
 
