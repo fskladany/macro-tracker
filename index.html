@@ -4,8 +4,6 @@
 TODO:
 1.1 provide day selector
 4. Organize ingredients into meal numbers [breakfast, lunch, lunch2, dinnner]
-5. Prevent selecting separator in templates
-7. Add keyboart VK_ENTER event to add entry
 
 Changes:
 
@@ -108,7 +106,7 @@ Changes:
 
     /* Adjust initial positions for the draggable windows */
     #addEntryWindow {
-      width: 400px;
+      width: 450px;
     }
 
     #historyWindowParent {
@@ -516,6 +514,8 @@ Changes:
         const option = document.createElement('option');
         option.value = key;
         var multiplier = templates[key].servingSize
+
+        if (multiplier == 0) option.disabled=true
         if (!multiplier && multiplier != 0) multiplier = 100;
         option.textContent = templates[key].name 
         if (multiplier != 0) {
@@ -619,6 +619,12 @@ Changes:
       dayListOverview.innerHTML = ''; // Clear any existing table
       dayListOverview.appendChild(dailyTotalsTable);
     }
+
+    document.getElementById('addEntryWindow').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    addEntry();
+  }
+});
 
     DisplayDailyTotals();
 
