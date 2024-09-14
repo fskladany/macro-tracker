@@ -6,6 +6,10 @@ TODO:
 4. Organize ingredients into meal numbers [breakfast, lunch, lunch2, dinnner]
 5. Prevent selecting separator in templates
 7. Add keyboart VK_ENTER event to add entry
+
+Changes:
+
+
 -->
 <head>
   <meta charset="UTF-8">
@@ -104,13 +108,14 @@ TODO:
 
     /* Adjust initial positions for the draggable windows */
     #addEntryWindow {
-      width: 500px;
+      width: 400px;
     }
 
     #historyWindowParent {
       top: 70px;
       left: 40px;
       width: 400px;
+     
     }
 
     #todaySumWindow {
@@ -119,7 +124,7 @@ TODO:
       font-size: 34px;
     }
 
-    #dailyTotalsContainerParent {
+    #dayListOverviewParent {
       top: 600px;
       right: -50px;
     }
@@ -142,21 +147,25 @@ TODO:
 
 <body>
 
-  <div id="addEntryWindow" class="draggable container">
+  <div id="addEntryWindow" class="draggable container" style="z-index: 100;">
     <h1 style="margin-bottom:20px">Macro Tracker</h1>
 
-    <label for="templateSelect" style="margin-top:20px">Choose a template:</label>
+    <label for="templateSelect" style="float: left">Choose a template:</label>
     <label style="float: right;" for="multiplier" >Amount:</label>
-    <select id="templateSelect" style="float: left;width:60%; left:0;" onchange="handleFoodItemSelection()">
+    <select id="templateSelect" style="float: left;width:70%; left:0;" onchange="handleFoodItemSelection()">
       <option value="">Select a template...</option>
 
       <!-- Add more options as needed -->
     </select>
  
-    <input style="float: right; width:30%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
+    <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
       onchange="handleFoodItemSelection(true)" value="1s">
     <button onclick="addEntry()">Add Entry</button>
     <button onclick="undoLastEntry()">Undo Last Entry</button>
+
+    
+    <label for="fat">Fat (g)</label>
+    <input type="number" id="fat" placeholder="Fat (g)">
 
     <label for="carbs">Carbs (g)</label>
     <input type="number" id="carbs" placeholder="Carbs (g)">
@@ -164,21 +173,20 @@ TODO:
     <label for="protein">Protein (g)</label>
     <input type="number" id="protein" placeholder="Protein (g)">
 
-    <label for="fat">Fat (g)</label>
-    <input type="number" id="fat" placeholder="Fat (g)">
 
     <label for="comment">Comment</label>
     <textarea id="comment" placeholder="Add a comment..."></textarea>
 
    
-    <button onclick="clearLocalStorage()">Clear Data</button>
 
 
   </div>
 
   <div id="historyWindowParent" class="draggable sidebar" style="top:5%; left:1%">
-    <h3>History</h3>
-    <div id="historyWindow">
+    <h3 style="float:left">History</h3>
+    <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px"  onchange="displayHistoryTable()">
+    <label for="allHistoryChk">all history</label>
+   <div id="historyWindow">
       <table id="entries" >
         <tr>
           <th>Date</th>
@@ -192,24 +200,27 @@ TODO:
     </div>
   </div>
 
-  <div id="dailyTotalsContainerParent" class="draggable container" style="left:75%; top:65%; margin-right:60px">
-    <h3>Days</h3>
-    <div id="dailyTotalsContainer"></div>
+  <div id="dayListOverviewParent" class="draggable container" style="left:75%; top:65%; margin-right:60px">
+    <h3>Day list overview</h3>
+    <div id="dayListOverview"></div>
   </div>
 
   <div id="todaySumWindow" class="draggable sidebar" style="left:75%; top:5%">
     <h4>Today's Totals</h4>
     <div class="totals">
-      <div class="total-item">Carbs: <span id="totalCarbs">0</span>g</div>
+      <div class="total-item">Calories: <span id="totalCalories">0</span>kcal</div>
+      <div class="total-item">Mass: <span id="totalWeight">0</span>g</div>
       <div class="total-item">Protein: <span id="totalProtein">0</span>g</div>
+      <div class="total-item">Carbs: <span id="totalCarbs">0</span>g</div>
       <div class="total-item">Fat: <span id="totalFat">0</span>g</div>
-      <div class="total-item">Total Weight: <span id="totalWeight">0</span>g</div>
-      <div class="total-item">Total Calories: <span id="totalCalories">0</span>kcal</div>
+
+
     </div>
     <h4>24 hour Totals</h4>
     <div class="totals24">
-      <div class="total-item">24h Weight: <span id="t24weight">0</span>g</div>
-      <div class="total-item">24h Calories: <span id="t24calories">0</span>kcal</div>
+      <div class="total-item">Calories (24hw): <span id="t24calories">0</span>kcal</div>
+      <div class="total-item">Mass (24hw): <span id="t24weight">0</span>g</div>
+
     </div>
   </div>
 
@@ -268,12 +279,12 @@ TODO:
         localStorage.setItem('macroEntries', JSON.stringify(entries));
 
         // Update the table and totals
-        updateHistoryTable();
+        displayHistoryTable();
         updateDailyTotals();
       }
 
       // Function to update the table with entries
-      function updateHistoryTable() {
+      function displayHistoryTable() {
         const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
         entries.forEach(entry => {
             if (entry.date) {
@@ -310,6 +321,10 @@ TODO:
             minutes = tsdate.getMinutes()
             ndate = pad(hours) + ":" + pad(minutes)
           }else{
+            if (document.getElementById('allHistoryChk').checked == false){
+              return;
+            }
+          
             ndate = new Date().toLocaleString();
           }
           entry = {date: ndate, ...entry}
@@ -367,8 +382,7 @@ TODO:
         document.getElementById('totalProtein').textContent = totalProtein.toFixed(0);
         document.getElementById('totalFat').textContent = totalFat.toFixed(0);
         document.getElementById('totalWeight').textContent = totalWeight.toFixed(0);
-        document.getElementById('totalCalories').textContent = totalCalories.toFixed(0);
-
+        updateTotalWithThreshold('totalCalories', totalCalories, dailyGoals.calories);
 
         updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
         updateTotalWithThreshold('totalProtein', totalProtein, dailyGoals.protein);
@@ -446,14 +460,6 @@ TODO:
         }
       }
 
-      // Function to clear local storage
-      function clearLocalStorage() {
-        if (confirm('Are you sure you want to delete all entries? This cannot be undone.')) {
-          localStorage.removeItem('macroEntries');
-          updateHistoryTable();
-          updateDailyTotals();
-        }
-      }
 
       // Function to make elements draggable
       function dragElement(element) {
@@ -492,11 +498,11 @@ TODO:
 
       // Activate the drag function for the draggable elements
 
-      dragElement(document.getElementById("historyWindowParent"));
+      dragElement(document.getElementById("historyWindow"));
       dragElement(document.getElementById("todaySumWindow"));
-      dragElement(document.getElementById("dailyTotalsContainerParent"));
+      dragElement(document.getElementById("dayListOverviewParent"));
       // Initial table and totals update
-      updateHistoryTable();
+      displayHistoryTable();
       updateDailyTotals();
 
     } else {
@@ -538,7 +544,7 @@ TODO:
         localStorage.setItem('macroEntries', JSON.stringify(entries));
 
         // Update the table and totals to reflect the change
-        updateHistoryTable();
+        displayHistoryTable();
         updateDailyTotals();
       } else {
         alert("No entries to undo.");
@@ -547,7 +553,7 @@ TODO:
 
     function calculateDailyTotals(entries) {
       const dailyTotals = {};
-
+      entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
       entries.forEach(entry => {
         const { ts, carbs, protein, fat } = entry;
         const date= new Date(ts).toISOString().split('T')[0]
@@ -572,7 +578,7 @@ TODO:
       const table = document.createElement('table');
       const thead = table.createTHead();
       const headerRow = thead.insertRow();
-      const headers = ['Date', 'Energy (g)', 'Protein (g)', 'Calories (kcal)'];
+      const headers = ['Date', 'Mass (sum g)', 'Protein (g)', 'Calories (kcal)'];
 
       headers.forEach(headerText => {
         const header = document.createElement('th');
@@ -586,9 +592,20 @@ TODO:
         const row = tbody.insertRow();
         const totals = dailyTotals[date];
         row.insertCell().textContent = date;
-        row.insertCell().textContent = (totals.carbs+totals.fat).toFixed(0);
-        row.insertCell().textContent = totals.protein.toFixed(0);
-        row.insertCell().textContent = dailyTotals[date].calories.toFixed(0); // Add calories
+        const caloreis = row.insertCell().textContent = (totals.carbs+totals.fat+totals.protein).toFixed(0);
+        const prot = row.insertCell()
+        prot.textContent = totals.protein.toFixed(0);
+        if (totals.protein >= dailyGoals.protein){
+        prot.style="background-color:green; color:white"
+        
+        }
+
+        const calories = row.insertCell()
+        calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
+        if (totals.calories >= dailyGoals.calories){
+          calories.style="background-color:green; color:white"
+        
+        }
       });
 
       return table;
@@ -598,9 +615,9 @@ TODO:
       const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
       const dailyTotals = calculateDailyTotals(entries);
       const dailyTotalsTable = createDailyTotalsTable(dailyTotals);
-      const dailyTotalsContainer = document.getElementById('dailyTotalsContainer');
-      dailyTotalsContainer.innerHTML = ''; // Clear any existing table
-      dailyTotalsContainer.appendChild(dailyTotalsTable);
+      const dayListOverview = document.getElementById('dayListOverview');
+      dayListOverview.innerHTML = ''; // Clear any existing table
+      dayListOverview.appendChild(dailyTotalsTable);
     }
 
     DisplayDailyTotals();
