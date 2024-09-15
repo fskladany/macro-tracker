@@ -7,7 +7,6 @@ TODO:
 
 Changes:
 
-
 -->
 
 <head>
@@ -25,6 +24,7 @@ Changes:
       align-items: center;
       height: 100vh;
       overflow: hidden;
+      background-color: #888;
       /* Prevent scrolling */
     }
 
@@ -37,7 +37,7 @@ Changes:
     }
 
     .draggable {
-      background: white;
+      background-color: #BBB;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -57,6 +57,7 @@ Changes:
     .draggable h4 {
       margin-top: 0;
       margin-bottom: 0;
+   
     }
 
     input,
@@ -68,13 +69,14 @@ Changes:
       margin: 10px 0;
       border-radius: 5px;
       border: 1px solid #ddd;
+      background-color: #CCC;
       box-sizing: border-box;
       font-size: 20px;
     }
 
     button {
-      background-color: #008CBA;
-      color: white;
+      background-color: aquamarine;
+      color: black;
       cursor: pointer;
     }
 
@@ -128,12 +130,13 @@ Changes:
     }
 
     .goal-reached {
-      background-color: green;
+      background-color: rgb(255, 0, 0);
       color: white;
     }
 
+
     .halfway-there {
-      background-color: yellow;
+      background-color: rgb(255, 238, 0);
     }
 
     .totals div,
@@ -204,46 +207,55 @@ Changes:
   </div>
 
   <div id="todaySumWindow" class="draggable sidebar" style="left:75%; top:5%">
-    <h4>Today's Totals</h4>
-    <div class="totals">
-      <div class="total-item">Calories: <span id="totalCalories">0</span>kcal</div>
-      <div class="total-item">Mass: <span id="totalWeight">0</span>g</div>
-      <div class="total-item">Protein: <span id="totalProtein">0</span>g</div>
-      <div class="total-item">Carbs: <span id="totalCarbs">0</span>g</div>
-      <div class="total-item">Fat: <span id="totalFat">0</span>g</div>
-
-
-    </div>
     <h4>24 hour Totals</h4>
     <div class="totals24">
       <div class="total-item">Calories (24hw): <span id="t24calories">0</span>kcal</div>
       <div class="total-item">Mass (24hw): <span id="t24weight">0</span>g</div>
 
     </div>
+    <h4>Today's Totals</h4>
+    <div class="totals">
+
+      <div class="total-item">Protein: <span id="totalProtein">0</span>g</div>
+      <div class="total-item">Carbs: <span id="totalCarbs">0</span>g</div>
+      <div class="total-item">Fat: <span id="totalFat">0</span>g</div>
+      <div class="total-item">Mass: <span id="totalWeight">0</span>g</div>
+      <div class="total-item">Calories: <span id="totalCalories">0</span>kcal</div>
+
+
+
+    </div>
+
   </div>
 
   <script>
     // Check for Local Storage support
     const templates = {
       _1: { name: "--- carbs ---", servingSize: 0 },
-
-      apple: { carbs: 13.8, fiber: 2.4, protein: 0.3, fat: 0.2, servingSize: 250, name: 'apple' },
-      banana: { carbs: 23, protein: 1.1, fat: 0.3, fiber: 2.6, name: 'banana', servingSize: 154 },
+      potato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'potato' },
+      oats: { name: "oats", carbs:62, fat:5.7, protein: 12, servingSize: 50},
       rice: { carbs: 77, protein: 8, fat: 0.3, name: 'rice (Máyna, uncooked)' },
       bread: { carbs: 41.5, protein: 8.3, fat: 1.3, name: 'bread (Vamex)', servingSize: 60 },
-      Potato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'potato' },
-      friedPotato: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'french fries' },
+     
+      frenchFries: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'french fries' },
       breadRoll: { name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50 },
+      
+      apple: { carbs: 13.8, fiber: 2.4, protein: 0.3, fat: 0.2, servingSize: 250, name: 'apple' },
+      banana: { carbs: 23, protein: 1.1, fat: 0.3, fiber: 2.6, name: 'banana', servingSize: 154 },
 
       _2: { name: "--- protein ---", servingSize: 0 },
       egg: { carbs: 0.7, protein: 12.6, fat: 9.6, fiber: 0.1, name: 'egg', servingSize: 50 },
       chicken: { carbs: 0.3, protein: 31, fat: 3, fiber: 0.1, name: 'chicken' },
-      sausage: { carbs: 1, protein: 15, fat: 30, fiber: 0.1, name: 'sausage', servingSize: 40 },
       fish: { fat: 3, protein: 17.1, carbs: 0.16, fiber: 0.05, servingSize: 170, name: 'fish' },
 
       _3: { name: "--- fats ---", servingSize: 0 },
       sausage: { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
-      butter: { fat: 80, name: 'butter', servingSize: 20 },
+
+      _4: { name: "--- side dishes ---", servingSize: 0},
+      porkSauce: { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1},
+      butter: { fat: 66, cabs:33,  name: 'butter and honey', servingSize: 20 },
+
+
 
       // Add more templates as needed
     };
@@ -403,8 +415,9 @@ Changes:
         totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
 
         document.getElementById('t24weight').textContent = totalWeight.toFixed(0);
-        updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
-
+        //updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
+        document.getElementById('t24calories').textContent = totalCalories.toFixed(0);
+        
         DisplayDailyTotals();
       }
 
@@ -421,9 +434,12 @@ Changes:
         // Change color based on the percentage of the goal reached
         if (percentage >= 100) {
           element.classList.add('goal-reached');
-        } else if (percentage >= 33) {
+        }
+        else if (percentage >= 50) {
           element.classList.add('halfway-there');
         }
+        
+   
       }
 
       // Function to fill the form with a template
@@ -596,14 +612,14 @@ Changes:
         const prot = row.insertCell()
         prot.textContent = totals.protein.toFixed(0);
         if (totals.protein >= dailyGoals.protein) {
-          prot.style = "background-color:green; color:white"
+          prot.style = "background-color:red; color:white"
 
         }
 
         const calories = row.insertCell()
         calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
         if (totals.calories >= dailyGoals.calories) {
-          calories.style = "background-color:green; color:white"
+          calories.style = "background-color:red; color:white"
 
         }
       });
