@@ -336,7 +336,7 @@ Changes:
               return;
             }
 
-            ndate = new Date().toLocaleString();
+            ndate = new Date(entry.ts).toLocaleString();
           }
           entry = { date: ndate, ...entry }
           delete entry["ts"]
