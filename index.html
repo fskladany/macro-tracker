@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
-<!-- 
+<html lang="en"><!-- 
 TODO:
 1.1 provide day selector
 4. Organize ingredients into meal numbers [breakfast, lunch, lunch2, dinnner]
 
 Changes:
 
--->
-
-<head>
+--><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Macro Tracker</title>
@@ -157,29 +155,28 @@ Changes:
       <option value="">Select a template...</option>
 
       <!-- Add more options as needed -->
-    </select>
+    <option value="_1" disabled="disabled">--- carbs ---</option><option value="potato">potato (100g)</option><option value="oats">oats (50g)</option><option value="rice">rice (Máyna, uncooked) (100g)</option><option value="bread">bread (Vamex) (60g)</option><option value="frenchFries">french fries (100g)</option><option value="breadRoll" selected="selected">bread roll (Vamex) (50g)</option><option value="pasta">pasta (generic) (100g)</option><option value="apple">apple (250g)</option><option value="banana">banana (154g)</option><option value="_2" disabled="disabled">--- protein ---</option><option value="egg">egg (50g)</option><option value="chicken">chicken (100g)</option><option value="fish">fish (170g)</option><option value="_3" disabled="disabled">--- fats ---</option><option value="sausage">sausage (Fresh) (200g)</option><option value="_4" disabled="disabled">--- side dishes ---</option><option value="porkSauce">pork sauce (Lunter) (150g)</option><option value="butter">butter and honey (20g)</option></select>
 
-    <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
-      onchange="handleFoodItemSelection(true)" value="1s">
+    <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5" onchange="handleFoodItemSelection(true)" value="1">
     <button onclick="addEntry()">Add Entry</button>
     <button onclick="undoLastEntry()">Undo Last Entry</button>
-
+  
 
     <label for="fat">Fat (g)</label>
-    <input type="number" id="fat" placeholder="Fat (g)">
+    <input type="number" id="fat" placeholder="Fat (g)" value="25.00">
 
     <label for="carbs">Carbs (g)</label>
-    <input type="number" id="carbs" placeholder="Carbs (g)">
+    <input type="number" id="carbs" placeholder="Carbs (g)" value="67.70">
 
     <label for="protein">Protein (g)</label>
-    <input type="number" id="protein" placeholder="Protein (g)">
+    <input type="number" id="protein" placeholder="Protein (g)" value="10.80">
 
 
     <label for="comment">Comment</label>
-    <textarea id="comment" placeholder="Add a comment..."></textarea>
+    <textarea id="comment" placeholder="Add a comment...">bread roll (Vamex) (100g)</textarea>
 
-
-
+    <button onclick="pasteEntries()">Load entries ...</button>
+    <button onclick="getEntriesJSON()">Get entries</button>
 
   </div>
 
@@ -188,39 +185,35 @@ Changes:
     <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
     <label for="allHistoryChk">all history</label>
     <div id="historyWindow">
-      <table id="entries">
-        <tr>
-          <th>Date</th>
+      <table id="entries"><tbody><tr><th>Date</th>
           <th>Carbs</th>
           <th>Protein</th>
           <th>Fat</th>
           <th>Note</th>
-        </tr>
-        <!-- Entries will go here -->
-      </table>
+        </tr><tr><td>09:40</td><td>67.7g</td><td>10.8g</td><td>25g</td><td>bread roll (Vamex) (100g)</td></tr><tr><td>09:40</td><td>2.1g</td><td>37.8g</td><td>28.8g</td><td>egg (300g)</td></tr><tr><td>22:00</td><td>78.7g</td><td>10.8g</td><td>40g</td><td>bread roll (Vamex) (100g)</td></tr><tr><td>19:00</td><td>80g</td><td>0g</td><td>0g</td><td>sugar (80g)</td></tr><tr><td>16:39</td><td>77.1g</td><td>12.6g</td><td>5.99g</td><td>oats (105g)</td></tr><tr><td>16:39</td><td>19.32g</td><td>0.42g</td><td>0.28g</td><td>apple (140g)</td></tr><tr><td>13:45</td><td>135.4g</td><td>21.6g</td><td>10g</td><td>bread roll (Vamex) (200g)</td></tr><tr><td>13:45</td><td>35.42g</td><td>1.69g</td><td>0.46g</td><td>banana (154g)</td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></tbody></table>
     </div>
   </div>
 
   <div id="dayListOverviewParent" class="draggable container" style="left:75%; top:65%; margin-right:60px">
     <h3>Day list overview</h3>
-    <div id="dayListOverview"></div>
+    <div id="dayListOverview"><table><thead><tr><th>Date</th><th>Mass (sum g)</th><th>Protein (g)</th><th>Calories (kcal)</th></tr></thead><tbody><tr><td>2024-09-20</td><td>172</td><td>49</td><td>958</td></tr><tr><td>2024-09-19</td><td>650</td><td>77</td><td style="background-color: red; color: white;">3000</td></tr><tr><td>2024-09-18</td><td>741</td><td style="background-color: red; color: white;">185</td><td style="background-color: red; color: white;">3536</td></tr><tr><td>2024-09-17</td><td>779</td><td style="background-color: red; color: white;">188</td><td style="background-color: red; color: white;">3741</td></tr><tr><td>2024-09-16</td><td>635</td><td>123</td><td style="background-color: red; color: white;">2913</td></tr><tr><td>2024-09-15</td><td>437</td><td>48</td><td style="background-color: red; color: white;">2534</td></tr><tr><td>2024-09-14</td><td>543</td><td>135</td><td style="background-color: red; color: white;">2598</td></tr><tr><td>2024-09-13</td><td>816</td><td style="background-color: red; color: white;">187</td><td style="background-color: red; color: white;">4004</td></tr></tbody></table></div>
   </div>
 
   <div id="todaySumWindow" class="draggable sidebar" style="left:75%; top:5%">
     <h4>24 hour Totals</h4>
     <div class="totals24">
-      <div class="total-item">Calories (24hw): <span id="t24calories">0</span>kcal</div>
-      <div class="total-item">Mass (24hw): <span id="t24weight">0</span>g</div>
+      <div class="total-item">Calories (24hw): <span id="t24calories">3361</span>kcal</div>
+      <div class="total-item">Mass (24hw): <span id="t24weight">747</span>g</div>
 
     </div>
     <h4>Today's Totals</h4>
     <div class="totals">
 
-      <div class="total-item">Protein: <span id="totalProtein">0</span>g</div>
-      <div class="total-item">Carbs: <span id="totalCarbs">0</span>g</div>
-      <div class="total-item">Fat: <span id="totalFat">0</span>g</div>
-      <div class="total-item">Mass: <span id="totalWeight">0</span>g</div>
-      <div class="total-item">Calories: <span id="totalCalories">0</span>kcal</div>
+      <div class="total-item">Protein: <span id="totalProtein" class="">49</span>g</div>
+      <div class="total-item">Carbs: <span id="totalCarbs" class="">70</span>g</div>
+      <div class="total-item">Fat: <span id="totalFat" class="halfway-there">54</span>g</div>
+      <div class="total-item">Mass: <span id="totalWeight">195</span>g</div>
+      <div class="total-item">Calories: <span id="totalCalories" class="">958</span>kcal</div>
 
 
 
@@ -637,6 +630,22 @@ Changes:
       dayListOverview.appendChild(dailyTotalsTable);
     }
 
+    function pasteEntries() {
+      let entries_string = prompt("Paste entries JSON", "");
+      if (entries_string != null) {
+        const entries = JSON.parse(entries_string) || [];
+        // Save back to local storage
+        localStorage.setItem('macroEntries', JSON.stringify(entries));
+        
+      }
+      displayHistoryTable();
+      updateDailyTotals();
+    }
+
+    function getEntriesJSON() {
+      prompt("Copy entries JSON", localStorage.getItem('macroEntries'));
+    }
+
     document.getElementById('addEntryWindow').addEventListener('keydown', function (event) {
       if (event.key === 'Enter') {
         addEntry();
@@ -647,6 +656,7 @@ Changes:
 
   </script>
 
-</body>
 
-</html>
+
+
+</body></html>
