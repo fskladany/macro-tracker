@@ -645,9 +645,13 @@ Changes:
     }
 
     function getEntriesJSON() {
-      prompt("Copy entries JSON", localStorage.getItem('macroEntries'));
-    }
+      var entries = localStorage.getItem('macroEntries');
+       // Copy the text inside the text field
+      navigator.clipboard.writeText(entries);
 
+      alert("Copied the text: " + entries);
+
+    }
     document.getElementById('addEntryWindow').addEventListener('keydown', function (event) {
       if (event.key === 'Enter') {
         addEntry();
