@@ -1,7 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"><!-- 
+TODO:
+1.1 provide day selector
+4. Organize ingredients into meal numbers [breakfast, lunch, lunch2, dinnner]
+
+Changes:
+
+-->
 
 <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Macro Tracker</title>
@@ -16,6 +24,7 @@
       align-items: center;
       height: 100vh;
       overflow: hidden;
+      background-color: #888;
       /* Prevent scrolling */
     }
 
@@ -28,7 +37,7 @@
     }
 
     .draggable {
-      background: white;
+      background-color: #BBB;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -43,8 +52,12 @@
     }
 
     .draggable h1,
-    .draggable h2 {
+    .draggable h2,
+    .draggable h3,
+    .draggable h4 {
       margin-top: 0;
+      margin-bottom: 0;
+
     }
 
     input,
@@ -56,13 +69,14 @@
       margin: 10px 0;
       border-radius: 5px;
       border: 1px solid #ddd;
+      background-color: #CCC;
       box-sizing: border-box;
       font-size: 20px;
     }
 
     button {
-      background-color: #008CBA;
-      color: white;
+      background-color: aquamarine;
+      color: black;
       cursor: pointer;
     }
 
@@ -83,8 +97,9 @@
       background-color: #f2f2f2;
     }
 
-    .totals {
-      margin-top: 20px;
+    .totals,
+    .totals24 {
+      margin-top: 15px;
     }
 
     .total-item {
@@ -93,13 +108,14 @@
 
     /* Adjust initial positions for the draggable windows */
     #addEntryWindow {
-      width: 500px;
+      width: 450px;
     }
 
     #historyWindowParent {
       top: 70px;
       left: 40px;
       width: 400px;
+
     }
 
     #todaySumWindow {
@@ -108,121 +124,153 @@
       font-size: 34px;
     }
 
-    #dailyTotalsContainerParent {
+    #dayListOverviewParent {
       top: 600px;
       right: -50px;
     }
 
     .goal-reached {
-      background-color: green;
+      background-color: rgb(255, 0, 0);
       color: white;
     }
 
+
     .halfway-there {
-      background-color: yellow;
+      background-color: rgb(255, 238, 0);
+    }
+
+    .totals div,
+    .totals24 div {
+      font-size: 26px;
     }
   </style>
 </head>
 
 <body>
 
-  <div id="addEntryWindow" class="draggable container">
-    <h1>Macro Tracker</h1>
+  <div id="addEntryWindow" class="draggable container" style="z-index: 100;">
+    <h1 style="margin-bottom:20px">Macro Tracker</h1>
 
-    <label for="templateSelect">Choose a template:</label>
-    <select id="templateSelect" onchange="handleTemplateSelection()">
+    <label for="templateSelect" style="float: left">Choose a template:</label>
+    <label style="float: right;" for="multiplier">Amount:</label>
+    <select id="templateSelect" style="float: left;width:70%; left:0;" onchange="handleFoodItemSelection()">
       <option value="">Select a template...</option>
-      <!-- Add more options as needed -->
     </select>
-    <label for="multiplier">Multiplier (e.g., 0.3 for 30%):</label>
-    <input type="number" id="multiplier" placeholder="Enter multiplier (e.g., 0.3 for 30%)" step="0.05"
-      onchange="handleTemplateSelection(true)">
 
-    <label for="carbs">Carbs (g)</label>
-    <input type="number" id="carbs" placeholder="Carbs (g)">
+    <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
+      onchange="handleFoodItemSelection(true)" value="0.5">
+    <button onclick="addEntry()">Add Entry</button>
+    <button onclick="undoLastEntry()">Undo Last Entry</button>
 
-    <label for="protein">Protein (g)</label>
-    <input type="number" id="protein" placeholder="Protein (g)">
 
     <label for="fat">Fat (g)</label>
-    <input type="number" id="fat" placeholder="Fat (g)">
+    <input type="number" id="fat" placeholder="Fat (g)" value="0">
 
-    <label for="fiber">Fiber (g)</label>
-    <input type="number" id="fiber" placeholder="Fiber (g)">
+    <label for="carbs">Carbs (g)</label>
+    <input type="number" id="carbs" placeholder="Carbs (g)" value="0">
+
+    <label for="protein">Protein (g)</label>
+    <input type="number" id="protein" placeholder="Protein (g)" value="0">
 
     <label for="comment">Comment</label>
     <textarea id="comment" placeholder="Add a comment..."></textarea>
 
-    <button onclick="addEntry()">Add Entry</button>
-    <button onclick="clearLocalStorage()">Clear Data</button>
-    <button onclick="undoLastEntry()">Undo Last Entry</button>
+    <button onclick="pasteEntries()">Load ...</button>
+    <button onclick="getEntriesJSON()">Get entries</button>
 
   </div>
 
-  <div id="historyWindowParent" class="draggable container">
-    <h3>History</h3>
+  <div id="historyWindowParent" class="draggable sidebar" style="top:5%; left:1%">
+    <h3 style="float:left">History</h3>
+    <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
+    <label for="allHistoryChk">all history</label>
     <div id="historyWindow">
-      <table id="entries">
-        <tr>
-          <th>Date</th>
-          <th>Carbs</th>
-          <th>Protein</th>
-          <th>Fat</th>
-          <th>Fiber</th>
-          <th>Note</th>
-        </tr>
-        <!-- Entries will go here -->
+      <table id="historyEntries">
+        <tbody>
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Carbs</th>
+            <th>Protein</th>
+            <th>Fat</th>
+            <th>Note</th>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
 
-  <div id="dailyTotalsContainerParent" class="draggable container">
-    <h3>Days</h3>
-    <div id="dailyTotalsContainer"></div>
+  <div id="dayListOverviewParent" class="draggable container" style="left: 886px; top: 459px; margin-right: 60px;">
+    <h3>Day overview</h3>
+
+    <div id="dayListOverview">
+      <!--
+      Day one ...
+      Day two ...
+      Day three ...
+      -->
+    </div>
   </div>
 
-  <div id="todaySumWindow" class="draggable sidebar">
-    <h2>Today's Totals</h2>
-    <div class="totals">
-      <div class="total-item">Carbs: <span id="totalCarbs">0</span>g</div>
-      <div class="total-item">Protein: <span id="totalProtein">0</span>g</div>
-      <div class="total-item">Fat: <span id="totalFat">0</span>g</div>
-      <div class="total-item">Fiber: <span id="totalFiber">0</span>g</div>
-      <div class="total-item">Total Weight: <span id="totalWeight">0</span>g</div>
-      <div class="total-item">Total Calories: <span id="totalCalories">0</span>kcal</div>
+  <div id="todaySumWindow" class="draggable sidebar" style="left: 899px; top: 32px;">
+
+    <h4>24 hour Totals</h4>
+    <div class="totals24">
+      <div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
+      <div class="total-item">Mass (24h): <span id="t24weight">693</span>g</div>
 
     </div>
+
+    <h4>Today's Totals</h4>
+    <div class="totals">
+
+      <div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>
+      <div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
+      <div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
+      <div class="total-item">Mass: <span id="totalWeight"></span>g</div>
+      <div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
+
+    </div>
+
   </div>
 
   <script>
     // Check for Local Storage support
     const templates = {
-      egg: { carbs: 0.7, protein: 12.6, fat: 9.6, fiber: 0.1, name: 'Egg' },
-      friedPotato: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'FrenchFries' },
-      bakedPotato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'BakedPotato' },
-      maltodextrin: { carbs: 95, protein: 0, fat: 0, fiber: 0.01, name: 'maltodextrin', servingSize: 25 },
-      dextrose: { carbs: 91, protein: 0, fat: 0, fiber: 0, name: 'dextrose', servingSize: 25 },
-      soy: { carbs: 6, protein: 87, fat: 0.5, fiber: 0.02, name: 'soy protein', servingSize: 50 },
-      rice: { carbs: 30, protein: 3, fat: 0.3, fiber: 0.4, name: 'rice' },
-      chickenSoup: { carbs: 4.8, protein: 2, fat: 0.7, fiber: 0.9, name: 'chickenSoup', servingSize: 500 },
-      banana: { carbs: 23, protein: 1.1, fat: 0.3, fiber: 2.6, name: 'banana', servingSize: 154 },
-      chickenThigh: { carbs: 0, protein: 31, fat: 16, fiber: 0.1, name: 'chicken thigh' },
-      eggBread: { carbs: 23, protein: 8.5, fat: 8, fiber: 0.1, name: 'egg bread', servingSize: 50 },
-      breadSlice: { carbs: 48.6, protein: 8.8, fat: 3.2, fiber: 2.7, name: 'bread slice', servingSize: 60 },
-      cashew: { name: 'cashew (Li 2+)', fat: 21, carbs: 15.1, fiber: 1.6, protein: 9.1, servingSize: 50 },
-      sausage: { carbs: 1, protein: 15, fat: 30, fiber: 0.1, name: 'sausage', servingSize: 40 },
-      chips: { carbs: 49, protein: 5.7, fat: 35, fiber: 4.2, salt: 0.94, name: 'crisps', servingSize: 80 },
-      fish: { fat: 3, protein: 17.1, carbs: 0.16, fiber: 0.05, servingSize: 170, name: 'fish' },
+      _1: { name: "--- carbs ---", servingSize: 0 },
+      potato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'potato' },
+      oats: { name: "oats", carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
+      rice: { carbs: 77, protein: 8, fat: 0.3, name: 'rice (Máyna, uncooked)' },
+      bread: { carbs: 41.5, protein: 8.3, fat: 1.3, name: 'bread (Vamex)', servingSize: 60 },
+
+      frenchFries: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'french fries' },
+      breadRoll: { name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50 },
+      pasta: { name: "pasta (generic)", fat: 1.5, protein: 13, carbs: 75.3 },
+
       apple: { carbs: 13.8, fiber: 2.4, protein: 0.3, fat: 0.2, servingSize: 250, name: 'apple' },
-      tomato: { name: 'tomato (Li 2+)', fat: 0.2, carbs: 3.9, fiber: 1.2, protein: 0.9, servingSize: 50 },
-      water: { name: 'H2O delta p', fiber: -1, servingSize: 1000 },
+      banana: { carbs: 23, protein: 1.1, fat: 0.3, fiber: 2.6, name: 'banana', servingSize: 154 },
+
+      _2: { name: "--- protein ---", servingSize: 0 },
+      egg: { carbs: 0.7, protein: 12.6, fat: 9.6, fiber: 0.1, name: 'egg', servingSize: 50 },
+      chicken: { carbs: 0.3, protein: 31, fat: 3, fiber: 0.1, name: 'chicken' },
+      fish: { fat: 3, protein: 17.1, carbs: 0.16, fiber: 0.05, servingSize: 170, name: 'fish' },
+
+      _3: { name: "--- fats ---", servingSize: 0 },
+      sausage: { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
+
+      _4: { name: "--- side dishes ---", servingSize: 0 },
+      porkSauce: { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
+      butter: { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
+
+
+
       // Add more templates as needed
     };
     const dailyGoals = {
-      carbs: 400, // Example goal
-      protein: 200, // Example goal
-      fat: 70, // Example goal
-      fiber: 40 // Example goal
+      carbs: 320, // Example goal
+      protein: 160, // Example goal
+      fat: 60, // Example goal
+      calories: 2500
     };
 
 
@@ -233,12 +281,12 @@
         const carbs = parseFloat(document.getElementById('carbs').value) || 0;
         const protein = parseFloat(document.getElementById('protein').value) || 0;
         const fat = parseFloat(document.getElementById('fat').value) || 0;
-        const fiber = parseFloat(document.getElementById('fiber').value) || 0;
         const comment = document.getElementById('comment').value;
         const date = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-
+        const ts = new Date().getTime();
         // Create entry object
-        const entry = { date, carbs, protein, fat, fiber, comment };
+
+        const entry = { ts, carbs, protein, fat, comment };
 
         // Get existing entries from local storage or initialize an empty array if none exist
         const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
@@ -248,27 +296,63 @@
         localStorage.setItem('macroEntries', JSON.stringify(entries));
 
         // Update the table and totals
-        updateTable();
-        updateTotals();
+        displayHistoryTable();
+        updateDailyTotals();
       }
 
       // Function to update the table with entries
-      function updateTable() {
+      function displayHistoryTable() {
         const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-        const table = document.getElementById('entries');
+        entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+
+        let whistle_index = entries.length;
+        entries.forEach ((entry) => {
+          whistle_index--;
+          entry['index'] = whistle_index;
+        })
+        // Save back to local storage
+        localStorage.setItem('macroEntries', JSON.stringify(entries));
+
+        const historyTable = document.getElementById('historyEntries');
 
         // Sort entries by date in descending order
-        entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+        entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
         // Clear all rows except the header
-        table.innerHTML = table.rows[0].innerHTML;
+        historyTable.innerHTML = historyTable.rows[0].innerHTML;
 
         // Add each entry to the table
+
         entries.forEach(entry => {
-          const row = table.insertRow();
+
+          const row = historyTable.insertRow();
+          delete entry["fiber"] // legacy data workaround
+          delete entry["date"]
           // Convert entry object to an array of its values
+          let tsdate = new Date(entry.ts)
+          var ndate = 0;
+
+          if (new Date().getTime() - entry.ts < 24 * 60 * 60 * 1000) {
+            const pad = num => ("0" + num).slice(-2);
+            let hours = tsdate.getHours(),
+              minutes = tsdate.getMinutes()
+            ndate = pad(hours) + ":" + pad(minutes)
+          } else {
+            if (document.getElementById('allHistoryChk').checked == false) {
+              return;
+            }
+
+            ndate = new Date(entry.ts).toLocaleString();
+          }
+          entry = { date: ndate, ...entry }
+          index = entry['index'];
+          delete entry["index"]
+          delete entry["ts"]
           const entryValues = Object.values(entry);
           // Iterate over each entry value
+          const cell = row.insertCell();
+          cell.textContent = index;
+          
           entryValues.forEach((value, index) => {
             const cell = row.insertCell();
             // Check if the current cell is not the comment cell
@@ -282,41 +366,70 @@
         });
       }
 
-      // Function to update the totals in the sidebar
-      function updateTotals() {
+      // Function to update the daily stats in the sidebar
+      function updateDailyTotals() {
         const today = new Date().toISOString().split('T')[0];
-        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-        let totalCarbs = 0, totalProtein = 0, totalFat = 0, totalFiber = 0;
+        const entries_list = JSON.parse(localStorage.getItem('macroEntries')) || [];
+        let totalCarbs = 0, totalProtein = 0, totalFat = 0;
         let totalWeight = 0; // More accurate total weight
         let totalCalories = 0; // Total calories
 
-        const todaysEntries = entries.filter(entry => entry.date === today);
+
+        const ts = new Date().getTime();
+        const todaysEntries = entries_list.filter(entry => {
+          return new Date(entry.ts).toISOString().split('T')[0] == today
+        });
+
+        const totals24 = entries_list.filter(entry => {
+
+          return ts - new Date(entry.ts).getTime() < 24 * 60 * 60 * 1000
+        });
+
+
         // Calculate total weight and calories
         todaysEntries.forEach(entry => {
           totalCarbs += parseFloat(entry.carbs);
           totalProtein += parseFloat(entry.protein);
           totalFat += parseFloat(entry.fat);
-          totalFiber += parseFloat(entry.fiber);
-
           // Calculate calories
           totalCalories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9;
         });
 
+
         // Calculate a more accurate weight using the approximations
-        totalWeight = (totalCarbs + totalFiber) * 1 + totalProtein * 1.35 + totalFat * 1.1;
+        totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
 
         // Update the sidebar with the totals
-        document.getElementById('totalCarbs').textContent = totalCarbs.toFixed(2);
-        document.getElementById('totalProtein').textContent = totalProtein.toFixed(2);
-        document.getElementById('totalFat').textContent = totalFat.toFixed(2);
-        document.getElementById('totalFiber').textContent = totalFiber.toFixed(2);
+        document.getElementById('totalCarbs').textContent = totalCarbs.toFixed(0);
+        document.getElementById('totalProtein').textContent = totalProtein.toFixed(0);
+        document.getElementById('totalFat').textContent = totalFat.toFixed(0);
         document.getElementById('totalWeight').textContent = totalWeight.toFixed(0);
-        document.getElementById('totalCalories').textContent = totalCalories.toFixed(0);
 
+        updateTotalWithThreshold('totalCalories', totalCalories, dailyGoals.calories);
         updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
         updateTotalWithThreshold('totalProtein', totalProtein, dailyGoals.protein);
         updateTotalWithThreshold('totalFat', totalFat, dailyGoals.fat);
-        updateTotalWithThreshold('totalFiber', totalFiber, dailyGoals.fiber);
+
+        totalWeight = 0
+        totalCalories = 0
+        totalCarbs = 0
+        totalProtein = 0
+        totalFat = 0
+        // Calculate total weight and calories, 24h
+        totals24.forEach(entry => {
+          totalCarbs += parseFloat(entry.carbs);
+          totalProtein += parseFloat(entry.protein);
+          totalFat += parseFloat(entry.fat);
+          // Calculate calories
+          totalCalories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9;
+        });
+
+        totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
+
+        document.getElementById('t24weight').textContent = totalWeight.toFixed(0);
+        //updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
+        document.getElementById('t24calories').textContent = totalCalories.toFixed(0);
+
         DisplayDailyTotals();
       }
 
@@ -333,47 +446,46 @@
         // Change color based on the percentage of the goal reached
         if (percentage >= 100) {
           element.classList.add('goal-reached');
-        } else if (percentage >= 50) {
+        }
+        else if (percentage >= 50) {
           element.classList.add('halfway-there');
         }
+
+
       }
 
       // Function to fill the form with a template
-      function fillTemplate(templateKey) {
+      function makeFoodItemTemplate(templateKey) {
         const nutrients = templates[templateKey];
         const multiplierInput = document.getElementById('multiplier').value;
+
         const multiplier = multiplierInput || (nutrients.servingSize || 100) / 100;
         if (nutrients) {
           document.getElementById('carbs').value = (nutrients.carbs * multiplier).toFixed(2) || '';
           document.getElementById('protein').value = (nutrients.protein * multiplier).toFixed(2) || '';
           document.getElementById('fat').value = (nutrients.fat * multiplier).toFixed(2) || '';
-          document.getElementById('fiber').value = (nutrients.fiber * multiplier).toFixed(2) || '';
           document.getElementById('comment').value = `${nutrients.name} (${(100 * multiplier).toFixed(0)}g)`;
         }
       }
 
       // Function to handle the template selection and multiplier input
-      function handleTemplateSelection(bypass = false) {
+      function handleFoodItemSelection(bypass = false) {
         const templateKey = document.getElementById('templateSelect').value;
 
-        var multiplier = (templates[templateKey].servingSize || 100);
+        var multiplier = templates[templateKey].servingSize
+        if (!multiplier && multiplier != 0) multiplier = 100;
         if (bypass === true) {
           multiplier = document.getElementById('multiplier').value;
         } else {
           document.getElementById('multiplier').value = multiplier / 100;
         }
+        if (multiplier != 0) {
 
-        fillTemplate(templateKey, multiplier);
-      }
 
-      // Function to clear local storage
-      function clearLocalStorage() {
-        if (confirm('Are you sure you want to delete all entries? This cannot be undone.')) {
-          localStorage.removeItem('macroEntries');
-          updateTable();
-          updateTotals();
+          makeFoodItemTemplate(templateKey, multiplier);
         }
       }
+
 
       // Function to make elements draggable
       function dragElement(element) {
@@ -412,31 +524,39 @@
 
       // Activate the drag function for the draggable elements
 
-      dragElement(document.getElementById("historyWindowParent"));
+      dragElement(document.getElementById("historyWindow"));
       dragElement(document.getElementById("todaySumWindow"));
-      dragElement(document.getElementById("dailyTotalsContainerParent"));
+      dragElement(document.getElementById("dayListOverviewParent"));
       // Initial table and totals update
-      updateTable();
-      updateTotals();
+      displayHistoryTable();
+      updateDailyTotals();
 
     } else {
       alert("Sorry, your browser does not support Web Storage...");
     }
 
     // Function to populate the template select dropdown
-    function populateTemplateSelect() {
+    function LoadFoodItemTemplates() {
       const select = document.getElementById('templateSelect');
       Object.keys(templates).forEach(key => {
         const option = document.createElement('option');
         option.value = key;
-        const multiplier = (templates[key].servingSize || 100);
-        option.textContent = templates[key].name + ' (' + multiplier + 'g)';
+        var multiplier = templates[key].servingSize
+
+        if (multiplier == 0) option.disabled = true
+        if (!multiplier && multiplier != 0) multiplier = 100;
+        option.textContent = templates[key].name
+        if (multiplier != 0) {
+          option.textContent += ' (' + multiplier + 'g)';
+        }
         select.appendChild(option);
       });
     }
 
     // Call this function on page load to populate the select dropdown
-    window.addEventListener('load', populateTemplateSelect);
+    window.addEventListener('load', LoadFoodItemTemplates);
+
+
     function undoLastEntry() {
       // Get the current list of entries from localStorage
       let entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
@@ -444,14 +564,14 @@
       // Check if there are any entries to undo
       if (entries.length > 0) {
         // Remove the last entry
-        entries.pop();
+        entries.shift()
 
         // Save the updated entries back to localStorage
         localStorage.setItem('macroEntries', JSON.stringify(entries));
 
         // Update the table and totals to reflect the change
-        updateTable();
-        updateTotals();
+        displayHistoryTable();
+        updateDailyTotals();
       } else {
         alert("No entries to undo.");
       }
@@ -459,32 +579,32 @@
 
     function calculateDailyTotals(entries) {
       const dailyTotals = {};
-
+      entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
       entries.forEach(entry => {
-        const { date, carbs, protein, fat, fiber } = entry;
+        const { ts, carbs, protein, fat } = entry;
+        const date = new Date(ts).toISOString().split('T')[0]
         // Initialize the object for the date if it doesn't exist
         if (!dailyTotals[date]) {
-          dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, fiber: 0, calories: 0, weight: 0 };
+          dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, calories: 0, weight: 0 };
         }
         // Add checks to ensure the properties are numbers
         dailyTotals[date].carbs += Number(carbs) || 0;
         dailyTotals[date].protein += Number(protein) || 0;
         dailyTotals[date].fat += Number(fat) || 0;
-        dailyTotals[date].fiber += Number(fiber) || 0;
         // Calculate calories and weight
         dailyTotals[date].calories += ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
-        dailyTotals[date].weight += (Number(carbs) || 0) + (Number(fiber) || 0) * 1 + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
+        dailyTotals[date].weight += (Number(carbs) || 0) + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
       });
 
       return dailyTotals;
     }
 
 
-    function createDailyTotalsTable(dailyTotals) {
+    function makeDayOverviewTable(dailyTotals) {
       const table = document.createElement('table');
       const thead = table.createTHead();
       const headerRow = thead.insertRow();
-      const headers = ['Date', 'Carbs (g)', 'Protein (g)', 'Fat (g)', 'Fiber (g)', 'Total Weight (g)', 'Total Calories (kcal)'];
+      const headers = ['Date', 'Mass (sum g)', 'Protein (g)', 'Calories (kcal)'];
 
       headers.forEach(headerText => {
         const header = document.createElement('th');
@@ -498,12 +618,19 @@
         const row = tbody.insertRow();
         const totals = dailyTotals[date];
         row.insertCell().textContent = date;
-        row.insertCell().textContent = totals.carbs.toFixed(0);
-        row.insertCell().textContent = totals.protein.toFixed(0);;
-        row.insertCell().textContent = totals.fat.toFixed(0);;
-        row.insertCell().textContent = totals.fiber.toFixed(0);;
-        row.insertCell().textContent = dailyTotals[date].weight.toFixed(0); // Add weight
-        row.insertCell().textContent = dailyTotals[date].calories.toFixed(0); // Add calories
+        const caloreis = row.insertCell().textContent = (totals.carbs * 1 + totals.fat * 1.1 + totals.protein * 1.35).toFixed(0);
+        const prot = row.insertCell()
+        prot.textContent = totals.protein.toFixed(0);
+        if (totals.protein >= dailyGoals.protein) {
+          prot.style = "background-color:red; color:white"
+
+        }
+
+        const calories = row.insertCell()
+        calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
+        if (totals.calories >= dailyGoals.calories) {
+          calories.style = "background-color:red; color:white"
+        }
       });
 
       return table;
@@ -512,19 +639,45 @@
     function DisplayDailyTotals() {
       const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
       const dailyTotals = calculateDailyTotals(entries);
-      const dailyTotalsTable = createDailyTotalsTable(dailyTotals);
-      const dailyTotalsContainer = document.getElementById('dailyTotalsContainer');
-      dailyTotalsContainer.innerHTML = ''; // Clear any existing table
-      dailyTotalsContainer.appendChild(dailyTotalsTable);
+      const dayOverviewTable = makeDayOverviewTable(dailyTotals);
+      const dayListOverview = document.getElementById('dayListOverview');
+      dayListOverview.innerHTML = ''; // Clear any existing table
+      dayListOverview.appendChild(dayOverviewTable);
     }
 
+    function pasteEntries() {
+      let entries_string = prompt("Paste entries JSON", "");
+      if (entries_string != null) {
+        const entries = JSON.parse(entries_string) || [];
+        // Save back to local storage
+        localStorage.setItem('macroEntries', JSON.stringify(entries));
 
+      }
+      displayHistoryTable();
+      updateDailyTotals();
+    }
+
+    function getEntriesJSON() {
+      var entries = localStorage.getItem('macroEntries');
+      // Copy the text inside the text field
+      navigator.clipboard.writeText(entries);
+
+      alert("Copied the text: " + entries);
+
+    }
+    document.getElementById('addEntryWindow').addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        addEntry();
+      }
+    });
 
     DisplayDailyTotals();
 
-
-
   </script>
+
+
+
+
 
 </body>
 
