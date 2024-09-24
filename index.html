@@ -6,10 +6,10 @@ TODO:
 
 Changes:
 
+-->
 
-
---><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Macro Tracker</title>
@@ -57,7 +57,7 @@ Changes:
     .draggable h4 {
       margin-top: 0;
       margin-bottom: 0;
-   
+
     }
 
     input,
@@ -155,29 +155,27 @@ Changes:
     <label style="float: right;" for="multiplier">Amount:</label>
     <select id="templateSelect" style="float: left;width:70%; left:0;" onchange="handleFoodItemSelection()">
       <option value="">Select a template...</option>
+    </select>
 
-      <!-- Add more options as needed -->
-    <option value="_1" disabled="disabled">--- carbs ---</option><option value="potato">potato (100g)</option><option value="oats">oats (50g)</option><option value="rice">rice (Máyna, uncooked) (100g)</option><option value="bread">bread (Vamex) (60g)</option><option value="frenchFries">french fries (100g)</option><option value="breadRoll">bread roll (Vamex) (50g)</option><option value="pasta">pasta (generic) (100g)</option><option value="apple">apple (250g)</option><option value="banana">banana (154g)</option><option value="_2" disabled="disabled">--- protein ---</option><option value="egg">egg (50g)</option><option value="chicken" selected="selected">chicken (100g)</option><option value="fish">fish (170g)</option><option value="_3" disabled="disabled">--- fats ---</option><option value="sausage">sausage (Fresh) (200g)</option><option value="_4" disabled="disabled">--- side dishes ---</option><option value="porkSauce">pork sauce (Lunter) (150g)</option><option value="butter">butter and honey (20g)</option><option value="_1" disabled="disabled">--- carbs ---</option><option value="potato">potato (100g)</option><option value="oats">oats (50g)</option><option value="rice">rice (Máyna, uncooked) (100g)</option><option value="bread">bread (Vamex) (60g)</option><option value="frenchFries">french fries (100g)</option><option value="breadRoll">bread roll (Vamex) (50g)</option><option value="pasta">pasta (generic) (100g)</option><option value="apple">apple (250g)</option><option value="banana">banana (154g)</option><option value="_2" disabled="disabled">--- protein ---</option><option value="egg">egg (50g)</option><option value="chicken">chicken (100g)</option><option value="fish">fish (170g)</option><option value="_3" disabled="disabled">--- fats ---</option><option value="sausage">sausage (Fresh) (200g)</option><option value="_4" disabled="disabled">--- side dishes ---</option><option value="porkSauce">pork sauce (Lunter) (150g)</option><option value="butter">butter and honey (20g)</option></select>
-
-    <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5" onchange="handleFoodItemSelection(true)" value="6.5">
+    <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
+      onchange="handleFoodItemSelection(true)" value="0.5">
     <button onclick="addEntry()">Add Entry</button>
     <button onclick="undoLastEntry()">Undo Last Entry</button>
-  
+
 
     <label for="fat">Fat (g)</label>
-    <input type="number" id="fat" placeholder="Fat (g)" value="19.50">
+    <input type="number" id="fat" placeholder="Fat (g)" value="0">
 
     <label for="carbs">Carbs (g)</label>
-    <input type="number" id="carbs" placeholder="Carbs (g)" value="1.95">
+    <input type="number" id="carbs" placeholder="Carbs (g)" value="0">
 
     <label for="protein">Protein (g)</label>
-    <input type="number" id="protein" placeholder="Protein (g)" value="201.50">
-
+    <input type="number" id="protein" placeholder="Protein (g)" value="0">
 
     <label for="comment">Comment</label>
-    <textarea id="comment" placeholder="Add a comment...">chicken (650g)</textarea>
+    <textarea id="comment" placeholder="Add a comment..."></textarea>
 
-    <button onclick="pasteEntries()">Load entries ...</button>
+    <button onclick="pasteEntries()">Load ...</button>
     <button onclick="getEntriesJSON()">Get entries</button>
 
   </div>
@@ -187,37 +185,49 @@ Changes:
     <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
     <label for="allHistoryChk">all history</label>
     <div id="historyWindow">
-      <table id="entries"><tbody><tr><th>Date</th>
-          <th>Carbs</th>
-          <th>Protein</th>
-          <th>Fat</th>
-          <th>Note</th>
-        </tr><tr><td>15:21</td><td>35g</td><td>80.6g</td><td>14.8g</td><td>chicken (260g)</td></tr><tr><td>09:40</td><td>67.7g</td><td>10.8g</td><td>25g</td><td>bread roll (Vamex) (100g)</td></tr><tr><td>09:40</td><td>2.1g</td><td>37.8g</td><td>28.8g</td><td>egg (300g)</td></tr><tr><td>22:00</td><td>78.7g</td><td>10.8g</td><td>40g</td><td>bread roll (Vamex) (100g)</td></tr><tr><td>19:00</td><td>80g</td><td>0g</td><td>0g</td><td>sugar (80g)</td></tr><tr><td>16:39</td><td>77.1g</td><td>12.6g</td><td>5.99g</td><td>oats (105g)</td></tr><tr><td>16:39</td><td>19.32g</td><td>0.42g</td><td>0.28g</td><td>apple (140g)</td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></tbody></table>
+      <table id="entries">
+        <tbody>
+          <tr>
+            <th>Date</th>
+            <th>Carbs</th>
+            <th>Protein</th>
+            <th>Fat</th>
+            <th>Note</th>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <div id="dayListOverviewParent" class="draggable container" style="left: 886px; top: 459px; margin-right: 60px;">
     <h3>Day overview</h3>
-    <div id="dayListOverview"><table><thead><tr><th>Date</th><th>Mass (sum g)</th><th>Protein (g)</th><th>Calories (kcal)</th></tr></thead><tbody><tr><td>2024-09-20</td><td>303</td><td>129</td><td>1553</td></tr><tr><td>2024-09-19</td><td>650</td><td>77</td><td style="background-color: red; color: white;">3000</td></tr><tr><td>2024-09-18</td><td>741</td><td style="background-color: red; color: white;">185</td><td style="background-color: red; color: white;">3536</td></tr><tr><td>2024-09-17</td><td>779</td><td style="background-color: red; color: white;">188</td><td style="background-color: red; color: white;">3741</td></tr><tr><td>2024-09-16</td><td>635</td><td>123</td><td style="background-color: red; color: white;">2913</td></tr><tr><td>2024-09-15</td><td>437</td><td>48</td><td style="background-color: red; color: white;">2534</td></tr><tr><td>2024-09-14</td><td>543</td><td>135</td><td style="background-color: red; color: white;">2598</td></tr><tr><td>2024-09-13</td><td>816</td><td style="background-color: red; color: white;">187</td><td style="background-color: red; color: white;">4004</td></tr></tbody></table></div>
+
+    <div id="dayListOverview">
+      <!--
+      Day one ...
+      Day two ...
+      Day three ...
+      -->
+    </div>
   </div>
 
   <div id="todaySumWindow" class="draggable sidebar" style="left: 899px; top: 32px;">
+
     <h4>24 hour Totals</h4>
     <div class="totals24">
       <div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
       <div class="total-item">Mass (24h): <span id="t24weight">693</span>g</div>
 
     </div>
+
     <h4>Today's Totals</h4>
     <div class="totals">
 
-      <div class="total-item">Protein: <span id="totalProtein" class="halfway-there">129</span>g</div>
-      <div class="total-item">Carbs: <span id="totalCarbs" class="">105</span>g</div>
-      <div class="total-item">Fat: <span id="totalFat" class="goal-reached">69</span>g</div>
-      <div class="total-item">Mass: <span id="totalWeight">355</span>g</div>
-      <div class="total-item">Calories: <span id="totalCalories" class="halfway-there">1553</span>kcal</div>
-
-
+      <div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>
+      <div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
+      <div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
+      <div class="total-item">Mass: <span id="totalWeight"></span>g</div>
+      <div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
 
     </div>
 
@@ -228,14 +238,14 @@ Changes:
     const templates = {
       _1: { name: "--- carbs ---", servingSize: 0 },
       potato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'potato' },
-      oats: { name: "oats", carbs:62, fat:5.7, protein: 12, servingSize: 50},
+      oats: { name: "oats", carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
       rice: { carbs: 77, protein: 8, fat: 0.3, name: 'rice (Máyna, uncooked)' },
       bread: { carbs: 41.5, protein: 8.3, fat: 1.3, name: 'bread (Vamex)', servingSize: 60 },
-     
+
       frenchFries: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'french fries' },
       breadRoll: { name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50 },
-      pasta: { name: "pasta (generic)", fat: 1.5, protein: 13, carbs: 75.3},
-      
+      pasta: { name: "pasta (generic)", fat: 1.5, protein: 13, carbs: 75.3 },
+
       apple: { carbs: 13.8, fiber: 2.4, protein: 0.3, fat: 0.2, servingSize: 250, name: 'apple' },
       banana: { carbs: 23, protein: 1.1, fat: 0.3, fiber: 2.6, name: 'banana', servingSize: 154 },
 
@@ -247,9 +257,9 @@ Changes:
       _3: { name: "--- fats ---", servingSize: 0 },
       sausage: { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
 
-      _4: { name: "--- side dishes ---", servingSize: 0},
-      porkSauce: { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1},
-      butter: { fat: 66, cabs:33,  name: 'butter and honey', servingSize: 20 },
+      _4: { name: "--- side dishes ---", servingSize: 0 },
+      porkSauce: { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
+      butter: { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
 
 
 
@@ -272,7 +282,7 @@ Changes:
         const fat = parseFloat(document.getElementById('fat').value) || 0;
         const comment = document.getElementById('comment').value;
         const date = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-        const ts = new Date().getTime()
+        const ts = new Date().getTime();
         // Create entry object
 
         const entry = { ts, carbs, protein, fat, comment };
@@ -292,11 +302,7 @@ Changes:
       // Function to update the table with entries
       function displayHistoryTable() {
         const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-        entries.forEach(entry => {
-          if (entry.date) {
-            entry['ts'] = new Date(entry.date).getTime()
-          }
-        })
+
         // Save back to local storage
         localStorage.setItem('macroEntries', JSON.stringify(entries));
 
@@ -413,7 +419,7 @@ Changes:
         document.getElementById('t24weight').textContent = totalWeight.toFixed(0);
         //updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
         document.getElementById('t24calories').textContent = totalCalories.toFixed(0);
-        
+
         DisplayDailyTotals();
       }
 
@@ -434,8 +440,8 @@ Changes:
         else if (percentage >= 50) {
           element.classList.add('halfway-there');
         }
-        
-   
+
+
       }
 
       // Function to fill the form with a template
@@ -545,8 +551,6 @@ Changes:
       // Get the current list of entries from localStorage
       let entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
 
-
-
       // Check if there are any entries to undo
       if (entries.length > 0) {
         // Remove the last entry
@@ -616,7 +620,6 @@ Changes:
         calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
         if (totals.calories >= dailyGoals.calories) {
           calories.style = "background-color:red; color:white"
-
         }
       });
 
@@ -638,7 +641,7 @@ Changes:
         const entries = JSON.parse(entries_string) || [];
         // Save back to local storage
         localStorage.setItem('macroEntries', JSON.stringify(entries));
-        
+
       }
       displayHistoryTable();
       updateDailyTotals();
@@ -646,7 +649,7 @@ Changes:
 
     function getEntriesJSON() {
       var entries = localStorage.getItem('macroEntries');
-       // Copy the text inside the text field
+      // Copy the text inside the text field
       navigator.clipboard.writeText(entries);
 
       alert("Copied the text: " + entries);
@@ -666,4 +669,6 @@ Changes:
 
 
 
-</body></html>
+</body>
+
+</html>
