@@ -185,9 +185,10 @@ Changes:
     <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
     <label for="allHistoryChk">all history</label>
     <div id="historyWindow">
-      <table id="entries">
+      <table id="historyEntries">
         <tbody>
           <tr>
+            <th>#</th>
             <th>Date</th>
             <th>Carbs</th>
             <th>Protein</th>
@@ -302,30 +303,34 @@ Changes:
       // Function to update the table with entries
       function displayHistoryTable() {
         const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+        entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
+        let whistle_index = entries.length;
+        entries.forEach ((entry) => {
+          whistle_index--;
+          entry['index'] = whistle_index;
+        })
         // Save back to local storage
         localStorage.setItem('macroEntries', JSON.stringify(entries));
 
-        const table = document.getElementById('entries');
+        const historyTable = document.getElementById('historyEntries');
 
         // Sort entries by date in descending order
         entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
         // Clear all rows except the header
-        table.innerHTML = table.rows[0].innerHTML;
+        historyTable.innerHTML = historyTable.rows[0].innerHTML;
 
         // Add each entry to the table
 
         entries.forEach(entry => {
 
-          const row = table.insertRow();
+          const row = historyTable.insertRow();
           delete entry["fiber"] // legacy data workaround
           delete entry["date"]
           // Convert entry object to an array of its values
           let tsdate = new Date(entry.ts)
           var ndate = 0;
-          console.log(new Date().getTime() - entry.ts);
-
 
           if (new Date().getTime() - entry.ts < 24 * 60 * 60 * 1000) {
             const pad = num => ("0" + num).slice(-2);
@@ -340,9 +345,14 @@ Changes:
             ndate = new Date(entry.ts).toLocaleString();
           }
           entry = { date: ndate, ...entry }
+          index = entry['index'];
+          delete entry["index"]
           delete entry["ts"]
           const entryValues = Object.values(entry);
           // Iterate over each entry value
+          const cell = row.insertCell();
+          cell.textContent = index;
+          
           entryValues.forEach((value, index) => {
             const cell = row.insertCell();
             // Check if the current cell is not the comment cell
@@ -359,18 +369,18 @@ Changes:
       // Function to update the daily stats in the sidebar
       function updateDailyTotals() {
         const today = new Date().toISOString().split('T')[0];
-        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+        const entries_list = JSON.parse(localStorage.getItem('macroEntries')) || [];
         let totalCarbs = 0, totalProtein = 0, totalFat = 0;
         let totalWeight = 0; // More accurate total weight
         let totalCalories = 0; // Total calories
 
 
         const ts = new Date().getTime();
-        const todaysEntries = entries.filter(entry => {
+        const todaysEntries = entries_list.filter(entry => {
           return new Date(entry.ts).toISOString().split('T')[0] == today
         });
 
-        const totals24 = entries.filter(entry => {
+        const totals24 = entries_list.filter(entry => {
 
           return ts - new Date(entry.ts).getTime() < 24 * 60 * 60 * 1000
         });
