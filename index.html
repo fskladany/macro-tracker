@@ -564,7 +564,7 @@ Changes:
       // Check if there are any entries to undo
       if (entries.length > 0) {
         // Remove the last entry
-        entries.pop();
+        entries.shift()
 
         // Save the updated entries back to localStorage
         localStorage.setItem('macroEntries', JSON.stringify(entries));
