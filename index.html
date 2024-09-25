@@ -75,9 +75,19 @@ Changes:
     }
 
     button {
-      background-color: aquamarine;
-      color: black;
+      background-color: rgb(120, 161, 149);
+      color: white;
       cursor: pointer;
+    }
+
+    button.subtle {
+      background-color: rgb(144, 169, 162);
+      color:rgb(82, 79, 79);
+ 
+      cursor: pointer;
+      margin: auto;
+      width: 48%;
+      margin-left: 1%;
     }
 
     table {
@@ -174,12 +184,12 @@ Changes:
     <label for="comment">Comment</label>
     <textarea id="comment" placeholder="Add a comment..."></textarea>
 
-    <button onclick="pasteEntries()">Load ...</button>
-    <button onclick="getEntriesJSON()">Get entries</button>
+    <button class="subtle" onclick="pasteEntries()">Load ...</button>
+    <button class="subtle" onclick="getEntriesJSON()">Get entries</button>
 
   </div>
 
-  <div id="historyWindowParent" class="draggable sidebar" style="top:5%; left:1%">
+  <div id="historyWindowParent" class="draggable sidebar" >
     <h3 style="float:left">History</h3>
     <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
     <label for="allHistoryChk">all history</label>
@@ -199,7 +209,7 @@ Changes:
     </div>
   </div>
 
-  <div id="dayListOverviewParent" class="draggable container" style="left: 886px; top: 459px; margin-right: 60px;">
+  <div id="dayListOverviewParent" class="draggable sidebar" >
     <h3>Day overview</h3>
 
     <div id="dayListOverview">
@@ -211,7 +221,7 @@ Changes:
     </div>
   </div>
 
-  <div id="todaySumWindow" class="draggable sidebar" style="left: 899px; top: 32px;">
+  <div id="todaySumWindow" class="draggable sidebar">
 
     <h4>24 hour Totals</h4>
     <div class="totals24">
@@ -226,7 +236,6 @@ Changes:
       <div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>
       <div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
       <div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
-      <div class="total-item">Mass: <span id="totalWeight"></span>g</div>
       <div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
 
     </div>
@@ -440,12 +449,6 @@ Changes:
 
         // Calculate a more accurate weight using the approximations
         totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
-
-        // Update the sidebar with the totals
-        document.getElementById('totalCarbs').textContent = totalCarbs.toFixed(0);
-        document.getElementById('totalProtein').textContent = totalProtein.toFixed(0);
-        document.getElementById('totalFat').textContent = totalFat.toFixed(0);
-        document.getElementById('totalWeight').textContent = totalWeight.toFixed(0);
 
         updateTotalWithThreshold('totalCalories', totalCalories, dailyGoals.calories);
         updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
@@ -664,14 +667,13 @@ Changes:
         const prot = row.insertCell()
         prot.textContent = totals.protein.toFixed(0);
         if (totals.protein >= dailyGoals.protein) {
-          prot.style = "background-color:red; color:white"
-
+          prot.textContent = "✅";
         }
 
         const calories = row.insertCell()
         calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
         if (totals.calories >= dailyGoals.calories) {
-          calories.style = "background-color:red; color:white"
+          calories.textContent = "✅";
         }
       });
 
