@@ -361,6 +361,9 @@ Changes:
             let user_date = prompt("Change date to: (YYYY-MM-DD HH:SS)", long_date);
 
             var new_ts = new Date(user_date).getTime();
+            if (user_date == null) {
+              return;
+            }
             if (isNaN(new_ts)) {
               alert("invalid date");
               return;
