@@ -1,0 +1,24 @@
+
+.draggable {
+    background-color: #BBB;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    z-index: 10;
+    resize: both;
+    overflow: auto;
+    max-width: 100%;
+    max-height: 90vh;
+    min-width: 300px;
+    min-height: 200px;
+}
+
+.draggable h1,
+.draggable h2,
+.draggable h3,
+.draggable h4 {
+    margin-top: 0;
+    margin-bottom: 0;
+
+}

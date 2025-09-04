@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-<html lang="en"><!-- 
-TODO:
-1.1 provide day selector
-4. Organize ingredients into meal numbers [breakfast, lunch, lunch2, dinnner]
-
-Changes:
-
--->
+<html lang="en">
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Macro Tracker</title>
+
+  <link rel="stylesheet" href="ui-node.css">
+  <link rel="stylesheet" href="index-overlay.css">
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -36,29 +33,6 @@ Changes:
       /* Adjust based on your layout */
     }
 
-    .draggable {
-      background-color: #BBB;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      position: absolute;
-      z-index: 10;
-      resize: both;
-      overflow: auto;
-      max-width: 100%;
-      max-height: 90vh;
-      min-width: 300px;
-      min-height: 200px;
-    }
-
-    .draggable h1,
-    .draggable h2,
-    .draggable h3,
-    .draggable h4 {
-      margin-top: 0;
-      margin-bottom: 0;
-
-    }
 
     input,
     button,
@@ -82,8 +56,8 @@ Changes:
 
     button.subtle {
       background-color: rgb(144, 169, 162);
-      color:rgb(82, 79, 79);
- 
+      color: rgb(82, 79, 79);
+
       cursor: pointer;
       margin: auto;
       width: 48%;
@@ -153,6 +127,40 @@ Changes:
       font-size: 26px;
     }
   </style>
+  <script src="Permission.js"></script> 
+  <script src="ui-node.js"></script>
+  <script src="key-bindings.js"></script> 
+  <script src="ingredients.js"></script>
+  <script src="macro-tracker.js"></script>
+  <script src="ui-node.js"></script>
+  <script src="key-bindings.js"></script>
+ 
+   <script>
+
+
+
+    // Call this function on page load to populate the select dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        window.MacroTracker.LoadFoodItemTemplates();
+              // Initial table and totals update
+      window.MacroTracker.displayHistoryTable();
+      window.MacroTracker.updateDailyTotals();
+
+      window.MacroTracker.DisplayDailyTotals();
+      window.KeyboardPermission.SetKeyboardEvents();
+
+      window.UiNode.dragElement(document.getElementById("historyWindow"));
+  
+      window.UiNode.dragElement(document.getElementById("todaySumWindow"));
+      window.UiNode.dragElement(document.getElementById("dayListOverviewParent"));
+
+ 
+
+    // Activate the drag function for the draggable elements
+
+    });
+
+  </script>
 </head>
 
 <body>
@@ -162,14 +170,14 @@ Changes:
 
     <label for="templateSelect" style="float: left">Choose a template:</label>
     <label style="float: right;" for="multiplier">Amount:</label>
-    <select id="templateSelect" style="float: left;width:70%; left:0;" onchange="handleFoodItemSelection()">
-      <option value="">Select a template...</option>
+    <select id="templateSelect" style="float: left;width:70%; left:0;" onchange="window.MacroTracker.handleFoodItemSelection()">
+      <option value="">Manual template...</option>
     </select>
 
     <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
-      onchange="handleFoodItemSelection(true)" value="0.5">
-    <button onclick="addEntry()">Add Entry</button>
-    <button onclick="undoLastEntry()">Undo Last Entry</button>
+      onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
+    <button onclick="window.MacroTracker.AddEntry()">🐎 (Commute through food)</button>
+    <button onclick="window.MacroTracker.UndoLastEntry()">Undo Last Entry</button>
 
 
     <label for="fat">Fat (g)</label>
@@ -184,14 +192,14 @@ Changes:
     <label for="comment">Comment</label>
     <textarea id="comment" placeholder="Add a comment..."></textarea>
 
-    <button class="subtle" onclick="pasteEntries()">Load ...</button>
-    <button class="subtle" onclick="getEntriesJSON()">Get entries</button>
+    <button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
+    <button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
 
   </div>
 
   <div id="historyWindowParent" class="draggable sidebar" >
     <h3 style="float:left">History</h3>
-    <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
+    <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="window.MacroTracker.displayHistoryTable()">
     <label for="allHistoryChk">all history</label>
     <div id="historyWindow">
       <table id="historyEntries">
@@ -242,487 +250,7 @@ Changes:
 
   </div>
 
-  <script>
-    // Check for Local Storage support
-    const templates = {
-      
-      _1:    { name: "--- protein ---", servingSize: 0 },
-      egg:     { name: 'egg', carbs: 0.7, protein: 12.6, fat: 9.6,  servingSize: 50 },
-      chicken: { name: 'chicken', carbs: 0.3, protein: 31, fat: 3 },
-      fish:    { name: 'fish', fat: 3, protein: 17.1, carbs: 0.16, servingSize: 170,  },
-      ham:     { name: 'ham (Hyza)', fat: 19.1, carbs: 2, protein: 11.3},
-       
-      _2:    { name: "--- fat ---", servingSize: 0 },
-      sausage:   { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
-      cheddar:   { name: 'cheddar (Labas)', fat: 31, protein: 25, servingSize: 30},
-
-      _3:    { name: "--- carbs ---", servingSize: 0 },
-      potato:    { name: 'potato', carbs: 20, protein: 2.6, fat: 0.4, },
-      oats:      { name: 'oats', carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
-      rice:      { name: 'rice raw (Máyna)', carbs: 77, protein: 8, fat: 0.3 },
-      bread:     { name: 'bread (Vamex)', carbs: 41.5, protein: 8.3, fat: 1.3, servingSize: 60 },
-
-      fries:         { name: 'french fries', carbs: 20, protein: 3.5, fat: 14.8,  },
-      breadRoll:     { name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50 },
-      pasta:         { name: "pasta (generic)", fat: 1.5, protein: 13, carbs: 75.3 },
-
-      apple:      { name: 'apple', carbs: 13.8, protein: 0.3, servingSize: 140 },
-      banana:     { name: 'banana', carbs: 23, protein: 1.1, fat: 0.3,  servingSize: 120 },
-
-
-      _4:     { name: "--- side dishes ---", servingSize: 0 },
-      porkSauce:   { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
-      butter:      { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
-
-
-
-      // Add more templates as needed
-    };
-    const dailyGoals = {
-      carbs: 320, // Example goal
-      protein: 160, // Example goal
-      fat: 60, // Example goal
-      calories: 2500
-    };
-
-
-    if (typeof (Storage) !== "undefined") {
-
-      // Function to add an entry
-      function addEntry() {
-        const carbs = parseFloat(document.getElementById('carbs').value) || 0;
-        const protein = parseFloat(document.getElementById('protein').value) || 0;
-        const fat = parseFloat(document.getElementById('fat').value) || 0;
-        const comment = document.getElementById('comment').value;
-        const date = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-        const ts = new Date().getTime();
-        // Create entry object
-
-        const entry = { ts, carbs, protein, fat, comment };
-
-        // Get existing entries from local storage or initialize an empty array if none exist
-        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-        entries.push(entry); // Add new entry to array
-
-        // Save back to local storage
-        localStorage.setItem('macroEntries', JSON.stringify(entries));
-
-        // Update the table and totals
-        displayHistoryTable();
-        updateDailyTotals();
-      }
-
-      // Function to update the table with entries
-      function displayHistoryTable() {
-        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-        entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-
-        let whistle_index = entries.length;
-        entries.forEach ((entry) => {
-          whistle_index--;
-          entry['index'] = whistle_index;
-        })
-        // Save back to local storage
-        localStorage.setItem('macroEntries', JSON.stringify(entries));
-
-        const historyTable = document.getElementById('historyEntries');
-
-        // Sort entries by date in descending order
-        entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-
-        // Clear all rows except the header
-        historyTable.innerHTML = historyTable.rows[0].innerHTML;
-
-        // Add each entry to the table
-
-        entries.forEach(entry => {
-
-          const row = historyTable.insertRow();
-          delete entry["fiber"] // legacy data workaround
-          delete entry["date"]
-          // Convert entry object to an array of its values
-          let tsdate = new Date(entry.ts)
-          var d_date;
-          var long_date = new Date(entry.ts).toLocaleString();
-
-          if (new Date().getTime() - entry.ts < 24 * 60 * 60 * 1000) {
-            const pad = num => ("0" + num).slice(-2);
-            let hours = tsdate.getHours()
-            let minutes = tsdate.getMinutes()
-            d_date = pad(hours) + ":" + pad(minutes) 
-          } else if (document.getElementById('allHistoryChk').checked == false) {
-              return;
-          } else {
-            d_date = long_date;
-          }
-            
-          entry = { date: d_date, ...entry }
-          index = entry['index'];
-          
-          
-          
-          // Iterate over each entry value
-          const cell = row.insertCell();
-          cell.textContent = "#" + index;
-          cell.id="hrow-" + entry['ts']
-
-          cell.onclick= function() {
-            let user_date = prompt("Change date to: (YYYY-MM-DD HH:SS)", long_date);
-
-            var new_ts = new Date(user_date).getTime();
-            if (user_date == null) {
-              return;
-            }
-            if (isNaN(new_ts)) {
-              alert("invalid date");
-              return;
-            } 
-
-            const meal_number = entries.filter(entry=>{return entry.ts== new_ts;}).length;
-
-            if (meal_number > 0 ) {
-              alert("conflicting time!");
-              return;
-            }
-
-            var found_edit = false;
-            const updated_entries = entries.filter(static_entry => {
-              const filter_opt = 'hrow-' + static_entry['ts']
-              if (filter_opt == this['id']){ alert('found'); found_edit=true; }
-              return filter_opt != this['id']
-            })
-            if (found_edit){
-              updated_entries.push({ ...entry,  date: d_date, ts: new_ts,})
-              localStorage.setItem('macroEntries', JSON.stringify(updated_entries));
-              displayHistoryTable();
-            }  
-
-          }
-
-        
-        delete entry["index"]
-        delete entry["ts"]
-        const entryValues = Object.values(entry);
-          
-          entryValues.forEach((value, index) => {
-            const cell = row.insertCell();
-            // Check if the current cell is not the comment cell
-            // Assuming comment is the last in the entry object, hence the last index
-            if (index < entryValues.length - 1 && index != 0) {
-              cell.textContent = value + 'g'; // Add 'g' for gram
-            } else {
-              cell.textContent = value; // No 'g' for the comment
-            }
-          });
-        });
-      }
-
-      // Function to update the daily stats in the sidebar
-      function updateDailyTotals() {
-        const today = new Date().toISOString().split('T')[0];
-        const entries_list = JSON.parse(localStorage.getItem('macroEntries')) || [];
-        let totalCarbs = 0, totalProtein = 0, totalFat = 0;
-        let totalWeight = 0; // More accurate total weight
-        let totalCalories = 0; // Total calories
-
-
-        const ts = new Date().getTime();
-        const todaysEntries = entries_list.filter(entry => {
-          return new Date(entry.ts).toISOString().split('T')[0] == today
-        });
-
-        const totals24 = entries_list.filter(entry => {
-
-          return ts - new Date(entry.ts).getTime() < 24 * 60 * 60 * 1000
-        });
-
-
-        // Calculate total weight and calories
-        todaysEntries.forEach(entry => {
-          totalCarbs += parseFloat(entry.carbs);
-          totalProtein += parseFloat(entry.protein);
-          totalFat += parseFloat(entry.fat);
-          // Calculate calories
-          totalCalories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9;
-        });
-
-
-        // Calculate a more accurate weight using the approximations
-        totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
-
-        updateTotalWithThreshold('totalCalories', totalCalories, dailyGoals.calories);
-        updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
-        updateTotalWithThreshold('totalProtein', totalProtein, dailyGoals.protein);
-        updateTotalWithThreshold('totalFat', totalFat, dailyGoals.fat);
-
-        totalWeight = 0
-        totalCalories = 0
-        totalCarbs = 0
-        totalProtein = 0
-        totalFat = 0
-        // Calculate total weight and calories, 24h
-        totals24.forEach(entry => {
-          totalCarbs += parseFloat(entry.carbs);
-          totalProtein += parseFloat(entry.protein);
-          totalFat += parseFloat(entry.fat);
-          // Calculate calories
-          totalCalories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9;
-        });
-
-        totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
-
-        document.getElementById('t24weight').textContent = totalWeight.toFixed(0);
-        //updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
-        document.getElementById('t24calories').textContent = totalCalories.toFixed(0);
-
-        DisplayDailyTotals();
-      }
-
-
-      // Function to update the total with a threshold
-      function updateTotalWithThreshold(elementId, total, goal) {
-        const element = document.getElementById(elementId);
-        element.textContent = total.toFixed(0);
-        const percentage = (total / goal) * 100;
-
-        // Reset class
-        element.className = '';
-
-        // Change color based on the percentage of the goal reached
-        if (percentage >= 100) {
-          element.classList.add('goal-reached');
-        }
-        else if (percentage >= 50) {
-          element.classList.add('halfway-there');
-        }
-
-
-      }
-
-      // Function to fill the form with a template
-      function makeFoodItemTemplate(templateKey) {
-        const nutrients = templates[templateKey];
-        const multiplierInput = document.getElementById('multiplier').value;
-
-        const multiplier = multiplierInput || (nutrients.servingSize || 100) / 100;
-        if (nutrients) {
-          document.getElementById('carbs').value = (nutrients.carbs * multiplier).toFixed(2) || '';
-          document.getElementById('protein').value = (nutrients.protein * multiplier).toFixed(2) || '';
-          document.getElementById('fat').value = (nutrients.fat * multiplier).toFixed(2) || '';
-          document.getElementById('comment').value = `${nutrients.name} (${(100 * multiplier).toFixed(0)}g)`;
-        }
-      }
-
-      // Function to handle the template selection and multiplier input
-      function handleFoodItemSelection(bypass = false) {
-        const templateKey = document.getElementById('templateSelect').value;
-
-        var multiplier = templates[templateKey].servingSize
-        if (!multiplier && multiplier != 0) multiplier = 100;
-        if (bypass === true) {
-          multiplier = document.getElementById('multiplier').value;
-        } else {
-          document.getElementById('multiplier').value = multiplier / 100;
-        }
-        if (multiplier != 0) {
-
-
-          makeFoodItemTemplate(templateKey, multiplier);
-        }
-      }
-
-
-      // Function to make elements draggable
-      function dragElement(element) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        const dragMouseDown = function (e) {
-          e = e || window.event;
-          e.preventDefault();
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          document.onmouseup = closeDragElement;
-          document.onmousemove = elementDrag;
-        }
-
-        const elementDrag = function (e) {
-          e = e || window.event;
-          e.preventDefault();
-          pos1 = pos3 - e.clientX;
-          pos2 = pos4 - e.clientY;
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          element.style.top = (element.offsetTop - pos2) + "px";
-          element.style.left = (element.offsetLeft - pos1) + "px";
-        }
-
-        const closeDragElement = function () {
-          document.onmouseup = null;
-          document.onmousemove = null;
-        }
-
-        if (document.getElementById(element.id + "Header")) {
-          document.getElementById(element.id + "Header").onmousedown = dragMouseDown;
-        } else {
-          element.onmousedown = dragMouseDown;
-        }
-      }
-
-      // Activate the drag function for the draggable elements
-
-      dragElement(document.getElementById("historyWindow"));
-      dragElement(document.getElementById("todaySumWindow"));
-      dragElement(document.getElementById("dayListOverviewParent"));
-      // Initial table and totals update
-      displayHistoryTable();
-      updateDailyTotals();
-
-    } else {
-      alert("Sorry, your browser does not support Web Storage...");
-    }
-
-    // Function to populate the template select dropdown
-    function LoadFoodItemTemplates() {
-      const select = document.getElementById('templateSelect');
-      Object.keys(templates).forEach(key => {
-        const option = document.createElement('option');
-        option.value = key;
-        var multiplier = templates[key].servingSize
-
-        if (multiplier == 0) option.disabled = true
-        if (!multiplier && multiplier != 0) multiplier = 100;
-        option.textContent = templates[key].name
-        if (multiplier != 0) {
-          option.textContent += ' (' + multiplier + 'g)';
-        }
-        select.appendChild(option);
-      });
-    }
-
-    // Call this function on page load to populate the select dropdown
-    window.addEventListener('load', LoadFoodItemTemplates);
-
-
-    function undoLastEntry() {
-      // Get the current list of entries from localStorage
-      let entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-
-      // Check if there are any entries to undo
-      if (entries.length > 0) {
-        // Remove the last entry
-        entries.shift()
-
-        // Save the updated entries back to localStorage
-        localStorage.setItem('macroEntries', JSON.stringify(entries));
-
-        // Update the table and totals to reflect the change
-        displayHistoryTable();
-        updateDailyTotals();
-      } else {
-        alert("No entries to undo.");
-      }
-    }
-
-    function calculateDailyTotals(entries) {
-      const dailyTotals = {};
-      entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-      entries.forEach(entry => {
-        const { ts, carbs, protein, fat } = entry;
-        const date = new Date(ts).toISOString().split('T')[0]
-        // Initialize the object for the date if it doesn't exist
-        if (!dailyTotals[date]) {
-          dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, calories: 0, weight: 0 };
-        }
-        // Add checks to ensure the properties are numbers
-        dailyTotals[date].carbs += Number(carbs) || 0;
-        dailyTotals[date].protein += Number(protein) || 0;
-        dailyTotals[date].fat += Number(fat) || 0;
-        // Calculate calories and weight
-        dailyTotals[date].calories += ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
-        dailyTotals[date].weight += (Number(carbs) || 0) + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
-      });
-
-      return dailyTotals;
-    }
-
-
-    function makeDayOverviewTable(dailyTotals) {
-      const table = document.createElement('table');
-      const thead = table.createTHead();
-      const headerRow = thead.insertRow();
-      const headers = ['Date', 'Mass (sum g)', 'Protein (g)', 'Calories (kcal)'];
-
-      headers.forEach(headerText => {
-        const header = document.createElement('th');
-        header.textContent = headerText;
-        headerRow.appendChild(header);
-      });
-
-      const tbody = table.createTBody();
-
-      Object.keys(dailyTotals).forEach(date => {
-        const row = tbody.insertRow();
-        const totals = dailyTotals[date];
-        row.insertCell().textContent = date;
-        const caloreis = row.insertCell().textContent = (totals.carbs * 1 + totals.fat * 1.1 + totals.protein * 1.35).toFixed(0);
-        const prot = row.insertCell()
-        prot.textContent = totals.protein.toFixed(0);
-        if (totals.protein >= dailyGoals.protein) {
-          prot.textContent = "✅";
-        }
-
-        const calories = row.insertCell()
-        calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
-        if (totals.calories >= dailyGoals.calories) {
-          calories.textContent = "✅";
-        }
-      });
-
-      return table;
-    }
-
-    function DisplayDailyTotals() {
-      const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-      const dailyTotals = calculateDailyTotals(entries);
-      const dayOverviewTable = makeDayOverviewTable(dailyTotals);
-      const dayListOverview = document.getElementById('dayListOverview');
-      dayListOverview.innerHTML = ''; // Clear any existing table
-      dayListOverview.appendChild(dayOverviewTable);
-    }
-
-    function pasteEntries() {
-      let entries_string = prompt("Paste entries JSON", "");
-      if (entries_string != null) {
-        const entries = JSON.parse(entries_string) || [];
-        // Save back to local storage
-        localStorage.setItem('macroEntries', JSON.stringify(entries));
-
-      }
-      displayHistoryTable();
-      updateDailyTotals();
-    }
-
-    function getEntriesJSON() {
-      var entries = localStorage.getItem('macroEntries');
-      // Copy the text inside the text field
-      navigator.clipboard.writeText(entries);
-
-      alert("Copied the text: " + entries);
-
-    }
-    document.getElementById('addEntryWindow').addEventListener('keydown', function (event) {
-      if (event.key === 'Enter') {
-        addEntry();
-      }
-    });
-
-    DisplayDailyTotals();
-
-  </script>
-
-
-
 
 
 </body>
-
 </html>
