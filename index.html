@@ -75,9 +75,19 @@ Changes:
     }
 
     button {
-      background-color: aquamarine;
-      color: black;
+      background-color: rgb(120, 161, 149);
+      color: white;
       cursor: pointer;
+    }
+
+    button.subtle {
+      background-color: rgb(144, 169, 162);
+      color:rgb(82, 79, 79);
+ 
+      cursor: pointer;
+      margin: auto;
+      width: 48%;
+      margin-left: 1%;
     }
 
     table {
@@ -106,7 +116,6 @@ Changes:
       margin-bottom: 10px;
     }
 
-    /* Adjust initial positions for the draggable windows */
     #addEntryWindow {
       width: 450px;
     }
@@ -175,12 +184,12 @@ Changes:
     <label for="comment">Comment</label>
     <textarea id="comment" placeholder="Add a comment..."></textarea>
 
-    <button onclick="pasteEntries()">Load ...</button>
-    <button onclick="getEntriesJSON()">Get entries</button>
+    <button class="subtle" onclick="pasteEntries()">Load ...</button>
+    <button class="subtle" onclick="getEntriesJSON()">Get entries</button>
 
   </div>
 
-  <div id="historyWindowParent" class="draggable sidebar" style="top:5%; left:1%">
+  <div id="historyWindowParent" class="draggable sidebar" >
     <h3 style="float:left">History</h3>
     <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="displayHistoryTable()">
     <label for="allHistoryChk">all history</label>
@@ -200,7 +209,7 @@ Changes:
     </div>
   </div>
 
-  <div id="dayListOverviewParent" class="draggable container" style="left: 886px; top: 459px; margin-right: 60px;">
+  <div id="dayListOverviewParent" class="draggable sidebar" >
     <h3>Day overview</h3>
 
     <div id="dayListOverview">
@@ -212,7 +221,7 @@ Changes:
     </div>
   </div>
 
-  <div id="todaySumWindow" class="draggable sidebar" style="left: 899px; top: 32px;">
+  <div id="todaySumWindow" class="draggable sidebar">
 
     <h4>24 hour Totals</h4>
     <div class="totals24">
@@ -227,7 +236,6 @@ Changes:
       <div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>
       <div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
       <div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
-      <div class="total-item">Mass: <span id="totalWeight"></span>g</div>
       <div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
 
     </div>
@@ -237,30 +245,34 @@ Changes:
   <script>
     // Check for Local Storage support
     const templates = {
-      _1: { name: "--- carbs ---", servingSize: 0 },
-      potato: { carbs: 20, protein: 2.6, fat: 0.4, fiber: 2.3, name: 'potato' },
-      oats: { name: "oats", carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
-      rice: { carbs: 77, protein: 8, fat: 0.3, name: 'rice (Máyna, uncooked)' },
-      bread: { carbs: 41.5, protein: 8.3, fat: 1.3, name: 'bread (Vamex)', servingSize: 60 },
+      
+      _1:    { name: "--- protein ---", servingSize: 0 },
+      egg:     { name: 'egg', carbs: 0.7, protein: 12.6, fat: 9.6,  servingSize: 50 },
+      chicken: { name: 'chicken', carbs: 0.3, protein: 31, fat: 3 },
+      fish:    { name: 'fish', fat: 3, protein: 17.1, carbs: 0.16, servingSize: 170,  },
+      ham:     { name: 'ham (Hyza)', fat: 19.1, carbs: 2, protein: 11.3},
+       
+      _2:    { name: "--- fat ---", servingSize: 0 },
+      sausage:   { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
+      cheddar:   { name: 'cheddar (Labas)', fat: 31, protein: 25, servingSize: 30},
 
-      frenchFries: { carbs: 20, protein: 3.5, fat: 14.8, fiber: 3.8, name: 'french fries' },
-      breadRoll: { name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50 },
-      pasta: { name: "pasta (generic)", fat: 1.5, protein: 13, carbs: 75.3 },
+      _3:    { name: "--- carbs ---", servingSize: 0 },
+      potato:    { name: 'potato', carbs: 20, protein: 2.6, fat: 0.4, },
+      oats:      { name: 'oats', carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
+      rice:      { name: 'rice raw (Máyna)', carbs: 77, protein: 8, fat: 0.3 },
+      bread:     { name: 'bread (Vamex)', carbs: 41.5, protein: 8.3, fat: 1.3, servingSize: 60 },
 
-      apple: { carbs: 13.8, fiber: 2.4, protein: 0.3, fat: 0.2, servingSize: 250, name: 'apple' },
-      banana: { carbs: 23, protein: 1.1, fat: 0.3, fiber: 2.6, name: 'banana', servingSize: 154 },
+      fries:         { name: 'french fries', carbs: 20, protein: 3.5, fat: 14.8,  },
+      breadRoll:     { name: "bread roll (Vamex)", fat: 5, protein: 10.8, carbs: 67.7, servingSize: 50 },
+      pasta:         { name: "pasta (generic)", fat: 1.5, protein: 13, carbs: 75.3 },
 
-      _2: { name: "--- protein ---", servingSize: 0 },
-      egg: { carbs: 0.7, protein: 12.6, fat: 9.6, fiber: 0.1, name: 'egg', servingSize: 50 },
-      chicken: { carbs: 0.3, protein: 31, fat: 3, fiber: 0.1, name: 'chicken' },
-      fish: { fat: 3, protein: 17.1, carbs: 0.16, fiber: 0.05, servingSize: 170, name: 'fish' },
+      apple:      { name: 'apple', carbs: 13.8, protein: 0.3, servingSize: 140 },
+      banana:     { name: 'banana', carbs: 23, protein: 1.1, fat: 0.3,  servingSize: 120 },
 
-      _3: { name: "--- fats ---", servingSize: 0 },
-      sausage: { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
 
-      _4: { name: "--- side dishes ---", servingSize: 0 },
-      porkSauce: { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
-      butter: { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
+      _4:     { name: "--- side dishes ---", servingSize: 0 },
+      porkSauce:   { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
+      butter:      { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
 
 
 
@@ -330,28 +342,67 @@ Changes:
           delete entry["date"]
           // Convert entry object to an array of its values
           let tsdate = new Date(entry.ts)
-          var ndate = 0;
+          var d_date;
+          var long_date = new Date(entry.ts).toLocaleString();
 
           if (new Date().getTime() - entry.ts < 24 * 60 * 60 * 1000) {
             const pad = num => ("0" + num).slice(-2);
-            let hours = tsdate.getHours(),
-              minutes = tsdate.getMinutes()
-            ndate = pad(hours) + ":" + pad(minutes)
+            let hours = tsdate.getHours()
+            let minutes = tsdate.getMinutes()
+            d_date = pad(hours) + ":" + pad(minutes) 
+          } else if (document.getElementById('allHistoryChk').checked == false) {
+              return;
           } else {
-            if (document.getElementById('allHistoryChk').checked == false) {
+            d_date = long_date;
+          }
+            
+          entry = { date: d_date, ...entry }
+          index = entry['index'];
+          
+          
+          
+          // Iterate over each entry value
+          const cell = row.insertCell();
+          cell.textContent = "#" + index;
+          cell.id="hrow-" + entry['ts']
+
+          cell.onclick= function() {
+            let user_date = prompt("Change date to: (YYYY-MM-DD HH:SS)", long_date);
+
+            var new_ts = new Date(user_date).getTime();
+            if (user_date == null) {
+              return;
+            }
+            if (isNaN(new_ts)) {
+              alert("invalid date");
+              return;
+            } 
+
+            const meal_number = entries.filter(entry=>{return entry.ts== new_ts;}).length;
+
+            if (meal_number > 0 ) {
+              alert("conflicting time!");
               return;
             }
 
-            ndate = new Date(entry.ts).toLocaleString();
+            var found_edit = false;
+            const updated_entries = entries.filter(static_entry => {
+              const filter_opt = 'hrow-' + static_entry['ts']
+              if (filter_opt == this['id']){ alert('found'); found_edit=true; }
+              return filter_opt != this['id']
+            })
+            if (found_edit){
+              updated_entries.push({ ...entry,  date: d_date, ts: new_ts,})
+              localStorage.setItem('macroEntries', JSON.stringify(updated_entries));
+              displayHistoryTable();
+            }  
+
           }
-          entry = { date: ndate, ...entry }
-          index = entry['index'];
-          delete entry["index"]
-          delete entry["ts"]
-          const entryValues = Object.values(entry);
-          // Iterate over each entry value
-          const cell = row.insertCell();
-          cell.textContent = index;
+
+        
+        delete entry["index"]
+        delete entry["ts"]
+        const entryValues = Object.values(entry);
           
           entryValues.forEach((value, index) => {
             const cell = row.insertCell();
@@ -398,12 +449,6 @@ Changes:
 
         // Calculate a more accurate weight using the approximations
         totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
-
-        // Update the sidebar with the totals
-        document.getElementById('totalCarbs').textContent = totalCarbs.toFixed(0);
-        document.getElementById('totalProtein').textContent = totalProtein.toFixed(0);
-        document.getElementById('totalFat').textContent = totalFat.toFixed(0);
-        document.getElementById('totalWeight').textContent = totalWeight.toFixed(0);
 
         updateTotalWithThreshold('totalCalories', totalCalories, dailyGoals.calories);
         updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
@@ -622,14 +667,13 @@ Changes:
         const prot = row.insertCell()
         prot.textContent = totals.protein.toFixed(0);
         if (totals.protein >= dailyGoals.protein) {
-          prot.style = "background-color:red; color:white"
-
+          prot.textContent = "✅";
         }
 
         const calories = row.insertCell()
         calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
         if (totals.calories >= dailyGoals.calories) {
-          calories.style = "background-color:red; color:white"
+          calories.textContent = "✅";
         }
       });
 
