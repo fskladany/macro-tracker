@@ -1,9 +1,22 @@
-(function(window, document) {
-// Function to make elements draggable
+(function (window, document) {
+     // Function to make elements draggable
      function dragElement(element) {
           let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
           const dragMouseDown = function (e) {
                e = e || window.event;
+               // Disable dragging if clicked on button, input[text|number], or select dropdown
+               const target = e.target;
+               const tagName = target.tagName.toLowerCase();
+               const type = target.type ? target.type.toLowerCase() : '';
+               console.log('Clicked element:', tagName, type);
+               if (
+                    tagName === 'button' ||
+                    (tagName === 'input' && (type === 'text' || type === 'number')) ||
+                    tagName === 'select'
+               ) {
+                    return; // do nothing, prevent drag
+               }
+
                e.preventDefault();
                pos3 = e.clientX;
                pos4 = e.clientY;
@@ -33,9 +46,9 @@
                element.onmousedown = dragMouseDown;
           }
      }
-     
+
      window.UiNode = {
           dragElement
      };
-     
+
 })(window, document);
