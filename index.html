@@ -63,7 +63,7 @@
 
       cursor: pointer;
       margin: auto;
-      width: 48%;
+      width: 31%;
       margin-left: 1%;
     }
 
@@ -123,7 +123,7 @@
 
     // Call this function on page load to populate the select dropdown
     document.addEventListener('DOMContentLoaded', function() {
-        window.MacroTracker.LoadFoodItemTemplates();
+      window.MacroTracker.LoadFoodItemTemplates();
               // Initial table and totals update
       window.MacroTracker.displayHistoryTable();
       window.MacroTracker.updateDailyTotals();
@@ -159,9 +159,7 @@
 
     <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
       onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
-    <button onclick="window.MacroTracker.AddEntry()">🐎 (Commute through food)</button>
-    <button onclick="window.MacroTracker.UndoLastEntry()">Undo Last Entry</button>
-
+    <button onclick="window.MacroTracker.AddEntry()"> 🐎 </button>
 
     <label for="fat">Fat (g)</label>
     <input type="number" id="fat" placeholder="Fat (g)" value="0">
@@ -177,6 +175,8 @@
 
     <button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
     <button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
+    <button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Add</button>
+
 
   </div>
 
