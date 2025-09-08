@@ -24,16 +24,14 @@
       align-items: center;
       height: 100vh;
       overflow: hidden;
-      background-color: #888;
+      background-color: #ccc;
       /* Prevent scrolling */
     }
 
     .main-container {
       position: relative;
-      /* Container for draggable elements */
       width: 100%;
       max-width: 1200px;
-      /* Adjust based on your layout */
     }
 
 
@@ -45,20 +43,20 @@
       padding: 10px;
       margin: 10px 0;
       border-radius: 5px;
-      border: 1px solid #ddd;
+      border: 2px solid #ddd3;
       background-color: #CCC;
       box-sizing: border-box;
       font-size: 20px;
     }
 
     button {
-      background-color: rgb(120, 161, 149);
+      background-color:rgb(255 216 144 / 84%);
       color: white;
       cursor: pointer;
     }
 
     button.subtle {
-      background-color: rgb(144, 169, 162);
+      background-color: rgb(229 226 150 / 33%);
       color: rgb(82, 79, 79);
 
       cursor: pointer;
@@ -77,11 +75,11 @@
     td {
       text-align: left;
       padding: 8px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #a0a18480;
     }
 
     th {
-      background-color: #f2f2f2;
+      background-color: #cccfb857;
     }
 
     .totals,
@@ -131,8 +129,7 @@
       window.MacroTracker.DisplayDailyTotals();
       window.KeyboardPermission.SetKeyboardEvents();
 
-      window.UiNode.dragElement(document.getElementById("historyWindow"));
-  
+      window.UiNode.dragElement(document.getElementById("historyWindowParent"));
       window.UiNode.dragElement(document.getElementById("addEntryWindow"));
       window.UiNode.dragElement(document.getElementById("sumDigestionWindow"));
       window.UiNode.dragElement(document.getElementById("dayListOverviewParent"));
@@ -171,7 +168,7 @@
     <input type="number" id="protein" placeholder="Protein (g)" value="0">
 
     <label for="comment">Comment</label>
-    <textarea id="comment" placeholder="Add a comment..."></textarea>
+    <textarea id="comment" placeholder="Describe food nuance..."></textarea>
 
     <button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
     <button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
@@ -214,14 +211,14 @@
 
   <div id="sumDigestionWindow" class="draggable sidebar">
 
-    <h4>24 hour Totals</h4>
+    <h2>24 hour Window</h2>
     <div class="totals24">
       <div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
       <div class="total-item">Mass (24h): <span id="t24weight">693</span>g</div>
 
     </div>
 
-    <h4>Today's Totals</h4>
+    <h2>Today's Totals</h2>
     <div class="totals">
 
       <div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>

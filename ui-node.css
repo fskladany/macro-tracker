@@ -1,24 +1,26 @@
 
 .draggable {
-    background-color: #BBB;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    z-index: 10;
-    resize: both;
-    overflow: auto;
-    max-width: 100%;
-    max-height: 90vh;
-    min-width: 300px;
-    min-height: 200px;
+     background-color: #ffffff54;
+     padding: 20px;
+     border: 2px solid #7db0b733;
+     border-radius: 8px;
+     box-shadow: inset 17px 20px 19px 0px rgb(198 244 245 / 7%);
+     position: absolute;
+     z-index: 10;
+     resize: both;
+     overflow: auto;
+     max-width: 100%;
+     max-height: 90vh;
+     min-width: 300px;
+     min-height: 200px;
+     backdrop-filter: blur(4px) contrast(0.3);
 }
 
 .draggable h1,
 .draggable h2,
 .draggable h3,
 .draggable h4 {
-    margin-top: 0;
-    margin-bottom: 0;
+     margin-top: 0;
+     margin-bottom: 0;
 
 }
