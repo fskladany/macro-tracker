@@ -1,0 +1,23 @@
+#sumDigestionWindow {
+     top: 80px;
+     right: 10px;
+     max-width: 300px;
+}
+
+#addEntryWindow {
+     width: 450px;
+}
+
+#historyWindowParent {
+     top: 70px;
+     left: 40px;
+     width: 400px;
+
+}
+
+#dayListOverviewParent {
+     top: 600px;
+     right: 10px;
+     max-width: 300px;
+     max-height: 500px;
+}
