@@ -147,11 +147,12 @@
 <body>
 
 	<div id="addEntryWindow" class="draggable container ui-window" style="z-index: 100;">
-		<h1 style="margin-bottom:20px">Macro Tracker</h1>
-		<div class="anchor-group">
-			<div class="anchor" data-id="win-add"> ⭕ </div>
+		<div class="anchor-group anchor-up" style="float: right">
+			<div class="anchor" data-id="win-add" > 📀 </div>
+			<div class="anchor" data-id="win-add-up"> 💿 </div>
 		</div>
-		<div class="anchor anchor-up" data-id="win-add-up"> ⭕ </div>
+		<h1 style="margin-bottom:20px">Macro Tracker</h1>
+
 
 		<label for="templateSelect" style="float: left">Choose a template:</label>
 		<label style="float: right;" for="multiplier">Amount:</label>
@@ -184,7 +185,7 @@
 	</div>
 	<div id="costlyWillWindow" class="draggable ui-window oneDirectionalWindow">
 		<div class="anchor-group">
-			<div class="anchor" data-id="FWwnd"> ⭕ </div>
+			<div class="anchor" data-id="FWwnd"> 📀 </div>
 
 		</div>
 		Cost of will
@@ -193,18 +194,18 @@
 	<div id="timeWindow" class="draggable ui-window oneDirectionalWindow">
 
 		<div class="anchor-up">
-			<div class="anchor" data-id="timeWnd"> ⭕ </div>
+			<div class="anchor" data-id="timeWnd"> 💿 </div>
 		</div>
 		TimeWindow
 	</div>
 
 	<div id="historyWindowParent" class="draggable sidebar ui-window">
 		<div class="anchor-group">
-			<div class="anchor" data-id="win2"> ⭕ </div>
-			<div class="anchor" data-id="win3"> ⭕ </div>
-			<div class="anchor" data-id="win4"> ⭕ </div>
+			<div class="anchor" data-id="win2"> 📀 </div>
+			<div class="anchor" data-id="win3"> 📀 </div>
+			<div class="anchor" data-id="win4"> 📀 </div>
 		</div>
-		<div class="anchor anchor-up" data-id="win2-up"> ⭕ </div>
+		<div class="anchor anchor-up" data-id="win2-up"> 💿 </div>
 		<h3 style="float:left">History</h3>
 		<input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px"
 			onchange="window.MacroTracker.displayHistoryTable()">
@@ -226,7 +227,7 @@
 	</div>
 
 	<div id="dayListOverviewParent" class="draggable sidebar ui-window">
-		<div class="anchor anchor-up" data-id="day-list-over"> ⭕ </div>
+		<div class="anchor anchor-up" data-id="day-list-over"> 💿 </div>
 		<h3>Day overview</h3>
 
 		<div id="dayListOverview">
@@ -239,7 +240,7 @@
 	</div>
 
 	<div id="sumDigestionWindow" class="draggable sidebar ui-window">
-		<div class="anchor anchor-up" data-id="sum-digest-inup"> ⭕ </div>
+		<div class="anchor anchor-up" data-id="sum-digest-inup"> 💿 </div>
 		<h2>24 hour Window</h2>
 		<div class="totals24">
 			<div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
