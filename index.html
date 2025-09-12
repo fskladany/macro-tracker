@@ -2,235 +2,266 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Macro Tracker</title>
+	<title>Macro Tracker</title>
 
-  <link rel="stylesheet" href="ui-node.css">
-  <link rel="stylesheet" href="ui-window.css">
-  
-  <link rel="stylesheet" href="index-overlay.css">
+	<link rel="stylesheet" href="ui-construction.css">
+	<link rel="stylesheet" href="ui-window.css">
 
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f7f7f7;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      background-color: #ccc;
-      /* Prevent scrolling */
-    }
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			background-color: #f7f7f7;
+			margin: 0;
+			padding: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			overflow: hidden;
+			background-color: #ccc;
+			/* Prevent scrolling */
+		}
 
-    .main-container {
-      position: relative;
-      width: 100%;
-      max-width: 1200px;
-    }
+		.main-container {
+			position: relative;
+			width: 100%;
+			max-width: 1200px;
+		}
 
 
-    input,
-    button,
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 2px solid #ddd3;
-      background-color: #CCC;
-      box-sizing: border-box;
-      font-size: 20px;
-    }
+		input,
+		button,
+		textarea,
+		select {
+			width: 100%;
+			padding: 10px;
+			margin: 10px 0;
+			border-radius: 5px;
+			border: 2px solid #ddd3;
+			background-color: #CCC;
+			box-sizing: border-box;
+			font-size: 20px;
+		}
 
-    button {
-      background-color:rgb(255 216 144 / 84%);
-      color: white;
-      cursor: pointer;
-    }
+		button {
+			background-color: rgb(255 216 144 / 84%);
+			color: white;
+			cursor: pointer;
+		}
 
-    button.subtle {
-      background-color: rgb(229 226 150 / 33%);
-      color: rgb(82, 79, 79);
+		button.subtle {
+			background-color: rgb(229 226 150 / 33%);
+			color: rgb(82, 79, 79);
 
-      cursor: pointer;
-      margin: auto;
-      width: 31%;
-      margin-left: 1%;
-    }
+			cursor: pointer;
+			margin: auto;
+			width: 31%;
+			margin-left: 1%;
+		}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
 
-    th,
-    td {
-      text-align: left;
-      padding: 8px;
-      border-bottom: 1px solid #a0a18480;
-    }
+		th,
+		td {
+			text-align: left;
+			padding: 8px;
+			border-bottom: 1px solid #a0a18480;
+		}
 
-    th {
-      background-color: #cccfb857;
-    }
+		th {
+			background-color: #cccfb857;
+		}
 
-    .totals,
-    .totals24 {
-      margin-top: 15px;
-    }
+		.totals,
+		.totals24 {
+			margin-top: 15px;
+		}
 
-    .total-item {
-      margin-bottom: 10px;
-    }
-
-   
-
-    .goal-reached {
-      background-color: rgb(255, 0, 0);
-      color: white;
-    }
-
-    .halfway-there {
-      background-color: rgb(255, 238, 0);
-    }
-
-    .totals div,
-    .totals24 div {
-      font-size: 26px;
-    }
-  </style>
-  <script src="Permission.js"></script> 
-  <script src="ui-node.js"></script>
-  <script src="key-bindings.js"></script> 
-  <script src="ingredients.js"></script>
-  <script src="macro-tracker.js"></script>
-  <script src="ui-node.js"></script>
-  <script src="key-bindings.js"></script>
- 
-   <script>
+		.total-item {
+			margin-bottom: 10px;
+		}
 
 
 
-    // Call this function on page load to populate the select dropdown
-    document.addEventListener('DOMContentLoaded', function() {
-      window.MacroTracker.LoadFoodItemTemplates();
-              // Initial table and totals update
-      window.MacroTracker.displayHistoryTable();
-      window.MacroTracker.updateDailyTotals();
+		.goal-reached {
+			background-color: rgb(255, 0, 0);
+			color: white;
+		}
 
-      window.MacroTracker.DisplayDailyTotals();
-      window.KeyboardPermission.SetKeyboardEvents();
+		.halfway-there {
+			background-color: rgb(255, 238, 0);
+		}
 
-      window.UiNode.dragElement(document.getElementById("historyWindowParent"));
-      window.UiNode.dragElement(document.getElementById("addEntryWindow"));
-      window.UiNode.dragElement(document.getElementById("sumDigestionWindow"));
-      window.UiNode.dragElement(document.getElementById("dayListOverviewParent"));
+		.totals div,
+		.totals24 div {
+			font-size: 26px;
+		}
+	</style>
+	<script src="restraint.js"></script>
+	<script src="keyboards.js"></script>
+	<script src="ingredients.js"></script>
+	<script src="macro-distribution.js"></script>
+	<script src="fluency.js"></script>
+	<script src="relation.js"></script>
 
- 
+	<script>
 
-    // Activate the drag function for the draggable elements
 
-    });
 
-  </script>
+		// Call this function on page load to populate the select dropdown
+		document.addEventListener('DOMContentLoaded', function () {
+			window.MacroTracker.LoadFoodItemTemplates();
+			// Initial table and totals update
+			window.MacroTracker.displayHistoryTable();
+			window.MacroTracker.updateDailyTotals();
+
+			window.MacroTracker.DisplayDailyTotals();
+			window.KeyboardPermission.SetKeyboardEvents();
+
+
+			// Activate the drag function for the draggable elements
+
+			window.UiNode.dragElement(document.getElementById("historyWindowParent"));
+			window.UiNode.dragElement(document.getElementById("addEntryWindow"));
+			window.UiNode.dragElement(document.getElementById("sumDigestionWindow"));
+			window.UiNode.dragElement(document.getElementById("dayListOverviewParent"));
+			window.UiNode.dragElement(document.getElementById("costlyWillWindow"));
+			window.UiNode.dragElement(document.getElementById("timeWindow"));
+
+			loadFlows();
+
+		});
+
+
+	</script>
 </head>
 
 <body>
 
-  <div id="addEntryWindow" class="draggable container" style="z-index: 100;">
-    <h1 style="margin-bottom:20px">Macro Tracker</h1>
+	<div id="addEntryWindow" class="draggable container ui-window" style="z-index: 100;">
+		<h1 style="margin-bottom:20px">Macro Tracker</h1>
+		<div class="anchor-group">
+			<div class="anchor" data-id="win-add"> ⭕ </div>
+		</div>
+		<div class="anchor anchor-up" data-id="win-add-up"> ⭕ </div>
 
-    <label for="templateSelect" style="float: left">Choose a template:</label>
-    <label style="float: right;" for="multiplier">Amount:</label>
-    <select id="templateSelect" style="float: left;width:70%; left:0;" onchange="window.MacroTracker.handleFoodItemSelection()">
-      <option value="">Manual template...</option>
-    </select>
+		<label for="templateSelect" style="float: left">Choose a template:</label>
+		<label style="float: right;" for="multiplier">Amount:</label>
+		<select id="templateSelect" style="float: left;width:70%; left:0;"
+			onchange="window.MacroTracker.handleFoodItemSelection()">
+			<option value="">Manual template...</option>
+		</select>
 
-    <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
-      onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
-    <button onclick="window.MacroTracker.AddEntry()"> 🐎 </button>
+		<input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
+			onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
+		<button onclick="window.MacroTracker.AddEntry()"> 🐎 </button>
 
-    <label for="fat">Fat (g)</label>
-    <input type="number" id="fat" placeholder="Fat (g)" value="0">
+		<label for="fat">Fat (g)</label>
+		<input type="number" id="fat" placeholder="Fat (g)" value="0">
 
-    <label for="carbs">Carbs (g)</label>
-    <input type="number" id="carbs" placeholder="Carbs (g)" value="0">
+		<label for="carbs">Carbs (g)</label>
+		<input type="number" id="carbs" placeholder="Carbs (g)" value="0">
 
-    <label for="protein">Protein (g)</label>
-    <input type="number" id="protein" placeholder="Protein (g)" value="0">
+		<label for="protein">Protein (g)</label>
+		<input type="number" id="protein" placeholder="Protein (g)" value="0">
 
-    <label for="comment">Comment</label>
-    <textarea id="comment" placeholder="Describe food nuance..."></textarea>
+		<label for="comment">Comment</label>
+		<textarea id="comment" placeholder="Describe food nuance..."></textarea>
 
-    <button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
-    <button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
-    <button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Add</button>
+		<button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
+		<button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
+		<button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Add</button>
 
 
-  </div>
+	</div>
+	<div id="costlyWillWindow" class="draggable ui-window oneDirectionalWindow">
+		<div class="anchor-group">
+			<div class="anchor" data-id="FWwnd"> ⭕ </div>
 
-  <div id="historyWindowParent" class="draggable sidebar" >
-    <h3 style="float:left">History</h3>
-    <input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px" onchange="window.MacroTracker.displayHistoryTable()">
-    <label for="allHistoryChk">all history</label>
-    <div id="historyWindow">
-      <table id="historyEntries">
-        <tbody>
-          <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Carbs</th>
-            <th>Protein</th>
-            <th>Fat</th>
-            <th>Note</th>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+		</div>
+		Cost of will
+	</div>
 
-  <div id="dayListOverviewParent" class="draggable sidebar" >
-    <h3>Day overview</h3>
+	<div id="timeWindow" class="draggable ui-window oneDirectionalWindow">
 
-    <div id="dayListOverview">
-      <!--
+		<div class="anchor-up">
+			<div class="anchor" data-id="timeWnd"> ⭕ </div>
+		</div>
+		TimeWindow
+	</div>
+
+	<div id="historyWindowParent" class="draggable sidebar ui-window">
+		<div class="anchor-group">
+			<div class="anchor" data-id="win2"> ⭕ </div>
+			<div class="anchor" data-id="win3"> ⭕ </div>
+			<div class="anchor" data-id="win4"> ⭕ </div>
+		</div>
+		<div class="anchor anchor-up" data-id="win2-up"> ⭕ </div>
+		<h3 style="float:left">History</h3>
+		<input type="checkbox" id="allHistoryChk" style="margin-left:40%; width:40px"
+			onchange="window.MacroTracker.displayHistoryTable()">
+		<label for="allHistoryChk">all history</label>
+		<div id="historyWindow">
+			<table id="historyEntries">
+				<tbody>
+					<tr>
+						<th>#</th>
+						<th>Date</th>
+						<th>Carbs</th>
+						<th>Protein</th>
+						<th>Fat</th>
+						<th>Note</th>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id="dayListOverviewParent" class="draggable sidebar ui-window">
+		<div class="anchor anchor-up" data-id="day-list-over"> ⭕ </div>
+		<h3>Day overview</h3>
+
+		<div id="dayListOverview">
+			<!--
       Day one ...
       Day two ...
       Day three ...
       -->
-    </div>
-  </div>
+		</div>
+	</div>
 
-  <div id="sumDigestionWindow" class="draggable sidebar">
+	<div id="sumDigestionWindow" class="draggable sidebar ui-window">
+		<div class="anchor anchor-up" data-id="sum-digest-inup"> ⭕ </div>
+		<h2>24 hour Window</h2>
+		<div class="totals24">
+			<div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
+			<div class="total-item">Mass (24h): <span id="t24weight">693</span>g</div>
 
-    <h2>24 hour Window</h2>
-    <div class="totals24">
-      <div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
-      <div class="total-item">Mass (24h): <span id="t24weight">693</span>g</div>
+		</div>
 
-    </div>
+		<h2>Today's Totals</h2>
+		<div class="totals">
 
-    <h2>Today's Totals</h2>
-    <div class="totals">
+			<div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>
+			<div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
+			<div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
+			<div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
 
-      <div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>
-      <div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
-      <div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
-      <div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
+		</div>
 
-    </div>
-
-  </div>
-
+	</div>
+	<svg class="flow-canvas">
+	</svg>
 
 
 </body>
+
 </html>
