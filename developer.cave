@@ -3,12 +3,6 @@ TODO: add setting page for daily goals
 TODO: bodyweight tracking option
 TODO: rename food history into "Cooking recipe history"
 TODO: day overview width too small 
-TODO: flow things about positional convergnce of permission
-      Flow - left-to-right
-      Flow - right-to-left
-      Flow - ambiguous
-DONE: either disable drag on macro window or e.PreventDefault remove on dropdowns
-      Done! now understand how
 TODO: user pallete colors
 DONE: month-list window default position
 TODO: inventory manager app
