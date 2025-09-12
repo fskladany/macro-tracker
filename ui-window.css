@@ -1,3 +1,24 @@
+
+.ui-window {
+     position: absolute;
+     width: 450px;
+     background-color: #ffffff54;
+     padding: 20px;
+     border: 2px solid #7db0b733;
+     border-radius: 8px;
+     box-shadow: inset 17px 20px 19px 0px rgb(198 244 245 / 7%);
+     position: absolute;
+     z-index: 10;
+     resize: both;
+     overflow: auto;
+     max-width: 100%;
+     max-height: 90vh;
+     min-width: 300px;
+     min-height: 200px;
+     backdrop-filter: blur(4px) contrast(0.3);
+}
+
+
 #sumDigestionWindow {
      top: 80px;
      right: 10px;
@@ -15,9 +36,29 @@
 
 }
 
+.oneDirectionalWindow {
+     min-width: 60px;
+     max-width: 100px;
+     min-height: 80px;
+     text-align: center;
+     resize: none;
+}
+
+#costlyWillWindow {
+     left: 10px;
+     top:63%;
+}
+
+#timeWindow {
+     left: 10px;
+     top:83%;
+}
+
 #dayListOverviewParent {
      top: 600px;
      right: 10px;
      max-width: 300px;
      max-height: 500px;
 }
+
+

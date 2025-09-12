@@ -1,0 +1,88 @@
+.flow-line {
+     fill: none;
+     stroke: #9A96;
+     stroke-dasharray: 10 10;
+     stroke-dashoffset: 0;
+     /* initial offset */
+     cursor: pointer;
+     pointer-events: auto;
+     animation: flowMove 2s linear infinite;
+
+}
+
+.flow-line.temporary {
+     stroke: yellow;
+     stroke-dasharray: 10 10;
+}
+
+.flow-line:not(.temporary):hover {
+     stroke: yellow;
+     animation: flowMove 15s linear infinite;
+     stroke-dasharray: 100 5;
+     stroke-width: 10px;
+}
+
+
+@keyframes flowMove {
+     to {
+          stroke-dashoffset: -180;
+          /* moves the dash along the path */
+     }
+}
+
+.dragging-anchor,
+.dragging-anchor * {
+     cursor: crosshair !important;
+     user-select: none;
+     /* disable text selection while dragging */
+
+}
+
+.anchor-group {
+
+     bottom: 30px;
+     position: absolute;
+     display: inline-flex;
+     text-align: center;
+     width: 50%;
+
+}
+
+.anchor {
+
+     width: 16px;
+     height: 16px;
+     pointer-events: auto;
+     margin-right: 33%;
+}
+
+
+.anchor:hover {
+     background-color: #55ccff;
+     border-radius: 50%;
+     cursor: crosshair;
+     color: white;
+}
+
+.anchor-up {
+     position: absolute;
+     top: 0;
+     left: 50%;
+}
+
+.flow-canvas {
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     pointer-events: none;
+     /* let mouse events pass through */
+     z-index: 100;
+     /* below windows but above other content */
+}
+
+
+.dragging-anchor {
+     user-select: none;
+}

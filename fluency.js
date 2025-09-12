@@ -9,6 +9,13 @@
                const tagName = target.tagName.toLowerCase();
                const type = target.type ? target.type.toLowerCase() : '';
                console.log('Clicked element:', tagName, type);
+
+               if (target.classList.contains('anchor')) {
+                    console.log("This is an anchor node!");
+                    onDragStartIntegration(e);
+                    return;
+               }
+               
                if (
                     tagName === 'button' ||
                     (tagName === 'input' && (type === 'text' || type === 'number')) ||
@@ -16,6 +23,16 @@
                ) {
                     return; // do nothing, prevent drag
                }
+
+               document.querySelectorAll(".draggable.active")
+                    .forEach(el => el.classList.remove("active"));
+
+                    // highlight the clicked one
+               element.classList.add("active");
+
+            
+
+               
 
                e.preventDefault();
                pos3 = e.clientX;
@@ -33,6 +50,9 @@
                pos4 = e.clientY;
                element.style.top = (element.offsetTop - pos2) + "px";
                element.style.left = (element.offsetLeft - pos1) + "px";
+                  element.querySelectorAll('.anchor').forEach(anchor => {
+                    updateFlowsForNode(anchor.dataset.id);
+               });
           }
 
           const closeDragElement = function () {
@@ -45,10 +65,26 @@
           } else {
                element.onmousedown = dragMouseDown;
           }
+          
+          
      }
 
      window.UiNode = {
           dragElement
+     };
+
+     function SetKeyboardEvents() {
+          // Add event listener for Enter key on the addEntryWindow
+          document.getElementById('addEntryWindow').addEventListener('keydown', function (event) {
+          if (event.key === 'Enter') {
+               window.MacroTracker.addEntry();
+          }
+          });
+     }
+
+     window.KeyboardPermission = {
+          SetKeyboardEvents
+               // ...add more exports as needed...
      };
 
 })(window, document);
