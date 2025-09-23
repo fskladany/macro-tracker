@@ -8,14 +8,21 @@ window.MacroIngredients = templates = {
                chicken:         { name: 'chicken', carbs: 0.3, protein: 31, fat: 3 },
                beef:            { name: 'beef', fat: 8, protein: 26, carbs: 0, servingSize: 100 },
                fish:            { name: 'fish', fat: 3, protein: 17.1, carbs: 0.16, servingSize: 170,     },
-               groundBeef:      { name: 'ground beef (15%)', fat: 15, protein: 26, carbs: 0, servingSize: 100 },
+               groundBeef:      { name: 'ground beef', fat: 15, protein: 26, carbs: 0, servingSize: 100,
+                    variants: {
+                          '15% fat' : {fat: 15}, '30% fat': {fat: 30, protein: 18}
+                    }
+               },
+
                ham:             { name: 'ham (Hyza)', fat: 19.1, carbs: 2, protein: 11.3},
-               
+
                 
                _2:              { name: "--- fat ---", servingSize: 0 },
                sausage:         { carbs: 1.4, protein: 13.5, fat: 21.5, name: 'sausage (Fresh)', servingSize: 200 },
                cheddar:         { name: 'cheddar (Labas)', fat: 31, protein: 25, servingSize: 30},
                butter:          { name: 'butter', fat: 81, protein: 0.9, carbs: 0.1, servingSize: 10 },
+               oil:             { name: 'oil', fat: 100, protein: 0, carbs: 0, servingSize: 10 },
+               mayo:            { name: 'mayonnaise', fat: 70, protein: 1, carbs: 1, servingSize: 15 },
 
                _3:              { name: "--- carbs ---", servingSize: 0 },
                potato:          { name: 'potato', carbs: 20, protein: 2.6, fat: 0.4, },
@@ -37,6 +44,7 @@ window.MacroIngredients = templates = {
                _4:              { name: "--- side dishes ---", servingSize: 0 },
                porkSauce:       { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
                butter:          { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
+
 
                // Add more templates as needed
           };

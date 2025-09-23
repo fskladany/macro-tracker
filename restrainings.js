@@ -1,4 +1,3 @@
-/* This file concerns permitted overlap of entropic processes */
 
 (function(window, document){
      // Technological assertions

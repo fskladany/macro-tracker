@@ -4,7 +4,7 @@
 
      // Function to add an entry
      function addEntry() {
-          const confirm = "I hereby declare that I am not developing this website at the moment";
+          const confirm = "I promise";
           const gate_keeper = prompt('Type "' + confirm + '" to confirm adding an entry.', "Gatekeeper");
           if (gate_keeper != confirm) {
                alert("Entry not added. Confirmation text did not match.");
@@ -218,29 +218,34 @@
           const headers = ['Date', 'Mass (sum g)', 'Protein (g)', 'Calories (kcal)'];
 
           headers.forEach(headerText => {
-          const header = document.createElement('th');
-          header.textContent = headerText;
-          headerRow.appendChild(header);
+               const header = document.createElement('th');
+               header.textContent = headerText;
+               headerRow.appendChild(header);
           });
 
           const tbody = table.createTBody();
 
-          Object.keys(dailyTotals).forEach(date => {
-          const row = tbody.insertRow();
-          const totals = dailyTotals[date];
-          row.insertCell().textContent = date;
-          const caloreis = row.insertCell().textContent = (totals.carbs * 1 + totals.fat * 1.1 + totals.protein * 1.35).toFixed(0);
-          const prot = row.insertCell()
-          prot.textContent = totals.protein.toFixed(0);
-          if (totals.protein >= dailyGoals.protein) {
-               prot.textContent = "✅";
-          }
+          const sortedDates = Object.keys(dailyTotals).sort((a, b) => new Date(b) - new Date(a));
+          const last28Days = sortedDates.slice(0, 28);
+          // TODO: implement last 28 days slice with data confirmation
+          // e.g. sortedDates.filter(date=> date < new Date() - 28daydelta)
 
-          const calories = row.insertCell()
-          calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
-          if (totals.calories >= dailyGoals.calories) {
-               calories.textContent = "✅";
-          }
+          Object.keys(dailyTotals).forEach(date => {
+               const row = tbody.insertRow();
+               const totals = dailyTotals[date];
+               row.insertCell().textContent = date;
+               const caloreis = row.insertCell().textContent = (totals.carbs * 1 + totals.fat * 1.1 + totals.protein * 1.35).toFixed(0);
+               const prot = row.insertCell()
+               prot.textContent = totals.protein.toFixed(0);
+               if (totals.protein >= dailyGoals.protein) {
+                    prot.textContent = "✅";
+               }
+
+               const calories = row.insertCell()
+               calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
+               if (totals.calories >= dailyGoals.calories) {
+                    calories.textContent = "✅";
+               }
           });
 
           return table;
@@ -310,47 +315,83 @@
 
 
 
-     function makeFoodItemTemplate(templateKey) {
-          const nutrients = ingredients[templateKey];
+     function makeFoodItemTemplate(templateKey, variantKey) {
+          const ingredientTemplateData = structuredClone(ingredients[templateKey]);
+          const variants = ingredientTemplateData['variants'];
+          if (variantKey != "normal"){
+               var variantUpdateData = variants[variantKey];
+               if ( variantUpdateData == null){
+                    alert("Did not find variant data");
+               }
+               Object.keys(variantUpdateData).forEach(copyKey => {
+                    ingredientTemplateData[copyKey] = variantUpdateData[copyKey];
+               })
+          }
+          
           const multiplierInput = document.getElementById('multiplier').value;
-          const multiplier = multiplierInput || (nutrients.servingSize || 100) / 100;
-          if (nutrients) {
-               document.getElementById('carbs').value = (nutrients.carbs * multiplier).toFixed(2) || '';
-               document.getElementById('protein').value = (nutrients.protein * multiplier).toFixed(2) || '';
-               document.getElementById('fat').value = (nutrients.fat * multiplier).toFixed(2) || '';
-               document.getElementById('comment').value = `${nutrients.name} (${(100 * multiplier).toFixed(0)}g)`;
+          const multiplier = multiplierInput || (ingredientTemplateData.servingSize || 100) / 100;
+          if (ingredientTemplateData) {
+               const resulting_carbs = ingredientTemplateData.carbs * multiplier || 0;
+               const resulting_protein = ingredientTemplateData.protein * multiplier || 0;
+               const resulting_fat = ingredientTemplateData.fat * multiplier || 0;
+               const variant_string_name = variantKey == "normal" ? "" : variantKey;
+               const resulting_comment = `${ingredientTemplateData.name} ${variant_string_name} (${(100 * multiplier).toFixed(0)}g)`;
+               
+               document.getElementById('carbs').value = resulting_carbs.toFixed(2);
+               document.getElementById('protein').value = resulting_protein.toFixed(2);
+               document.getElementById('fat').value = resulting_fat.toFixed(2);
+               document.getElementById('comment').value = resulting_comment;
           }
      }
 
  
      function handleFoodItemSelection(bypass = false) {
-          const templateKey = document.getElementById('templateSelect').value;
-          if (templateKey == "") return;
-          var multiplier = ingredients[templateKey].servingSize;
+          const selectionKey = JSON.parse(document.getElementById('templateSelect').value);
+          if (selectionKey == "") return;
+
+          const foodKey = selectionKey.foodKey;
+          const variantKey = selectionKey.variantKey;
+          console.log('Food selection key: ' + selectionKey);
+
+          var multiplier = ingredients[foodKey].servingSize;
           if (!multiplier && multiplier != 0) multiplier = 100;
-          if (bypass === true) {
-               multiplier = document.getElementById('multiplier').value;
-          } else {
+          if (bypass !== true) {
                document.getElementById('multiplier').value = multiplier / 100;
           }
           if (multiplier != 0) {
-               makeFoodItemTemplate(templateKey, multiplier);
+               makeFoodItemTemplate(foodKey, variantKey);
           }
      }
 
-     function LoadFoodItemTemplates() {
-          const select = document.getElementById('templateSelect');
+     function LoadFoodItemTemplates(templateSelectId) {
+          const select = document.getElementById(templateSelectId);
           Object.keys(ingredients).forEach(key => {
-               const option = document.createElement('option');
-               option.value = key;
-               var multiplier = ingredients[key].servingSize;
-               if (multiplier == 0) option.disabled = true;
-               if (!multiplier && multiplier != 0) multiplier = 100;
-               option.textContent = ingredients[key].name;
-               if (multiplier != 0) {
-                    option.textContent += ' (' + multiplier + 'g)';
-               }
-               select.appendChild(option);
+               var variants = ingredients[key].variants;
+               if (!variants) {
+                    variants = {"normal": {}}
+               } 
+
+               Object.keys(variants).forEach(variantKey => {
+                    const elemOption = document.createElement('option');
+                    elemOption.value = JSON.stringify({foodKey: key, variantKey: variantKey});
+                    var multiplier = ingredients[key].servingSize;
+                    if (multiplier == 0) elemOption.disabled = true;
+                    if (!multiplier && multiplier != 0) multiplier = 100;
+                    elemOption.textContent = ingredients[key].name;
+
+
+                    if (multiplier != 0) {
+                         if (variantKey != "normal"){
+                              elemOption.textContent += ' [' + variantKey + ']';
+                         }
+                         
+                         elemOption.textContent += ' (' + multiplier + 'g)';
+                    }
+                    select.appendChild(elemOption);
+                    console.log(elemOption);
+               })
+
+               
           });
      }
 
