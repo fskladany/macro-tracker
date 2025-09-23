@@ -43,7 +43,12 @@
                pos3 = e.clientX;
                pos4 = e.clientY;
                document.onmouseup = exitDragDurationDepressurize;
+               document.ontouchcancel = exitDragDurationDepressurize;
+               document.ontouchend = exitDragDurationDepressurize;
+               
                document.onmousemove = elementMoveDragAfterClick;
+               document.ontouchmove = elementMoveDragAfterClick;
+               
           }
 
           const elementMoveDragAfterClick = function (e) {
@@ -80,6 +85,7 @@
                document.getElementById(element.id + "Header").onmousedown = dragMouseDown;
           } else {
                element.addEventListener('mousedown', dragMouseDown);
+               element.addEventListener('touchstart', dragMouseDown);
           }
 
           
