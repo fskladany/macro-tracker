@@ -14,6 +14,10 @@
                     console.log("This is an anchor node!");
                     onDragStartIntegration(e);
                     return;
+               } 
+
+               if (!target.classList.contains('.flow-line')){
+                     document.querySelectorAll('.clicked-path').forEach(e => e.classList.remove('clicked-path'));
                }
                
                if (
@@ -29,8 +33,6 @@
 
                     // highlight the clicked one
                element.classList.add("active");
-
-            
 
                
 

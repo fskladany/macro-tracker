@@ -4,9 +4,10 @@
      stroke-dasharray: 10 10;
      stroke-dashoffset: 0;
      /* initial offset */
-     cursor: pointer;
+     cursor: crosshair;
      pointer-events: auto;
      animation: flowMove 2s linear infinite;
+     box-shadow: #55ccff 3px;
 
 }
 
@@ -15,11 +16,43 @@
      stroke-dasharray: 10 10;
 }
 
-.flow-line:not(.temporary):hover {
+.flow-line:not(.temporary):hover:not(.clicked-path) {
      stroke: yellow;
+     animation: flowOscillate 2s ease-in-out infinite;
+     stroke-dasharray: 100 5;
+     stroke-width: 10px;
+}
+
+.flow-line.clicked-path {
+     stroke: orange;
      animation: flowMove 15s linear infinite;
      stroke-dasharray: 100 5;
      stroke-width: 10px;
+     z-index: 150;
+}
+
+.flow-line.clicked-path:hover {
+     stroke: blue;
+     animation: flowMove 15s linear infinite;
+     stroke-dasharray: 100 5;
+     stroke-width: 10px;
+}
+
+.flow-line.oscillating {
+    
+    stroke: #66ccff;
+}
+
+@keyframes flowOscillate {
+    0% {
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dashoffset: -180;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
 }
 
 
@@ -45,6 +78,7 @@
      display: inline-flex;
      text-align: center;
      width: 50%;
+     height: 10px;
 
 }
 
@@ -78,7 +112,7 @@
      height: 100%;
      pointer-events: none;
      /* let mouse events pass through */
-     z-index: 100;
+     z-index: 155;
      /* below windows but above other content */
 }
 
