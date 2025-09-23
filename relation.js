@@ -182,7 +182,7 @@
           animationFrameId = requestAnimationFrame(() => {
                const windowElement = document.getElementById(windowId);
                if (!windowElement) {
-                    alert("No window element found for id: " + windowId);
+                    alert("Zero element window found for id: " + windowId);
                     return;
                }
                const anchorElements = windowElement.querySelectorAll('.anchor');

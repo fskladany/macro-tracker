@@ -2,6 +2,8 @@
      // Function to make elements draggable
      function dragElement(element) {
           let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+
           const dragMouseDown = function (e) {
                e = e || window.event;
                // Disable dragging if clicked on button, input[text|number], or select dropdown
@@ -25,16 +27,8 @@
                     (tagName === 'input' && (type === 'text' || type === 'number')) ||
                     tagName === 'select'
                ) {
-                    if (element.id == "startMenu" ) {
-                         // has this worked?
-                         //e.stopPropagation();
-                    }
-                    else if (element.type == ""){
-                         alert("a scrollbar perhaps");
-                    
-                    } else{
-                         return; // do nothing, prevent drag
-                    }
+                    console.log("Clicked on interactive element, not dragging.");
+                    return; // do nothing, prevent drag
                }
 
                document.querySelectorAll(".draggable.active")
@@ -48,11 +42,11 @@
                e.preventDefault();
                pos3 = e.clientX;
                pos4 = e.clientY;
-               document.onmouseup = closeDragElement;
-               document.onmousemove = elementDrag;
+               document.onmouseup = exitDragDurationDepressurize;
+               document.onmousemove = elementMoveDragAfterClick;
           }
 
-          const elementDrag = function (e) {
+          const elementMoveDragAfterClick = function (e) {
                e = e || window.event;
                e.preventDefault();
                pos1 = pos3 - e.clientX;
@@ -63,7 +57,12 @@
                element.style.left = (element.offsetLeft - pos1) + "px";
 
                const draggingSourceElement = e.target.closest && e.target.closest('.draggable');
-               if (draggingSourceElement) {
+
+               if (draggingSourceElement && draggingSourceElement.id == "startMenuList") {
+                    // do nothing, this is the menu
+               }
+               else if (draggingSourceElement) {
+                    //alert("Dragging element " + draggingSourceElement.id);
                     updateFlowsForWindow(draggingSourceElement.id);
                }
                else{
@@ -72,7 +71,7 @@
                
           }
 
-          const closeDragElement = function () {
+          const exitDragDurationDepressurize = function () {
                document.onmouseup = null;
                document.onmousemove = null;
           }
@@ -80,8 +79,9 @@
           if (document.getElementById(element.id + "Header")) {
                document.getElementById(element.id + "Header").onmousedown = dragMouseDown;
           } else {
-               element.onmousedown = dragMouseDown;
+               element.addEventListener('mousedown', dragMouseDown);
           }
+
           
           
      }
@@ -122,6 +122,31 @@
      window.KeyboardPermission = {
           SetKeyboardEvents
                // ...add more exports as needed...
+     };
+
+     function addCloseButtonToWindow(farElement) {
+          const windowElement = farElement.closest('.ui-window');
+          if (!windowElement) {
+               console.warn("No parent .ui-window found for element:", farElement);
+               return;
+          }
+
+          if (!windowElement.querySelector('.close-btn')) {
+               const closeBtn = document.createElement('button');
+               closeBtn.classList.add('close-btn');
+               closeBtn.textContent = '❎';
+
+               closeBtn.onclick = function() {
+                    toggleWindow(windowElement.id);
+                  
+               };
+
+               farElement.appendChild(closeBtn);
+          }
+     }
+
+     window.Fluency = {
+          addCloseButtonToWindow: addCloseButtonToWindow
      };
 
 })(window, document);

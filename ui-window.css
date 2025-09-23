@@ -78,6 +78,15 @@
      background-color: #ddf2ea45;
 }
 
+.close-btn {
+    width: 24px;
+    left: 4px;
+    top: 4px;
+    z-index: 10;
+    background-color: #0000;
+
+}
+
 
 #recipeWindow {
     top: 200px;
