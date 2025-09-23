@@ -62,7 +62,7 @@
                     let hours = tsdate.getHours()
                     let minutes = tsdate.getMinutes()
                     d_date = pad(hours) + ":" + pad(minutes) 
-               } else if (document.getElementById('allHistoryChk').checked == false) {
+               } else if (document.getElementById('fullEatingHistoryCheckbox').checked == false) {
                          return;
                } else {
                     d_date = long_date;
@@ -211,11 +211,11 @@
           DisplayDailyTotals();
      }
 
-     function makeDayOverviewTable(dailyTotals) {
+     function insertMonthlyTrailTable() {
           const table = document.createElement('table');
           const thead = table.createTHead();
           const headerRow = thead.insertRow();
-          const headers = ['Date', 'Mass (sum g)', 'Protein (g)', 'Calories (kcal)'];
+          const headers = ['Date', 'Protein (g)', 'Calories (kcal)', 'Weight (g)' ];
 
           headers.forEach(headerText => {
                const header = document.createElement('th');
@@ -225,63 +225,74 @@
 
           const tbody = table.createTBody();
 
-          const sortedDates = Object.keys(dailyTotals).sort((a, b) => new Date(b) - new Date(a));
-          const last28Days = sortedDates.slice(0, 28);
-          // TODO: implement last 28 days slice with data confirmation
-          // e.g. sortedDates.filter(date=> date < new Date() - 28daydelta)
+          var entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+          const dailyTotals = {};
+          entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+
+          const dayDelta = 24 * 60 * 60 * 1000;
+          // Get the last 28 days
+          /*entries = entries.filter(entry => {
+               const entryDate = new Date(entry.ts);
+               return entryDate >= new Date(Date.now() - 28 * dayDelta);
+          });*/
+
+          entries.forEach(entry => {
+               const { ts, carbs, protein, fat } = entry;
+               const date = new Date(ts).toISOString().split('T')[0]
+               // Initialize the object for the date if it doesn't exist
+               if (!dailyTotals[date]) {
+                    dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, calories: 0, weight: 0 };
+               }
+               // Add checks to ensure the properties are numbers
+               dailyTotals[date].carbs += Number(carbs) || 0;
+               dailyTotals[date].protein += Number(protein) || 0;
+               dailyTotals[date].fat += Number(fat) || 0;
+               // Calculate calories and weight
+               dailyTotals[date].calories += ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
+               dailyTotals[date].weight += (Number(carbs) || 0) + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
+          });
+
 
           Object.keys(dailyTotals).forEach(date => {
-               const row = tbody.insertRow();
                const totals = dailyTotals[date];
+               console.log(date);
+               
+               const row = tbody.insertRow();
                row.insertCell().textContent = date;
-               const caloreis = row.insertCell().textContent = (totals.carbs * 1 + totals.fat * 1.1 + totals.protein * 1.35).toFixed(0);
+
+               // Row Protein
                const prot = row.insertCell()
                prot.textContent = totals.protein.toFixed(0);
                if (totals.protein >= dailyGoals.protein) {
-                    prot.textContent = "✅";
+                    prot.textContent = "✅" + totals.protein.toFixed(0);
                }
 
+               // Row Calories
                const calories = row.insertCell()
-               calories.textContent = dailyTotals[date].calories.toFixed(0); // Add calories
+               calories.textContent = totals.calories.toFixed(0); // Add calories
                if (totals.calories >= dailyGoals.calories) {
-                    calories.textContent = "✅";
+                    calories.textContent = "✅" + totals.calories.toFixed(0);
                }
+
+               // Row Weight
+               row.insertCell().textContent = (totals.carbs * 1 + totals.fat * 1.1 + totals.protein * 1.35).toFixed(0);
+               
+
+
           });
 
           return table;
      }
 
 
-     function calculateDailyTotals(entries) {
-          const dailyTotals = {};
-          entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-          entries.forEach(entry => {
-          const { ts, carbs, protein, fat } = entry;
-          const date = new Date(ts).toISOString().split('T')[0]
-          // Initialize the object for the date if it doesn't exist
-          if (!dailyTotals[date]) {
-               dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, calories: 0, weight: 0 };
-          }
-          // Add checks to ensure the properties are numbers
-          dailyTotals[date].carbs += Number(carbs) || 0;
-          dailyTotals[date].protein += Number(protein) || 0;
-          dailyTotals[date].fat += Number(fat) || 0;
-          // Calculate calories and weight
-          dailyTotals[date].calories += ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
-          dailyTotals[date].weight += (Number(carbs) || 0) + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
-          });
-
-          return dailyTotals;
-     }
 
      function DisplayDailyTotals() {
           // Implementation for displaying daily totals
-          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-          const dailyTotals = calculateDailyTotals(entries);
-          const dayOverviewTable = makeDayOverviewTable(dailyTotals);
-          const dayListOverview = document.getElementById('dayListOverview');
-          dayListOverview.innerHTML = ''; // Clear any existing table
-          dayListOverview.appendChild(dayOverviewTable);
+
+          const monthly_trail_table = insertMonthlyTrailTable();
+          const elem_table_parent = document.getElementById('monthlyTrailTableWrapper');
+          elem_table_parent.innerHTML = ''; // Clear any existing table
+          elem_table_parent.appendChild(monthly_trail_table);
      }
 
      function undoLastEntry() {

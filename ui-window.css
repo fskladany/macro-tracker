@@ -40,7 +40,7 @@
      width: 450px;
 }
 
-#historyWindowParent {
+#eatingHistoryWindow {
      top: 70px;
      left: 40px;
      width: 400px;
@@ -65,10 +65,10 @@
      top:83%;
 }
 
-#dayListOverviewParent {
+#monthlyTrailWindow {
      top: 600px;
      right: 10px;
-     max-width: 300px;
+     max-width: 500px;
      max-height: 500px;
 }
 
