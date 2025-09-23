@@ -1,40 +1,47 @@
 (function (window, document) {
-     let svg = null;
-     const flows = []; // { fromId, toId, pathEl }
-     let tempFlow = null;
-     let currentSource = null;
-          let animationFrameId = null; // To keep track of the animation frame
+     let canvasFrame = null;
+     const flowConnections = []; // { fromAnchorId, toAnchorId, pathElement }
+     let htmlPathElement = null;
+     let currentSourceAnchorId = null;
+     let animationFrameId = null; // To keep track of the animation frame
 
      document.addEventListener("DOMContentLoaded", () => {
-          svg = document.querySelector(".flow-canvas");
-          loadFlows(); // load saved flows on page load
+          canvasFrame = document.querySelector(".flow-canvas");
+          loadFlowConnections(); // load saved flows on page load
      });
 
      /* ---------- Integration with draggable ---------- */
-     function onDragStartIntegration(e) {
-          const anchorEl = e.target.closest && e.target.closest('.anchor');
-          if (anchorEl) {
+     function clickDragUpkeepingPressure(e) {
+          const draggingSourceElement = e.target.closest && e.target.closest('.anchor');
+          if (draggingSourceElement) {
+               draggingSourceWindow = draggingSourceElement.closest('.ui-window');
+               if (!draggingSourceWindow){
+                    alert("No dragging source window found C");
+                    return false;
+               }
+               console.log("Starting drag from anchor", draggingSourceElement);
+               console.log("Dragging source window", draggingSourceWindow);
                document.body.classList.add("dragging-anchor");
-               startConnectionFromAnchor(anchorEl, e);
+               drawingLineFromUpkeepingPressure(draggingSourceElement, draggingSourceWindow, e);
                return true; // handled
           }
+          alert("No dragging source element found B");
           return false;
      }
 
      /* ---------- Connection workflow ---------- */
-     function startConnectionFromAnchor(anchorEl, origEvent) {
-          const fromId = anchorEl.dataset.id;
-          if (flows.some(f => f.fromId === fromId || f.toId === fromId)) {
-               // Not necessary
-               // anchorEl.classList.add('active');
-               // setTimeout(() => anchorEl.classList.remove('active'), 250);
+     function drawingLineFromUpkeepingPressure(draggingSourceElement, draggingSourceWindow, origEvent) {
+          const fromAnchorId = draggingSourceElement.dataset.id;
+          if (flowConnections.some(f => f.fromAnchorId === fromAnchorId || f.toAnchorId === fromAnchorId)) {
+               alert("Anchor already connected");
                return;
           }
 
-          currentSource = fromId;
-          tempFlow = createPath();
-          tempFlow.classList.add("temporary");
-          svg.appendChild(tempFlow);
+          currentSourceAnchorId = fromAnchorId;
+
+          htmlPathElement = createPathElement();
+          htmlPathElement.classList.add("temporary");
+          canvasFrame.appendChild(htmlPathElement);
 
           window.addEventListener('pointermove', followPointer);
           window.addEventListener('pointerup', finishConnection);
@@ -42,50 +49,61 @@
           followPointer(origEvent);
      }
 
-     function createPath() {
+     function createPathElement() {
           const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
           p.classList.add('flow-line');
           return p;
      }
 
-     function getAnchorPosition(id) {
-          const anchor = document.querySelector(`.anchor[data-id="${CSS.escape(id)}"]`);
-          if (!anchor || !svg) return null;
-          const svgRect = svg.getBoundingClientRect();
-          const r = anchor.getBoundingClientRect();
+     function getAnchorPosition(anchorId) {
+          let anchorElement = document.querySelector(`.anchor[data-id="${CSS.escape(anchorId)}"]`);
+          if (!anchorElement || !canvasFrame) return null;
+
+          // Find parent .ui-window for this anchor
+          let parentWindowElement = anchorElement.closest('.ui-window');
+          if (parentWindowElement && parentWindowElement.classList.contains('hidden')) {
+               // Fallback to start menu anchor if parent window is hidden
+               anchorElement = document.querySelector('#startMenuToggle');
+               if (!anchorElement) return null;
+          }
+          const canvasRect = canvasFrame.getBoundingClientRect();
+          const anchorRect = anchorElement.getBoundingClientRect();
           return {
-               x: r.left + r.width / 2 - svgRect.left,
-               y: r.top + r.height / 2 - svgRect.top
+               x: anchorRect.left + anchorRect.width / 2 - canvasRect.left,
+               y: anchorRect.top + anchorRect.height / 2 - canvasRect.top
           };
      }
 
-     function drawFlow(pathEl, fromX, fromY, toX, toY) {
+     function setPathElementAttributes(pathElement, fromX, fromY, toX, toY) {
           const cp1x = (fromX + toX) / 2;
           const cp1y = fromY;
           const cp2x = (fromX + toX) / 2;
           const cp2y = toY;
-          pathEl.setAttribute('d', `M ${fromX} ${fromY} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${toX} ${toY}`);
+          pathElement.setAttribute('d', `M ${fromX} ${fromY} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${toX} ${toY}`);
      }
 
      function followPointer(e) {
-          if (!tempFlow || !currentSource) return;
+          if (!htmlPathElement || !currentSourceAnchorId) {
+               alert("No path element or source anchor to follow");
+               return;
+          }
 
-          // Cancel any pending frame to avoid drawing with stale data
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
           }
-          // Schedule the path update for the next animation frame
           animationFrameId = requestAnimationFrame(() => {
-               const fromPos = getAnchorPosition(currentSource);
-               if (!fromPos || !svg) return;
-               const svgRect = svg.getBoundingClientRect();
-               drawFlow(tempFlow, fromPos.x, fromPos.y, e.clientX - svgRect.left, e.clientY - svgRect.top);
-               animationFrameId = null; // Reset after execution
+               const fromPos = getAnchorPosition(currentSourceAnchorId);
+               if (!fromPos || !canvasFrame) {
+                    alert("Could not get from position or canvas frame");  
+                    return;
+               }
+               const canvasRect = canvasFrame.getBoundingClientRect();
+               setPathElementAttributes(htmlPathElement, fromPos.x, fromPos.y, e.clientX - canvasRect.left, e.clientY - canvasRect.top);
+               animationFrameId = null;
           });
      }
 
      function finishConnection(e) {
-          // Cancel any scheduled frame as we are finishing the connection
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
                animationFrameId = null;
@@ -95,129 +113,122 @@
           window.removeEventListener('pointerup', finishConnection);
           document.body.classList.remove("dragging-anchor");
 
-          const hitEls = document.elementsFromPoint(e.clientX, e.clientY);
-          const targetAnchor = hitEls.find(el => el.classList && el.classList.contains('anchor'));
+          const hitElements = document.elementsFromPoint(e.clientX, e.clientY);
+          const targetAnchorElement = hitElements.find(el => el.classList && el.classList.contains('anchor'));
 
-          if (targetAnchor) {
-               alert("Has target anchor", targetAnchor);
-               const toId = targetAnchor.dataset.id;
-               if (toId === currentSource || flows.some(f => f.fromId === toId || f.toId === toId)) {
-                    tempFlow.remove();
-                    tempFlow = null;
-                    currentSource = null;
+          if (targetAnchorElement) {
+               alert("Has target anchor", targetAnchorElement);
+               const toAnchorId = targetAnchorElement.dataset.id;
+               if (toAnchorId === currentSourceAnchorId || flowConnections.some(f => f.fromAnchorId === toAnchorId || f.toAnchorId === toAnchorId)) {
+                    alert("Invalid connection: same anchor or already connected");
+                    htmlPathElement.remove();
+                    htmlPathElement = null;
+                    currentSourceAnchorId = null;
                     return;
                }
 
-               const fromPos = getAnchorPosition(currentSource);
-               const toPos = getAnchorPosition(toId);
-               drawFlow(tempFlow, fromPos.x, fromPos.y, toPos.x, toPos.y);
-               lockFlow(tempFlow, currentSource, toId);
-               saveFlows();
-  
-               //This does not seem necessary
-               //document.querySelector(`[data-id="${currentSource}"]`)?.classList.remove('active');
-               //document.querySelector(`[data-id="${toId}"]`)?.classList.add('active');
+               const fromPos = getAnchorPosition(currentSourceAnchorId);
+               const toPos = getAnchorPosition(toAnchorId);
+               setPathElementAttributes(htmlPathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
+               lockFlowConnection(htmlPathElement, currentSourceAnchorId, toAnchorId);
+               saveFlowConnections();
 
-               tempFlow = null;
-               currentSource = null;
+               htmlPathElement = null;
+               currentSourceAnchorId = null;
           } else {
-               tempFlow.remove();
-               tempFlow = null;
-               currentSource = null;
+               alert("No target anchor found, cancelling connection");
+               htmlPathElement.remove();
+               htmlPathElement = null;
+               currentSourceAnchorId = null;
           }
      }
 
-     function lockFlow(pathEl, fromId, toId) {
-          pathEl.classList.remove('temporary', 'dragging-anchor');
-          // Add data attributes to the path for easier identification
-          pathEl.dataset.fromId = fromId;
-          pathEl.dataset.toId = toId;
-          // Check if the flow already exists before pushing
-          if (!flows.some(f => f.fromId === fromId && f.toId === toId)) {
-               flows.push({ fromId, toId, pathEl });
+     function lockFlowConnection(pathElement, fromAnchorId, toAnchorId) {
+          pathElement.classList.remove('temporary', 'dragging-anchor');
+          pathElement.dataset.fromAnchorId = fromAnchorId;
+          pathElement.dataset.toAnchorId = toAnchorId;
+          if (!flowConnections.some(f => f.fromAnchorId === fromAnchorId && f.toAnchorId === toAnchorId)) {
+               flowConnections.push({ fromAnchorId, toAnchorId, pathElement });
           }
-          pathEl.addEventListener('click', () => removeFlowByElement(pathEl));
+          pathElement.addEventListener('click', () => removeFlowConnectionByElement(pathElement));
      }
 
      /* ---------- Flow management ---------- */
-     function removeFlowByElement(pathEl) {
-          if (!pathEl) return;
+     function removeFlowConnectionByElement(pathElement) {
+          if (!pathElement) return;
 
-          const fromId = pathEl.dataset.fromId;
-          const toId = pathEl.dataset.toId;
+          const fromAnchorId = pathElement.dataset.fromAnchorId;
+          const toAnchorId = pathElement.dataset.toAnchorId;
 
-
-          if (!pathEl.classList.contains('clicked-path')){
-               pathEl.classList.add('clicked-path');
+          if (!pathElement.classList.contains('clicked-path')) {
+               pathElement.classList.add('clicked-path');
                return true;
           }
 
-          pathEl.classList.remove('clicked-path');
-          
-          // Find the index of the flow using the reliable fromId and toId
-          const idx = flows.findIndex(f => f.fromId === fromId && f.toId === toId);
-
+          pathElement.classList.remove('clicked-path');
+          const idx = flowConnections.findIndex(f => f.fromAnchorId === fromAnchorId && f.toAnchorId === toAnchorId);
           if (idx !== -1) {
-               flows.splice(idx, 1); // Remove from the array
-               pathEl.remove(); // Remove from the DOM
-               saveFlows(); // Save the changes
+               flowConnections.splice(idx, 1);
+               pathElement.remove();
+               saveFlowConnections();
           }
      }
 
-     function redrawAllFlows() {
+     // Update all flows for a given window (by window id)
+     function updateFlowsForWindow(windowId) {
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
           }
           animationFrameId = requestAnimationFrame(() => {
-               flows.forEach(f => {
-                    const fromP = getAnchorPosition(f.fromId);
-                    const toP = getAnchorPosition(f.toId);
-                    if (fromP && toP) drawFlow(f.pathEl, fromP.x, fromP.y, toP.x, toP.y);
+               const windowElement = document.getElementById(windowId);
+               if (!windowElement) {
+                    alert("No window element found for id: " + windowId);
+                    return;
+               }
+               const anchorElements = windowElement.querySelectorAll('.anchor');
+               anchorElements.forEach(anchorEl => {
+                    const anchorId = anchorEl.dataset.id;
+                    flowConnections.forEach(f => {
+                         if (f.fromAnchorId === anchorId || f.toAnchorId === anchorId) {
+                              const fromPos = getAnchorPosition(f.fromAnchorId);
+                              const toPos = getAnchorPosition(f.toAnchorId);
+                              if (fromPos && toPos) setPathElementAttributes(f.pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
+                         }
+                    });
                });
                animationFrameId = null;
           });
      }
 
-     function updateFlowsForNode(nodeId) {
-          flows.forEach(f => {
-               if (f.fromId === nodeId || f.toId === nodeId) {
-                    const fromP = getAnchorPosition(f.fromId);
-                    const toP = getAnchorPosition(f.toId);
-                    if (fromP && toP) drawFlow(f.pathEl, fromP.x, fromP.y, toP.x, toP.y);
-               }
-          });
+     function saveFlowConnections() {
+          localStorage.setItem("flows", JSON.stringify(flowConnections.map(f => ({ fromAnchorId: f.fromAnchorId, toAnchorId: f.toAnchorId }))));
      }
 
-     function saveFlows() {
-          localStorage.setItem("flows", JSON.stringify(flows.map(f => ({ fromId: f.fromId, toId: f.toId }))));
-     }
-
-     function loadFlows() {
-          // Clear existing flows to prevent duplication on reload
-          flows.length = 0;
+     function loadFlowConnections() {
+          flowConnections.length = 0;
           const stored = localStorage.getItem("flows");
+          canvasFrame.innerHTML = ''; // Clear existing paths
           if (stored) {
                const arr = JSON.parse(stored);
                arr.forEach(f => {
-                    const fromAnchor = document.querySelector(`.anchor[data-id="${f.fromId}"]`);
-                    const toAnchor = document.querySelector(`.anchor[data-id="${f.toId}"]`);
-                    if (fromAnchor && toAnchor) {
-                         const pathEl = createPath();
-                         
-                         const fromPos = getAnchorPosition(f.fromId);
-                         const toPos = getAnchorPosition(f.toId);
-                         drawFlow(pathEl, fromPos.x, fromPos.y, toPos.x, toPos.y);
-                         lockFlow(pathEl, f.fromId, f.toId);
-                         svg.appendChild(pathEl);
+                    const fromAnchorElement = document.querySelector(`.anchor[data-id="${f.fromAnchorId}"]`);
+                    const toAnchorElement = document.querySelector(`.anchor[data-id="${f.toAnchorId}"]`);
+                    if (fromAnchorElement && toAnchorElement) {
+                         const pathElement = createPathElement();
+                         const fromPos = getAnchorPosition(f.fromAnchorId);
+                         const toPos = getAnchorPosition(f.toAnchorId);
+                         setPathElementAttributes(pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
+                         lockFlowConnection(pathElement, f.fromAnchorId, f.toAnchorId);
+                         canvasFrame.appendChild(pathElement);
                     }
                });
           }
      }
-     window.addEventListener('resize', redrawAllFlows, true);
+
      /* ---------- Expose integration functions ---------- */
-     window.onDragStartIntegration = onDragStartIntegration;
-     window.updateFlowsForNode = updateFlowsForNode;
-     window.saveFlows = saveFlows;
-     window.loadFlows = loadFlows;
+     window.onDragStartIntegration = clickDragUpkeepingPressure;
+     window.updateFlowsForWindow = updateFlowsForWindow;
+     window.saveFlowConnections = saveFlowConnections;
+     window.loadFlowConnections = loadFlowConnections;
 
 }(window, document));

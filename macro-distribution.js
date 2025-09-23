@@ -255,7 +255,6 @@
 
           Object.keys(dailyTotals).forEach(date => {
                const totals = dailyTotals[date];
-               console.log(date);
                
                const row = tbody.insertRow();
                row.insertCell().textContent = date;
@@ -362,7 +361,6 @@
 
           const foodKey = selectionKey.foodKey;
           const variantKey = selectionKey.variantKey;
-          console.log('Food selection key: ' + selectionKey);
 
           var multiplier = ingredients[foodKey].servingSize;
           if (!multiplier && multiplier != 0) multiplier = 100;

@@ -74,7 +74,6 @@
                message += `  - Time to buy: ${buyPeriod} hours`;
           }
           
-          console.log(message);
           alert(message);
      }
 

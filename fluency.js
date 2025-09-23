@@ -61,9 +61,15 @@
                pos4 = e.clientY;
                element.style.top = (element.offsetTop - pos2) + "px";
                element.style.left = (element.offsetLeft - pos1) + "px";
-                  element.querySelectorAll('.anchor').forEach(anchor => {
-                    updateFlowsForNode(anchor.dataset.id);
-               });
+
+               const draggingSourceElement = e.target.closest && e.target.closest('.draggable');
+               if (draggingSourceElement) {
+                    updateFlowsForWindow(draggingSourceElement.id);
+               }
+               else{
+                    console.log("element e.target ", e.target.id, " has no close ui-window but I hold in memory that I started dragging ", element.id);
+               }
+               
           }
 
           const closeDragElement = function () {

@@ -47,6 +47,11 @@
 				windowEl.classList.toggle('hidden');
 			}
 			window.saveWindowState();
+
+			if (windowId == 'startMenuList') return;
+			document.querySelectorAll('.ui-window').forEach(window => {
+                    updateFlowsForWindow(window.dataset.id);
+               });
 		};
 
 		// Call this function on page load to populate the select dropdown
@@ -83,7 +88,7 @@
 			window.UiNode.dragElement(document.getElementById("intentionsWindow"));
 			window.UiNode.dragElement(document.getElementById("actionHistoryWindow"));
 
-			loadFlows();
+			loadFlowConnections();
 
 
 
@@ -98,8 +103,8 @@
 		</svg>
 	<div id="startMenu" class="draggable">
 		<button id="startMenuToggle"
-			onclick="document.getElementById('startMenuList').classList.toggle('hidden')">(m)</button>
-		<div id="startMenuList" class="draggable hidden">
+			onmouseup="document.getElementById('startMenuList').classList.toggle('hidden')">(m)</button>
+		<div id="startMenuList" onmouseleave="toggleWindow('startMenuList')" class="draggable hidden">
 			<div class="menu-item-group">
 				<button onclick="toggleWindow('addEntryWindow')">Macro Tracker ▸</button>
 				<div class="submenu">
@@ -282,7 +287,7 @@
 				<span>Mushrooms (not available)</span>
 				<div class="ingredient-actions">
 					<button class="subtle"
-						onclick="document.querySelector('#shoppingWindow').classList.remove('hidden');">Find
+						onclick="toggleWindow('shoppingWindow')">Find
 						Hunting Locations</button>
 				</div>
 			</div>
@@ -308,7 +313,7 @@
 	</div>
 
 
-	<div id="eatingHistoryWindow" class="draggable sidebar ui-window">
+	<div id="eatingHistoryWindow" class="draggable ui-window">
 
 		
 		<h3 style="float:left">Eating History</h3>
@@ -338,7 +343,7 @@
 
 		</div>
 
-		<div id="monthlyTrailWindow" class="draggable sidebar ui-window hidden">
+		<div id="monthlyTrailWindow" class="draggable ui-window hidden">
 			<div class="anchor" data-id="day-list-over"> 💿 </div>
 			<h3>Trail marathon (28d)</h3>
 
@@ -352,8 +357,9 @@
 			-->
 			</div>
 		</div>
+	</div>
 
-		<div id="sumDigestionWindow" class="draggable sidebar ui-window hidden">
+		<div id="sumDigestionWindow" class="draggable ui-window hidden">
 			<div class="anchor" data-id="sum-digest-inup"> 💿 </div>
 			<h2>24 hour Window</h2>
 			<div class="totals24">
