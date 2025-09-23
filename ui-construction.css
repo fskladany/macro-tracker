@@ -3,12 +3,11 @@
      stroke: #9A96;
      stroke-dasharray: 10 10;
      stroke-dashoffset: 0;
+     stroke-width: 10px;
      /* initial offset */
      cursor: crosshair;
      pointer-events: auto;
      animation: flowMove 2s linear infinite;
-     box-shadow: #55ccff 3px;
-
 }
 
 .flow-line.temporary {
@@ -72,13 +71,10 @@
 }
 
 .anchor-group {
-
-     bottom: 30px;
-     position: absolute;
-     display: inline-flex;
-     text-align: center;
-     width: 50%;
-     height: 10px;
+     display: block ruby;
+     height: 18px;
+     top: -20px;
+     position: fixed;
 
 }
 
@@ -88,7 +84,9 @@
      height: 16px;
      pointer-events: auto;
      margin-right: 33%;
+     margin-top: 30px;
 }
+
 
 
 .anchor:hover {
@@ -96,12 +94,6 @@
      border-radius: 50%;
      cursor: crosshair;
      color: white;
-}
-
-.anchor-up {
-     position: absolute;
-     top: 0;
-     left: 50%;
 }
 
 .flow-canvas {

@@ -25,7 +25,6 @@
                     (tagName === 'input' && (type === 'text' || type === 'number')) ||
                     tagName === 'select'
                ) {
-                    console.log(element);
                     if (element.id == "startMenu" ) {
                          // has this worked?
                          //e.stopPropagation();
@@ -96,6 +95,11 @@
           document.addEventListener('keydown', function (event) {
                if (event.key === 'Meta') {
                     toggleWindow('startMenuList');
+                    
+               }
+
+               if (event.key === 'Control') {
+                    toggleWindow('startMenuList');
                }
 
                if (event.key === 'ArrowUp') {
@@ -106,7 +110,6 @@
                     toggleWindow('startMenuList');
                }
 
-               console.log(event.key);
           });
      }
 

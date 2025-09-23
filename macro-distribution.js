@@ -388,7 +388,6 @@
                          elemOption.textContent += ' (' + multiplier + 'g)';
                     }
                     select.appendChild(elemOption);
-                    console.log(elemOption);
                })
 
                

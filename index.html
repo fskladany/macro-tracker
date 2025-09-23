@@ -10,6 +10,8 @@
 
 	<link rel="stylesheet" href="ui-unform.css">
 	<link rel="stylesheet" href="ui-window.css">
+	<link rel="stylesheet" href="ui-construction.css">
+	
 	<link rel="stylesheet" href="recipe.css">
 
 	<style>
@@ -34,7 +36,6 @@
 	<script src="fluency.js"></script>
 	<script src="relation.js"></script>
 	<script src="keyboards.js"></script>
-	<script src="ui-feeling.js"></script>
 	<script src="window-state.js"></script>
 	
 
@@ -45,6 +46,7 @@
 			if (windowEl) {
 				windowEl.classList.toggle('hidden');
 			}
+			window.saveWindowState();
 		};
 
 		// Call this function on page load to populate the select dropdown
@@ -54,7 +56,7 @@
 		    //})
 			window.MacroTracker.LoadFoodItemTemplates('templateSelect');
 			window.MacroTracker.LoadFoodItemTemplates('shoppingPurposeKey');
-			
+
 			// Initial table and totals update
 			window.MacroTracker.displayHistoryTable();
 			window.MacroTracker.updateDailyTotals();

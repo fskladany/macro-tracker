@@ -29,7 +29,6 @@
                }
                variantSelectorElem.appendChild(elemOption);
 
-               console.log(elemOption);
           });
           
           for(var i = 0;i < variantSelectorElem.options.length;i++){
