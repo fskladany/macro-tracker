@@ -114,7 +114,12 @@
 
 	<script>
 
-
+		function toggleWindow(windowId) {
+			const windowEl = document.getElementById(windowId);
+			if (windowEl) {
+				windowEl.classList.toggle('hidden');
+			}
+		};
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
@@ -135,6 +140,7 @@
 			window.UiNode.dragElement(document.getElementById("dayListOverviewParent"));
 			window.UiNode.dragElement(document.getElementById("costlyWillWindow"));
 			window.UiNode.dragElement(document.getElementById("timeWindow"));
+			window.UiNode.dragElement(document.getElementById("startMenu"));
 
 			loadFlows();
 
@@ -145,6 +151,28 @@
 </head>
 
 <body>
+
+	<div id="startMenu" class="draggable">
+        <button id="startMenuToggle" onclick="document.getElementById('startMenuList').classList.toggle('hidden')">(m)</button>
+        <div id="startMenuList" class="draggable hidden">
+			<div class="menu-item-group">
+                <button onclick="toggleWindow('addEntryWindow')">Macro Tracker ▸</button>
+                <div class="submenu">
+                    <button onclick="toggleWindow('historyWindowParent')">History</button>
+                    <button onclick="toggleWindow('sumDigestionWindow')">Totals</button>
+                    <button onclick="toggleWindow('dayListOverviewParent')">Day Overview</button>
+                </div>
+            </div>
+			<div class="menu-item-group">
+                <button>External ▸</button>
+                <div class="submenu">
+					<button onclick="toggleWindow('costlyWillWindow')">Willpower</button>
+					<button onclick="toggleWindow('timeWindow')">Time</button>
+					<button style="background-color: #777">16 Mhz crystal</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 	<div id="addEntryWindow" class="draggable container ui-window" style="z-index: 100;">
 		<div class="anchor-group anchor-up" style="float: right">
