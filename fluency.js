@@ -25,15 +25,25 @@
                     (tagName === 'input' && (type === 'text' || type === 'number')) ||
                     tagName === 'select'
                ) {
-                    return; // do nothing, prevent drag
+                    console.log(element);
+                    if (element.id == "startMenu" ) {
+                         // has this worked?
+                         //e.stopPropagation();
+                    }
+                    else if (element.type == ""){
+                         alert("a scrollbar perhaps");
+                    
+                    } else{
+                         return; // do nothing, prevent drag
+                    }
                }
 
                document.querySelectorAll(".draggable.active")
                     .forEach(el => el.classList.remove("active"));
 
-                    // highlight the clicked one
+               // highlight the clicked one
                element.classList.add("active");
-
+             
                
 
                e.preventDefault();
@@ -78,9 +88,25 @@
      function SetKeyboardEvents() {
           // Add event listener for Enter key on the addEntryWindow
           document.getElementById('addEntryWindow').addEventListener('keydown', function (event) {
-          if (event.key === 'Enter') {
-               window.MacroTracker.addEntry();
-          }
+               if (event.key === 'Enter') {
+                    window.MacroTracker.addEntry();
+               }
+          });
+
+          document.addEventListener('keydown', function (event) {
+               if (event.key === 'Meta') {
+                    toggleWindow('startMenuList');
+               }
+
+               if (event.key === 'ArrowUp') {
+                    tabindex-=1;
+               }
+
+               if (event.key === 'ArrowDown') {
+                    toggleWindow('startMenuList');
+               }
+
+               console.log(event.key);
           });
      }
 

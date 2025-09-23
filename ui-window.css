@@ -2,7 +2,7 @@
 .ui-window {
      position: absolute;
      width: 450px;
-     background-color: #ffffff54;
+     background-color: #fff0;
      padding: 20px;
      border: 2px solid #7db0b733;
      border-radius: 8px;
@@ -15,11 +15,17 @@
      max-height: 90vh;
      min-width: 300px;
      min-height: 200px;
-     backdrop-filter: blur(4px) contrast(0.3);
+     backdrop-filter: blur(2px) contrast(0.9);
+}
+
 .hidden {
      display: none;
 }
 
+#shoppingWindow {
+    top: 110px;
+    left: 280px;
+    width: 400px;
 }
 
 
@@ -71,6 +77,13 @@
      background-color: #ddf2ea45;
 }
 
+
+#recipeWindow {
+    top: 200px;
+    left: 40px;
+    width: 400px;
+    height: 350px;
+}
 
 
 /* --- Start Menu Sidebar --- */
@@ -146,4 +159,49 @@
 
 .menu-item-group:hover .submenu {
     display: block;
+}
+
+
+#intentionsWindow {
+    top: 200px;
+    left: 100px;
+    width: 400px;
+    height: auto;
+}
+
+.intention-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 8px;
+    border-bottom: 1px solid #a0a18480;
+    background-color: #ffffff1c;
+}
+
+.intention-timer {
+    font-size: 13px;
+    background-color: #e9e8d24d;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+
+
+#actionHistoryWindow {
+    top: 100px;
+    left: 320px;
+    width: 400px;
+    height: auto;
+}
+
+.action-item {
+    padding: 12px 8px;
+    border-bottom: 1px solid #a0a18480;
+    background-color: #ffffff1c;
+}
+
+.action-meta {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    margin-top: 4px;
 }
