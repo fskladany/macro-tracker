@@ -150,7 +150,7 @@
           if (!flowConnections.some(f => f.fromAnchorId === fromAnchorId && f.toAnchorId === toAnchorId)) {
                flowConnections.push({ fromAnchorId, toAnchorId, pathElement });
           }
-          pathElement.addEventListener('click', () => removeFlowConnectionByElement(pathElement));
+          pathElement.addEventListener('mouseup', () => removeFlowConnectionByElement(pathElement));
      }
 
      /* ---------- Flow management ---------- */
@@ -164,13 +164,18 @@
                pathElement.classList.add('clicked-path');
                return true;
           }
+          
 
           pathElement.classList.remove('clicked-path');
           const idx = flowConnections.findIndex(f => f.fromAnchorId === fromAnchorId && f.toAnchorId === toAnchorId);
           if (idx !== -1) {
                flowConnections.splice(idx, 1);
+               alert("removing now");
+               
                pathElement.remove();
+               
                saveFlowConnections();
+               window.demonstrateFlowPresence();
           }
      }
 
@@ -201,6 +206,7 @@
      }
 
      function saveFlowConnections() {
+          
           localStorage.setItem("flows", JSON.stringify(flowConnections.map(f => ({ fromAnchorId: f.fromAnchorId, toAnchorId: f.toAnchorId }))));
      }
 

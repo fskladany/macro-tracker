@@ -27,6 +27,18 @@
           });
      }
 
+     function demonstrateFlowPresence(){
+          const stored = localStorage.getItem("flows");
+          if (stored) {
+               const arr = JSON.parse(stored);
+               if (arr.length > 0) {
+                    document.getElementById('demonstrateActiveFlowsId').classList.remove('hidden');
+               } else {
+                    document.getElementById('demonstrateActiveFlowsId').classList.add('hidden');
+               }
+          }
+     }
+
      // Utility: Ensure window is always appended to top-level container
      function ensureWindowIsTopLevel(windowElement) {
           const topLevelContainer = document.querySelector('.window-container') || document.body;
@@ -46,5 +58,6 @@
      // Optionally expose for manual save
      window.saveWindowState = saveWindowState;
      window.restoreWindowState = restoreWindowState;
+     window.demonstrateFlowPresence = demonstrateFlowPresence;
 
 }(window, document));

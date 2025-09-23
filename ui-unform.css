@@ -69,3 +69,50 @@ th {
 .totals24 div {
      font-size: 26px;
 }
+
+ body {
+      margin: 0;
+      height: 100vh;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+.circle-button {
+     width: 80px;
+     height: 80px;
+     border-radius: 50%;
+     background: #00bcd4;
+     border: none;
+     z-index: 2;
+     position: relative;
+     cursor: pointer;
+     box-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
+}
+
+.vibrating-orbit {
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     pointer-events: none;
+     z-index: 1;
+}
+
+.vibrating-orbit path {
+     fill: #fff4;
+     stroke: #00bcd4;
+     stroke-width: 10;
+     stroke-dasharray: 10;
+     animation: vibrate-path 2.5s infinite;
+}
+
+@keyframes vibrate-path {
+     0% {
+     stroke-dashoffset: 0;
+     }
+     100% {
+     stroke-dashoffset: -20;
+     }
+}
