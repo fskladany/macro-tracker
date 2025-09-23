@@ -1,0 +1,71 @@
+input,
+button,
+textarea,
+select {
+     width: 100%;
+     padding: 10px;
+     margin: 10px 0;
+     border-radius: 5px;
+     border: 2px solid #ddd3;
+     background-color: #CCC;
+     box-sizing: border-box;
+     font-size: 20px;
+}
+
+button {
+     background-color: rgb(255 216 144 / 84%);
+     color: white;
+     cursor: pointer;
+}
+
+button.subtle {
+     background-color: rgb(229 226 150 / 33%);
+     color: rgb(82, 79, 79);
+
+     cursor: pointer;
+     margin: auto;
+     width: 31%;
+     margin-left: 1%;
+}
+
+table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 20px;
+}
+
+th,
+td {
+     text-align: left;
+     padding: 8px;
+     border-bottom: 1px solid #a0a18480;
+}
+
+th {
+     background-color: #cccfb857;
+}
+
+.totals,
+.totals24 {
+     margin-top: 15px;
+}
+
+.total-item {
+     margin-bottom: 10px;
+}
+
+
+
+.goal-reached {
+     background-color: rgb(255, 0, 0);
+     color: white;
+}
+
+.halfway-there {
+     background-color: rgb(255, 238, 0);
+}
+
+.totals div,
+.totals24 div {
+     font-size: 26px;
+}
