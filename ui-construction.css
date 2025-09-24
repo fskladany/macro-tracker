@@ -38,8 +38,8 @@
 }
 
 .flow-line.oscillating {
-    
-    stroke: #66ccff;
+     animation: flowOscillate 2s ease-in-out infinite;
+
 }
 
 @keyframes flowOscillate {

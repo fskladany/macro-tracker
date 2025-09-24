@@ -181,6 +181,7 @@
 
      // Update all flows for a given window (by window id)
      function updateFlowsForWindow(windowId) {
+
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
           }
@@ -195,6 +196,10 @@
                     const anchorId = anchorEl.dataset.id;
                     flowConnections.forEach(f => {
                          if (f.fromAnchorId === anchorId || f.toAnchorId === anchorId) {
+                              if (windowElement.classList.contains('oneDirectionalWindow')){
+                                   f.pathElement.classList.add('oscillating');
+                                   setTimeout( () => { f.pathElement.classList.remove('oscillating');}, 3000);
+                              }
                               const fromPos = getAnchorPosition(f.fromAnchorId);
                               const toPos = getAnchorPosition(f.toAnchorId);
                               if (fromPos && toPos) setPathElementAttributes(f.pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
