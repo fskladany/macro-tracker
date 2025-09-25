@@ -143,8 +143,9 @@
 
 		<div id="startMenuList" onmouseleave="toggleWindow('startMenuList')" class="draggable hidden">
 			<div class="menu-item-group">
-				<button onclick="toggleWindow('addEntryWindow')">Macro Tracker ▸</button>
+				<button>Macro Tracker ▸</button>
 				<div class="submenu">
+					<button onclick="toggleWindow('addEntryWindow')">Eat Ingredient</button>
 					<button onclick="toggleWindow('eatingHistoryWindow')">History</button>
 					<button onclick="toggleWindow('sumDigestionWindow')">Totals</button>
 					<button onclick="toggleWindow('monthlyTrailWindow')">Monthly Trail (28)</button>
@@ -186,10 +187,11 @@
 
 		<input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
 			onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
+		<div style="clear: both;"></div>
 		<div id="macro-actions-row">
-			<button style="width:23%" onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
-			<button style="width:33%" onclick="alert('ingredient');"> Save As... </button>
-			<button style="float: right; width:33%"
+			<button onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
+			<button onclick="alert('ingredient');"> Save As... </button>
+			<button 
 				onclick="document.querySelector('#recipeWindow').classList.remove('hidden')"> + Find Recipe
 			</button>
 		</div>
@@ -206,9 +208,7 @@
 		<label for="comment">Comment</label>
 		<textarea id="comment" placeholder="Describe food nuance..."></textarea>
 
-		<button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
-		<button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
-		<button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Add</button>
+		<button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Eat</button>
 
 
 	</div>
@@ -328,6 +328,9 @@
 		<input type="checkbox" id="fullEatingHistoryCheckbox" style="margin-left:40%; width:40px"
 			onchange="window.MacroTracker.displayHistoryTable()">
 		<label for="fullEatingHistoryCheckbox">all history</label>
+		<div style="clear: both;"></div>
+		<button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
+		<button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
 		<div class="anchor-group">
 			<div class="anchor" data-id="win2"> 📀 </div>
 			<div class="anchor" data-id="win3"> 📀 </div>
