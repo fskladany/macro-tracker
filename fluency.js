@@ -147,7 +147,7 @@
                   
                };
 
-               farElement.appendChild(closeBtn);
+               farElement.prepend(closeBtn);
           }
      }
 

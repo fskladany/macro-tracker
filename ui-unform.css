@@ -18,15 +18,6 @@ button {
      cursor: pointer;
 }
 
-button.subtle {
-     background-color: rgb(229 226 150 / 33%);
-     color: rgb(82, 79, 79);
-
-     cursor: pointer;
-     margin: auto;
-     width: 31%;
-     margin-left: 1%;
-}
 
 table {
      width: 100%;
@@ -115,4 +106,36 @@ th {
      100% {
      stroke-dashoffset: -20;
      }
+}
+
+
+#macro-actions-row button {
+     margin: 0 5px;
+     font-size: 18px;
+     border: none;
+     width: 30%;
+}
+
+.eatingHistoryMem {
+     float: left;
+     height: 30px;
+     width: 20%;
+     font-size: 15px;
+     margin-left: 10px;
+     padding: 0;
+     margin-top: 15px;
+}
+
+button.subtle {
+     background-color: rgb(229 226 150 / 33%);
+     color: rgb(82, 79, 79);
+
+     cursor: pointer;
+     margin: auto;
+     width: 31%;
+     margin-left: 1%;
+}
+
+#showMoreHistoryDiv {
+     margin-top: 15px;
 }

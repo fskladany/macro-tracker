@@ -79,6 +79,7 @@
 }
 
 .close-btn {
+    display: contents;
     width: 24px;
     left: 4px;
     top: 4px;

@@ -325,12 +325,17 @@
 
 
 		<h3 style="float:left">Eating History</h3>
-		<input type="checkbox" id="fullEatingHistoryCheckbox" style="margin-left:40%; width:40px"
+		<button class="eatingHistoryMem" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
+		<button class="eatingHistoryMem" onclick="window.MacroTracker.getEntriesJSON()">Backup</button>
+	
+		<div id="showMoreHistoryDiv">
+			<input type="checkbox" id="fullEatingHistoryCheckbox" style="margin-left: 10px; width: 20px;"
 			onchange="window.MacroTracker.displayHistoryTable()">
-		<label for="fullEatingHistoryCheckbox">all history</label>
+
+			<label for="fullEatingHistoryCheckbox">show all</label>
+		</div>
+		
 		<div style="clear: both;"></div>
-		<button class="subtle" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
-		<button class="subtle" onclick="window.MacroTracker.getEntriesJSON()">Get entries</button>
 		<div class="anchor-group">
 			<div class="anchor" data-id="win2"> 📀 </div>
 			<div class="anchor" data-id="win3"> 📀 </div>
