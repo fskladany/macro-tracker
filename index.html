@@ -240,8 +240,8 @@
 
 	<div id="addEntryWindow" class="draggable ui-window" style="z-index: 100;">
 		<div class="anchor-group" style="float: right">
-			<div class="anchor" data-id="win-add"> 📀 </div>
-			<div class="anchor" data-id="win-add-up"> 💿 </div>
+			<div class="anchor" id="win-add"> 📀 </div>
+			<div class="anchor" id="win-add-up"> 💿 </div>
 		</div>
 		<h1 style="margin-bottom:20px">Macro Tracker</h1>
 
@@ -280,42 +280,11 @@
 
 
 	</div>
-	<div id="costlyWillWindow" class="draggable ui-window oneDirectionalWindow hidden">
-		<div class="anchor-group">
-			<div class="anchor" data-id="FWwnd"> 📀 </div>
-
-		</div>
-		Cost of will
-	</div>
-
-	<div id="fridgeWindow" class="draggable ui-window hidden">
-		<div class="anchor-group">
-			<div class="anchor" data-id="FWwnd"> 📀 </div>
-
-		</div>
-		Fridge
-	</div>
-
-	<div id="vacuumWindow" class="draggable ui-window hidden">
-		<div class="anchor-group">
-			<div class="anchor" data-id="FWwnd"> 📀 </div>
-
-		</div>
-		Vacuum
-	</div>
-
-	<div id="timeWindow" class="draggable ui-window oneDirectionalWindow hidden">
-
-		<div class="anchor-group">
-			<div class="anchor" data-id="timeWnd"> 💿 </div>
-		</div>
-		TimeWindow
-	</div>
 
 	<div id="recipeWindow" class="draggable ui-window hidden">
 		<div class="anchor-group">
-			<div class="anchor" data-id="recipe-win-1"> 📀 </div>
-			<div class="anchor" data-id="recipe-win-up-1"> 💿 </div>
+			<div class="anchor" id="recipe-win-1"> 📀 </div>
+			<div class="anchor" id="recipe-win-up-1"> 💿 </div>
 		</div>
 
 		<h1 style="margin-bottom:20px">My Recipes</h1>
@@ -343,8 +312,8 @@
 
 	<div id="recipeCreatorWindow" class="draggable ui-window hidden">
 		<div class="anchor-group">
-			<div class="anchor" data-id="recipe-creator-win-1"> 📀 </div>
-			<div class="anchor" data-id="recipe-creator-win-up-1"> 💿 </div>
+			<div class="anchor" id="recipe-creator-win-1"> 📀 </div>
+			<div class="anchor" id="recipe-creator-win-up-1"> 💿 </div>
 		</div>
 
 
@@ -405,11 +374,11 @@
 		
 		<div style="clear: both;"></div>
 		<div class="anchor-group">
-			<div class="anchor" data-id="win2"> 📀 </div>
-			<div class="anchor" data-id="win3"> 📀 </div>
-			<div class="anchor" data-id="win4"> 📀 </div>
-			<div class="anchor" data-id="win2-up"> 💿 </div>
-			<div class="anchor" data-id="win2-up"> 💿 </div>
+			<div class="anchor" id="win2"> 📀 </div>
+			<div class="anchor" id="win3"> 📀 </div>
+			<div class="anchor" id="win4"> 📀 </div>
+			<div class="anchor" id="win2-up"> 💿 </div>
+			<div class="anchor" id="win3-up"> 💿 </div>
 		</div>
 		<div>
 			<table id="historyEntries">
@@ -429,7 +398,9 @@
 	</div>
 
 	<div id="monthlyTrailWindow" class="draggable ui-window hidden">
-		<div class="anchor" data-id="day-list-over"> 💿 </div>
+		<div class="anchor-group" style="float: right">
+			<div class="anchor" id="day-list-over"> 💿 </div>
+		</div>
 		<h3>Trail marathon (28d)</h3>
 
 		<div id="monthlyTrailTableWrapper">
@@ -445,7 +416,9 @@
 
 
 	<div id="sumDigestionWindow" class="draggable ui-window hidden">
-		<div class="anchor" data-id="sum-digest-inup"> 💿 </div>
+		<div class="anchor-group" style="float: right">
+			<div class="anchor" id="sum-digest-inup"> 💿 </div>
+		</div>
 		<h2>24 hour Window</h2>
 		<div class="totals24">
 			<div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
@@ -468,9 +441,9 @@
 
 	<div id="shoppingWindow" class="draggable ui-window hidden">
 		<div class="anchor-group">
-			<div class="anchor" data-id="shopping-win-1"> 📀 </div>
+			<div class="anchor" id="shopping-win-1"> 📀 </div>
 		</div>
-		<div class="anchor" data-id="shopping-win-up-1"> 💿 </div>
+		<div class="anchor" id="shopping-win-up-1"> 💿 </div>
 		<h1 style="margin-bottom:20px">Ingredient Commutor</h1>
 
 		<label for="shoppingPurposeKey">Ingredient (PurposeKey)</label>
@@ -509,7 +482,7 @@
 
 	<div id="intentionsWindow" class="draggable ui-window hidden">
 		<div class="anchor-group">
-			<div class="anchor" data-id="intentions-win-1"> 📀 </div>
+			<div class="anchor" id="intentions-win-1"> 📀 </div>
 		</div>
 		<h1>Intentions</h1>
 		<p>Demanded ingredients and evaporated intents.</p>
@@ -527,7 +500,7 @@
 
 	<div id="actionHistoryWindow" class="draggable ui-window hidden">
 		<div class="anchor-group">
-			<div class="anchor" data-id="action-history-win-1"> 📀 </div>
+			<div class="anchor" id="action-history-win-1"> 📀 </div>
 		</div>
 		<h1>Action History</h1>
 		<p>Log of bought ingredients and storage actions.</p>
@@ -556,7 +529,7 @@
 			</select>
 		</div>
 		<div class="anchor-group">
-			<div class="anchor" data-id="inventory-win-1"> 📀 </div>
+			<div class="anchor" id="inventory-win-1"> 📀 </div>
 		</div>
 
 		<div class="inventory-list">

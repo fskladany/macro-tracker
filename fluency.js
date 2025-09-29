@@ -1,8 +1,14 @@
 (function (window, document) {
      // Function to make elements draggable
-     function dragElement(element) {
+     function dragElement(elementId) {
           let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
+          const element = document.getElementById(elementId);
+
+          if (!element) {
+               alert (`Element ${elementId} not found!`);
+               return false;
+          }
 
           const dragMouseDown = function (e) {
                e = e || window.event;
@@ -27,8 +33,13 @@
                     (tagName === 'input' && (type === 'text' || type === 'number')) ||
                     tagName === 'select'
                ) {
-                    console.log("Clicked on interactive element, not dragging.");
-                    return; // do nothing, prevent drag
+                    if (e.target.id == "startMenuToggle"){
+                         console.log("permitting drag for startmenutoggle");
+                         
+                    } else {
+                         console.log("Clicked on interactive element, not dragging.");
+                         return; // do nothing, prevent drag
+                    }
                }
 
                document.querySelectorAll(".draggable.active")
@@ -63,8 +74,13 @@
 
                const draggingSourceElement = e.target.closest && e.target.closest('.draggable');
 
-               if (draggingSourceElement && draggingSourceElement.id == "startMenuList") {
-                    // do nothing, this is the menu
+               if (draggingSourceElement && draggingSourceElement.id == "startMenu") {
+                    const windows = document.querySelectorAll('.hidden.ui-window');
+                    
+                    windows.forEach (window => {
+                         updateFlowsForWindow(window.id);
+                    });
+                    
                }
                else if (draggingSourceElement) {
                     //alert("Dragging element " + draggingSourceElement.id);

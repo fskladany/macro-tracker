@@ -1,21 +1,16 @@
 (function (window, document) {
-     let canvasFrame = null;
+     window.canvasFrame = null;
      const flowConnections = []; // { fromAnchorId, toAnchorId, pathElement }
      let htmlPathElement = null;
      let currentSourceAnchorId = null;
      let animationFrameId = null; // To keep track of the animation frame
-
-     document.addEventListener("DOMContentLoaded", () => {
-          canvasFrame = document.querySelector(".flow-canvas");
-          loadFlowConnections(); // load saved flows on page load
-     });
 
      /* ---------- Integration with draggable ---------- */
      function clickDragUpkeepingPressure(e) {
           const draggingSourceElement = e.target.closest && e.target.closest('.anchor');
           if (draggingSourceElement) {
                draggingSourceWindow = draggingSourceElement.closest('.ui-window');
-               if (!draggingSourceWindow){
+               if (!draggingSourceWindow) {
                     alert("No dragging source window found C");
                     return false;
                }
@@ -31,7 +26,7 @@
 
      /* ---------- Connection workflow ---------- */
      function drawingLineFromUpkeepingPressure(draggingSourceElement, draggingSourceWindow, origEvent) {
-          const fromAnchorId = draggingSourceElement.dataset.id;
+          const fromAnchorId = draggingSourceElement.id;
           if (flowConnections.some(f => f.fromAnchorId === fromAnchorId || f.toAnchorId === fromAnchorId)) {
                alert("Anchor already connected");
                return;
@@ -56,7 +51,7 @@
      }
 
      function getAnchorPosition(anchorId) {
-          let anchorElement = document.querySelector(`.anchor[data-id="${CSS.escape(anchorId)}"]`);
+          let anchorElement = document.querySelector(`.anchor#${CSS.escape(anchorId)}`);
           if (!anchorElement || !canvasFrame) return null;
 
           // Find parent .ui-window for this anchor
@@ -94,7 +89,7 @@
           animationFrameId = requestAnimationFrame(() => {
                const fromPos = getAnchorPosition(currentSourceAnchorId);
                if (!fromPos || !canvasFrame) {
-                    alert("Could not get from position or canvas frame");  
+                    alert("Could not get from position or canvas frame");
                     return;
                }
                const canvasRect = canvasFrame.getBoundingClientRect();
@@ -118,9 +113,9 @@
 
           if (targetAnchorElement) {
                alert("Has target anchor", targetAnchorElement);
-               const toAnchorId = targetAnchorElement.dataset.id;
+               const toAnchorId = targetAnchorElement.id;
                if (toAnchorId === currentSourceAnchorId || flowConnections.some(f => f.fromAnchorId === toAnchorId || f.toAnchorId === toAnchorId)) {
-                    alert("Invalid connection: same anchor or already connected");
+                    alert(`Invalid connection: same anchor ${currentSourceAnchorId} anchor or already connected ${toAnchorId}`);
                     htmlPathElement.remove();
                     htmlPathElement = null;
                     currentSourceAnchorId = null;
@@ -164,76 +159,133 @@
                pathElement.classList.add('clicked-path');
                return true;
           }
-          
+
 
           pathElement.classList.remove('clicked-path');
           const idx = flowConnections.findIndex(f => f.fromAnchorId === fromAnchorId && f.toAnchorId === toAnchorId);
           if (idx !== -1) {
                flowConnections.splice(idx, 1);
                alert("removing now");
-               
+
                pathElement.remove();
-               
+
                saveFlowConnections();
                window.demonstrateFlowPresence();
           }
      }
 
+     // TODO: I was really confused here - relationship mapping between
+     //     nodes for sure should use annotations that do not depend on anchors, right?
+
+     function getFlowParentWindowFrom(flow) {
+          anchorElem = document.getElementById(flow.fromAnchorId);
+          closestParentWindowA = anchorElem.closest('.ui-window');
+          return closestParentWindowA;
+     }
+     function getFlowParentWindowTo(flow) {
+          anchorElem = document.getElementById(flow.toAnchorId);
+          closestParentWindowA = anchorElem.closest('.ui-window');
+          return closestParentWindowA;
+     }
+
      // Update all flows for a given window (by window id)
      function updateFlowsForWindow(windowId) {
 
+          
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
           }
-          animationFrameId = requestAnimationFrame(() => {
-               const windowElement = document.getElementById(windowId);
-               if (!windowElement) {
-                    alert("Zero element window found for id: " + windowId);
-                    return;
-               }
-               const anchorElements = windowElement.querySelectorAll('.anchor');
+
+          const windowElement = document.getElementById(windowId);
+          if (!windowElement) {
+               alert("Zero element window found for id: " + windowId);
+               return;
+          }
+
+          const anchorElements = windowElement.querySelectorAll(`.anchor`);
+
+          // This seems to cause problems
+          //animationFrameId = requestAnimationFrame(() => {
                anchorElements.forEach(anchorEl => {
-                    const anchorId = anchorEl.dataset.id;
+                    const anchorId = anchorEl.id;
                     flowConnections.forEach(f => {
-                         if (f.fromAnchorId === anchorId || f.toAnchorId === anchorId) {
-                              if (windowElement.classList.contains('oneDirectionalWindow')){
+                         if (f.fromAnchorId == anchorId || f.toAnchorId == anchorId) {
+                              console.log(`found relationship on ${windowId} from: ${f.fromAnchorId} to ${f.toAnchorId}`);
+
+                              var closestParentWindowA = getFlowParentWindowFrom(f);
+                              var closestParentWindowB = getFlowParentWindowTo(f);
+
+
+                              if (closestParentWindowA && closestParentWindowA.classList.contains('oneDirectionalWindow')) {
                                    f.pathElement.classList.add('oscillating');
-                                   setTimeout( () => { f.pathElement.classList.remove('oscillating');}, 3000);
+                                   setTimeout(() => { f.pathElement.classList.remove('oscillating'); }, 3000);
                               }
+                              if (closestParentWindowB && closestParentWindowB.classList.contains('oneDirectionalWindow')) {
+                                   f.pathElement.classList.add('oscillating');
+                                   setTimeout(() => { f.pathElement.classList.remove('oscillating'); }, 3000);
+                              }
+
                               const fromPos = getAnchorPosition(f.fromAnchorId);
                               const toPos = getAnchorPosition(f.toAnchorId);
                               if (fromPos && toPos) setPathElementAttributes(f.pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
+                              else (alert("fromPos or toPos missing!"));
                          }
                     });
                });
                animationFrameId = null;
-          });
+          //});
      }
 
      function saveFlowConnections() {
-          
+
           localStorage.setItem("flows", JSON.stringify(flowConnections.map(f => ({ fromAnchorId: f.fromAnchorId, toAnchorId: f.toAnchorId }))));
+     }
+
+     function processFlowList(flowList) {
+          var deferred = new Array();
+          flowList.forEach(f => {
+               const fromAnchorElement = document.querySelector(`.anchor#${f.fromAnchorId}`);
+               const toAnchorElement = document.querySelector(`.anchor#${f.toAnchorId}`);
+               if (fromAnchorElement && toAnchorElement) {
+                    const pathElement = createPathElement();
+                    const fromPos = getAnchorPosition(f.fromAnchorId);
+                    const toPos = getAnchorPosition(f.toAnchorId);
+                    setPathElementAttributes(pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
+                    lockFlowConnection(pathElement, f.fromAnchorId, f.toAnchorId);
+                    window.canvasFrame.appendChild(pathElement);
+               } else {
+                    console.log(`Deferred loading relationship flow from: ${f.fromAnchorId} to ${f.toAnchorId}`);
+                    deferred.push(f);
+               }
+
+          });
+          return deferred;
+
      }
 
      function loadFlowConnections() {
           flowConnections.length = 0;
           const stored = localStorage.getItem("flows");
-          canvasFrame.innerHTML = ''; // Clear existing paths
+          window.canvasFrame.innerHTML = ''; // Clear existing paths
           if (stored) {
                const arr = JSON.parse(stored);
-               arr.forEach(f => {
-                    const fromAnchorElement = document.querySelector(`.anchor[data-id="${f.fromAnchorId}"]`);
-                    const toAnchorElement = document.querySelector(`.anchor[data-id="${f.toAnchorId}"]`);
-                    if (fromAnchorElement && toAnchorElement) {
-                         const pathElement = createPathElement();
-                         const fromPos = getAnchorPosition(f.fromAnchorId);
-                         const toPos = getAnchorPosition(f.toAnchorId);
-                         setPathElementAttributes(pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
-                         lockFlowConnection(pathElement, f.fromAnchorId, f.toAnchorId);
-                         canvasFrame.appendChild(pathElement);
+               var deferred = processFlowList(arr);
+
+               setTimeout(() => {
+                    var failed = processFlowList(deferred);
+                    if (failed.length == 0) {
+                         console.log("deferred flow loading succeeded!");
                     }
-               });
+                    else {
+                         failed.forEach(flow => {
+                              console.log(`Failed relationship from: ${flow.fromAnchorId} to ${flow.toAnchorId}`);
+                         });
+                    }
+
+               }, 1000);
           }
+
+
      }
 
      /* ---------- Expose integration functions ---------- */
@@ -241,5 +293,6 @@
      window.updateFlowsForWindow = updateFlowsForWindow;
      window.saveFlowConnections = saveFlowConnections;
      window.loadFlowConnections = loadFlowConnections;
+     window.getAnchorPosition = getAnchorPosition;
 
 }(window, document));
