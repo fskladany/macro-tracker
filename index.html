@@ -39,6 +39,47 @@
 
 	<script>
 
+		// This forced me to python -m http.server
+		// This decision is not final
+		function loadWindow(windowId, targetDiv){
+			fetch('x128/'+windowId+'.html')
+			.then (response => response.text())
+			.then ( html => {
+				//console.log(html);
+				const targetDivElem= document.getElementById(targetDiv);
+			
+				if (!targetDivElem){
+					throw new Error(`Window element not found by id: ${targetDiv}`);
+				}
+
+				const template = document.createElement('template');
+				template.innerHTML = html;
+
+				const nNodes = template.content.childNodes.length;
+				
+				template.content.childNodes.forEach(childNone => {
+					targetDivElem.appendChild(childNone);
+					window.UiNode.dragElement(childNone.id);
+					
+				
+				})
+				
+				targetDivElem.querySelectorAll('.anchor-group')
+					.forEach(window.Fluency.addCloseButtonToWindow);
+
+				window.restoreWindowState();
+				
+			
+			})
+			.catch (error => {
+				alert(`Error loading ${windowId}: ${error}`);
+			})
+
+		
+			
+			
+		}
+
 		function toggleWindow(windowId) {
 			const windowEl = document.getElementById(windowId);
 			if (windowEl) {
@@ -52,11 +93,18 @@
 			updateFlowsForWindow(windowId);
 		};
 
+		// Load external windows
+		loadWindow('External', 'externalWindowContainer');
+		
+
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
 			// Alternatively (not verified) document.queryFirst('#templateSelector.addEventListner () => {
 			//    LoadTemplateItems(self.id)
 			//})
+
+			window.restoreWindowState();
+			
 			window.MacroTracker.LoadFoodItemTemplates('templateSelect');
 			window.MacroTracker.LoadFoodItemTemplates('shoppingPurposeKey');
 			window.Shopper.LoadRecipeItemSelection('recipeIngredientSelect');
@@ -71,27 +119,21 @@
 			window.KeyboardPermission.SetKeyboardEvents();
 
 
+		
 			// Activate the drag function for the draggable elements
 
-			window.UiNode.dragElement(document.getElementById("eatingHistoryWindow"));
-			window.UiNode.dragElement(document.getElementById("addEntryWindow"));
-			window.UiNode.dragElement(document.getElementById("sumDigestionWindow"));
-			window.UiNode.dragElement(document.getElementById("monthlyTrailWindow"));
-			window.UiNode.dragElement(document.getElementById("costlyWillWindow"));
-			window.UiNode.dragElement(document.getElementById("timeWindow"));
-			window.UiNode.dragElement(document.getElementById("recipeWindow"));
-			window.UiNode.dragElement(document.getElementById("shoppingWindow"));
-			window.UiNode.dragElement(document.getElementById("recipeCreatorWindow"));
-			window.UiNode.dragElement(document.getElementById("startMenu"));
-			window.UiNode.dragElement(document.getElementById("inventoryWindow"));
-			window.UiNode.dragElement(document.getElementById("vacuumWindow"));
-			window.UiNode.dragElement(document.getElementById("fridgeWindow"));
-			window.UiNode.dragElement(document.getElementById("intentionsWindow"));
-			window.UiNode.dragElement(document.getElementById("actionHistoryWindow"));
+			window.UiNode.dragElement("eatingHistoryWindow");
+			window.UiNode.dragElement("addEntryWindow");
+			window.UiNode.dragElement("sumDigestionWindow");
+			window.UiNode.dragElement("monthlyTrailWindow");
+			window.UiNode.dragElement("recipeWindow");
+			window.UiNode.dragElement("shoppingWindow");
+			window.UiNode.dragElement("recipeCreatorWindow");
+			window.UiNode.dragElement("startMenu");
+			window.UiNode.dragElement("inventoryWindow");
+			window.UiNode.dragElement("intentionsWindow");
+			window.UiNode.dragElement("actionHistoryWindow");
 
-
-			loadFlowConnections();
-			window.demonstrateFlowPresence();
 
 			document.querySelector('#startMenuToggle').addEventListener('click', (e) => {
 				toggleWindow('startMenuList');
@@ -100,7 +142,11 @@
 			// Example usage: call this after creating or rendering a window
 			document.querySelectorAll('.ui-window .anchor-group')
 				.forEach(window.Fluency.addCloseButtonToWindow);
-			});
+
+			window.canvasFrame = document.querySelector(".flow-canvas");
+			window.loadFlowConnections();
+			window.demonstrateFlowPresence();
+		});
 
 		
 
@@ -112,6 +158,9 @@
 	<svg class="flow-canvas">
 	</svg>
 
+	<div id="externalWindowContainer">
+		Placeholder
+	</div>
 	<div id="startMenu" class="draggable">
 		<button id="startMenuToggle" class="circle-button"> M
 			<svg id="demonstrateActiveFlowsId" class="vibrating-orbit hidden" width="200" height="200">
