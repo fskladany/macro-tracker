@@ -41,43 +41,43 @@
 
 		// This forced me to python -m http.server
 		// This decision is not final
-		function loadWindow(windowId, targetDiv){
-			fetch('x128/'+windowId+'.html')
-			.then (response => response.text())
-			.then ( html => {
-				//console.log(html);
-				const targetDivElem= document.getElementById(targetDiv);
-			
-				if (!targetDivElem){
-					throw new Error(`Window element not found by id: ${targetDiv}`);
-				}
+		function loadWindow(windowId, targetDiv) {
+			fetch('x128/' + windowId + '.html')
+				.then(response => response.text())
+				.then(html => {
+					//console.log(html);
+					const targetDivElem = document.getElementById(targetDiv);
 
-				const template = document.createElement('template');
-				template.innerHTML = html;
+					if (!targetDivElem) {
+						throw new Error(`Window element not found by id: ${targetDiv}`);
+					}
 
-				const nNodes = template.content.childNodes.length;
-				
-				template.content.childNodes.forEach(childNone => {
-					targetDivElem.appendChild(childNone);
-					window.UiNode.dragElement(childNone.id);
-					
-				
+					const template = document.createElement('template');
+					template.innerHTML = html;
+
+					const nNodes = template.content.childNodes.length;
+
+					template.content.childNodes.forEach(childNone => {
+						targetDivElem.appendChild(childNone);
+						window.UiNode.dragElement(childNone.id);
+
+
+					})
+
+					targetDivElem.querySelectorAll('.anchor-group')
+						.forEach(window.Fluency.addCloseButtonToWindow);
+
+					window.restoreWindowState();
+
+
 				})
-				
-				targetDivElem.querySelectorAll('.anchor-group')
-					.forEach(window.Fluency.addCloseButtonToWindow);
+				.catch(error => {
+					alert(`Error loading ${windowId}: ${error}`);
+				})
 
-				window.restoreWindowState();
-				
-			
-			})
-			.catch (error => {
-				alert(`Error loading ${windowId}: ${error}`);
-			})
 
-		
-			
-			
+
+
 		}
 
 		function toggleWindow(windowId) {
@@ -95,7 +95,7 @@
 
 		// Load external windows
 		loadWindow('External', 'externalWindowContainer');
-		
+
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
@@ -104,12 +104,12 @@
 			//})
 
 			window.restoreWindowState();
-			
+
 			window.MacroTracker.LoadFoodItemTemplates('templateSelect');
 			window.MacroTracker.LoadFoodItemTemplates('shoppingPurposeKey');
 			window.Shopper.LoadRecipeItemSelection('recipeIngredientSelect');
 			window.Shopper.LoadRecipeContent('ingredientProcessList');
-			
+
 
 			// Initial table and totals update
 			window.MacroTracker.displayHistoryTable();
@@ -119,7 +119,7 @@
 			window.KeyboardPermission.SetKeyboardEvents();
 
 
-		
+
 			// Activate the drag function for the draggable elements
 
 			window.UiNode.dragElement("eatingHistoryWindow");
@@ -135,26 +135,26 @@
 			window.UiNode.dragElement("actionHistoryWindow");
 
 
-	
+
 			var startPos = null;
 			document.querySelector('#startMenuToggle').addEventListener('mousedown', (e) => {
-				startPos = {'x': e.clientX, 'y': e.clientY};
+				startPos = { 'x': e.clientX, 'y': e.clientY };
 			});
 			document.querySelector('#startMenuToggle').addEventListener('mouseup', (e) => {
-			
-				setTimeout(()=> {
-					const endPos = {'x': e.clientX, 'y': e.clientY};
+
+				setTimeout(() => {
+					const endPos = { 'x': e.clientX, 'y': e.clientY };
 					//alert(`StartPos: ${JSON.stringify(startPos)}, Endpos: ${JSON.stringify(endPos)}`);
 					//if (startPos.x == endPos.x && startPos.y == endPos.y){
-					if (Math.abs(startPos.x - endPos.x) < 10 && Math.abs(startPos.y - endPos.y) < 10){
+					if (Math.abs(startPos.x - endPos.x) < 10 && Math.abs(startPos.y - endPos.y) < 10) {
 						//alert("Exactly equal, click!");
 						toggleWindow('startMenuList');
 					}
-					else{
+					else {
 						e.preventDefault();
 					}
 				}, 100);
-				
+
 			});
 
 			// Example usage: call this after creating or rendering a window
@@ -166,7 +166,7 @@
 			window.demonstrateFlowPresence();
 		});
 
-		
+
 
 
 
@@ -259,8 +259,7 @@
 		<div id="macro-actions-row">
 			<button onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
 			<button onclick="alert('ingredient');"> Save As... </button>
-			<button 
-				onclick="document.querySelector('#recipeWindow').classList.remove('hidden')"> + Find Recipe
+			<button onclick="document.querySelector('#recipeWindow').classList.remove('hidden')"> + Find Recipe
 			</button>
 		</div>
 
@@ -321,14 +320,13 @@
 			<h1 style="margin-bottom:10px;">Recipe Process - Beef with Rice</h1>
 			<button class="subtle" style="width: 30%; margin: 0;" onclick="alert('No instructions defined')">Cooking
 				Instructions</button>
-		
-		
+
+
 		</div>
 		<div class="delta-ingredient-note">
 			<label for="recipeIngredientSelect" style="float: left">Choose an ingredient variant:</label>
-			<select id="recipeIngredientSelect" style="float: left;width:70%; left:0;"
-			onchange="">
-				<option value="">Manual template...</option>	
+			<select id="recipeIngredientSelect" style="float: left;width:70%; left:0;" onchange="">
+				<option value="">Manual template...</option>
 			</select>
 			<button style="float: right; width:23%" onclick="alert('Adding ingredient...')"> + Add </button>
 			<div style="clear: both;"></div>
@@ -364,14 +362,14 @@
 		<h3 style="float:left">Eating History</h3>
 		<button class="eatingHistoryMem" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
 		<button class="eatingHistoryMem" onclick="window.MacroTracker.getEntriesJSON()">Backup</button>
-	
+
 		<div id="showMoreHistoryDiv">
 			<input type="checkbox" id="fullEatingHistoryCheckbox" style="margin-left: 10px; width: 20px;"
-			onchange="window.MacroTracker.displayHistoryTable()">
+				onchange="window.MacroTracker.displayHistoryTable()">
 
 			<label for="fullEatingHistoryCheckbox">show all</label>
 		</div>
-		
+
 		<div style="clear: both;"></div>
 		<div class="anchor-group">
 			<div class="anchor" id="win2"> 📀 </div>
