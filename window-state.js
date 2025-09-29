@@ -1,4 +1,4 @@
-(function(window, document){
+(function (window, document) {
 
      // Save window positions and visibility
      function saveWindowState() {
@@ -23,11 +23,13 @@
                     win.classList.toggle('hidden', !state[id].visible);
                     win.style.left = state[id].x || win.style.left;
                     win.style.top = state[id].y || win.style.top;
+               } else {
+                    console.log(`Window ${id} deleted?`);
                }
           });
      }
 
-     function demonstrateFlowPresence(){
+     function demonstrateFlowPresence() {
           const stored = localStorage.getItem("flows");
           if (stored) {
                const arr = JSON.parse(stored);
@@ -48,12 +50,11 @@
      }
 
      // Save state on drag or toggle
-     window.addEventListener('mouseup', function() {
+     window.addEventListener('mouseup', function () {
           document.querySelectorAll('.ui-window').forEach(win => ensureWindowIsTopLevel(win));
           saveWindowState();
      });
 
-     document.addEventListener('DOMContentLoaded', restoreWindowState);
 
      // Optionally expose for manual save
      window.saveWindowState = saveWindowState;

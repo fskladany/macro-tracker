@@ -43,15 +43,17 @@
 }
 
 @keyframes flowOscillate {
-    0% {
-        stroke-dashoffset: 0;
-    }
-    50% {
-        stroke-dashoffset: -180;
-    }
-    100% {
-        stroke-dashoffset: 0;
-    }
+     0% {
+          stroke-dashoffset: 0;
+     }
+
+     50% {
+          stroke-dashoffset: -180;
+     }
+
+     100% {
+          stroke-dashoffset: 0;
+     }
 }
 
 
@@ -75,6 +77,8 @@
      height: 18px;
      top: 1px;
      position: fixed;
+     left: 5px;
+     width: 50%;
 
 }
 
@@ -83,7 +87,8 @@
      width: 16px;
      height: 16px;
      pointer-events: auto;
-     margin-left: 33%;
+     margin: 0 auto;
+     margin-top: 3px;
 }
 
 

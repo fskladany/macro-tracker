@@ -135,8 +135,26 @@
 			window.UiNode.dragElement("actionHistoryWindow");
 
 
-			document.querySelector('#startMenuToggle').addEventListener('click', (e) => {
-				toggleWindow('startMenuList');
+	
+			var startPos = null;
+			document.querySelector('#startMenuToggle').addEventListener('mousedown', (e) => {
+				startPos = {'x': e.clientX, 'y': e.clientY};
+			});
+			document.querySelector('#startMenuToggle').addEventListener('mouseup', (e) => {
+			
+				setTimeout(()=> {
+					const endPos = {'x': e.clientX, 'y': e.clientY};
+					//alert(`StartPos: ${JSON.stringify(startPos)}, Endpos: ${JSON.stringify(endPos)}`);
+					//if (startPos.x == endPos.x && startPos.y == endPos.y){
+					if (Math.abs(startPos.x - endPos.x) < 10 && Math.abs(startPos.y - endPos.y) < 10){
+						//alert("Exactly equal, click!");
+						toggleWindow('startMenuList');
+					}
+					else{
+						e.preventDefault();
+					}
+				}, 100);
+				
 			});
 
 			// Example usage: call this after creating or rendering a window
@@ -149,6 +167,7 @@
 		});
 
 		
+
 
 
 	</script>

@@ -10,7 +10,7 @@
                const target = e.target;
                const tagName = target.tagName.toLowerCase();
                const type = target.type ? target.type.toLowerCase() : '';
-               console.log('Clicked element:', tagName, type);
+               // console.log('Clicked element:', tagName, type);
 
                if (target.classList.contains('anchor')) {
                     console.log("This is an anchor node!");
@@ -140,7 +140,7 @@
           if (!windowElement.querySelector('.close-btn')) {
                const closeBtn = document.createElement('button');
                closeBtn.classList.add('close-btn');
-               closeBtn.textContent = '❎';
+               closeBtn.textContent = '㆝';
 
                closeBtn.onclick = function() {
                     toggleWindow(windowElement.id);

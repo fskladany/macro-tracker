@@ -1,4 +1,3 @@
-
 .ui-window {
      position: absolute;
      width: 450px;
@@ -24,9 +23,9 @@
 }
 
 #shoppingWindow {
-    top: 110px;
-    left: 280px;
-    width: 400px;
+     top: 110px;
+     left: 280px;
+     width: 400px;
 }
 
 
@@ -57,12 +56,12 @@
 
 #costlyWillWindow {
      left: 10px;
-     top:63%;
+     top: 63%;
 }
 
 #timeWindow {
      left: 10px;
-     top:83%;
+     top: 83%;
 }
 
 #monthlyTrailWindow {
@@ -79,141 +78,146 @@
 }
 
 .close-btn {
-    display: contents;
-    width: 24px;
-    left: 4px;
-    top: 4px;
-    z-index: 10;
-    background-color: #0000;
+     display: table-column;
+     border: none;
+     font-size: 16px;
+     width: 40px;
+     height: 24px;
+     z-index: 10;
+     padding: 0;
+     margin-top: 0;
+     background-color: #89cc975c;
 
 }
 
 
 #recipeWindow {
-    top: 200px;
-    left: 40px;
-    width: 400px;
-    height: 350px;
+     top: 200px;
+     left: 40px;
+     width: 400px;
+     height: 350px;
 }
 
 
 /* --- Start Menu Sidebar --- */
 #startMenu {
-    position: fixed;
+     position: fixed;
      top: 0px;
-    left: 20px;
-    z-index: 200;
+     left: 20px;
+     z-index: 200;
 }
 
 #startMenuToggle {
-    width: 50px;
-    height: 50px;
-    z-index: 0;
-    border-radius: 50%;
-    font-size: 24px;
-    padding: 0;
-    margin: 0;
-    border: 2px solid #7db0b733;
-    background-color: #ddf2ea45;
-    backdrop-filter: blur(3px);
-    color: #333;
-    cursor: pointer;
+     width: 50px;
+     height: 50px;
+     z-index: 0;
+     border-radius: 50%;
+     font-size: 24px;
+     padding: 0;
+     margin: 0;
+     border: 2px solid #7db0b733;
+     background-color: #ddf2ea45;
+     backdrop-filter: blur(3px);
+     color: #333;
+     cursor: pointer;
 }
 
 #startMenuList:not(.hidden) {
-    
-    bottom: 60px; /* Position above the toggle button */
-    left: 0;
-    width: 200px;
-    background-color: #ddf2eaab;
-    backdrop-filter: blur(5px);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: 1px solid #7db0b733;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
+
+     bottom: 60px;
+     /* Position above the toggle button */
+     left: 0;
+     width: 200px;
+     background-color: #ddf2eaab;
+     backdrop-filter: blur(5px);
+     border-radius: 8px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+     border: 1px solid #7db0b733;
+     padding: 5px;
+     display: flex;
+     flex-direction: column;
 }
 
 #startMenuList button {
-    background-color: transparent;
-    color: #333;
-    text-align: left;
-    margin: 2px 0;
-    padding: 8px 12px;
-    font-size: 16px;
-    z-index: 6;
-    border: none;
+     background-color: transparent;
+     color: #333;
+     text-align: left;
+     margin: 2px 0;
+     padding: 8px 12px;
+     font-size: 16px;
+     z-index: 6;
+     border: none;
 }
 
 #startMenuList button:hover {
-    background-color: #ffffff8c;
+     background-color: #ffffff8c;
 }
 
 
 .menu-item-group {
-    position: relative;
+     position: relative;
 }
 
 .submenu {
-    display: none;
-    position: absolute;
-    left: 100%;
-    top: -5px; /* Align with the top of the parent button */
-    width: 150px;
-    padding: 5px;
-    background-color: #ddf2eaab;
-    backdrop-filter: blur(5px);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: 1px solid #7db0b733;
+     display: none;
+     position: absolute;
+     left: 100%;
+     top: -5px;
+     /* Align with the top of the parent button */
+     width: 150px;
+     padding: 5px;
+     background-color: #ddf2eaab;
+     backdrop-filter: blur(5px);
+     border-radius: 8px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+     border: 1px solid #7db0b733;
 }
 
 .menu-item-group:hover .submenu {
-    display: block;
+     display: block;
 }
 
 
 #intentionsWindow {
-    top: 200px;
-    left: 100px;
-    width: 400px;
-    height: auto;
+     top: 200px;
+     left: 100px;
+     width: 400px;
+     height: auto;
 }
 
 .intention-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 8px;
-    border-bottom: 1px solid #a0a18480;
-    background-color: #ffffff1c;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 12px 8px;
+     border-bottom: 1px solid #a0a18480;
+     background-color: #ffffff1c;
 }
 
 .intention-timer {
-    font-size: 13px;
-    background-color: #e9e8d24d;
-    padding: 3px 6px;
-    border-radius: 4px;
+     font-size: 13px;
+     background-color: #e9e8d24d;
+     padding: 3px 6px;
+     border-radius: 4px;
 }
 
 
 #actionHistoryWindow {
-    top: 100px;
-    left: 320px;
-    width: 400px;
-    height: auto;
+     top: 100px;
+     left: 320px;
+     width: 400px;
+     height: auto;
 }
 
 .action-item {
-    padding: 12px 8px;
-    border-bottom: 1px solid #a0a18480;
-    background-color: #ffffff1c;
+     padding: 12px 8px;
+     border-bottom: 1px solid #a0a18480;
+     background-color: #ffffff1c;
 }
 
 .action-meta {
-    display: block;
-    font-size: 13px;
-    color: #555;
-    margin-top: 4px;
+     display: block;
+     font-size: 13px;
+     color: #555;
+     margin-top: 4px;
 }
