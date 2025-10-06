@@ -17,12 +17,13 @@
 }
 
 .ingredient-process-item {
-    display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 8px;
     border-bottom: 1px solid #a0a18480;
     background-color: #ffffff1c;
+    display: table;
+    width: 100%;
 }
 
 .ingredient-process-item.not-available {
@@ -58,6 +59,10 @@ button.cooking {
 div.done-cooking {
     background-color: rgb(201, 238, 212);
     color:#333;
+}
+
+.skipped-recipe-item {
+    background-color: #888;
 }
 
 .recipe-item {

@@ -11,7 +11,6 @@
 	<link rel="stylesheet" href="ui-unform.css">
 	<link rel="stylesheet" href="ui-window.css">
 	<link rel="stylesheet" href="ui-construction.css">
-
 	<link rel="stylesheet" href="recipe.css">
 
 	<style>
@@ -28,6 +27,7 @@
 		}
 	</style>
 	<script src="restrainings.js"></script>
+	<script src="Hermes.js"></script>
 	<script src="recipe.js"></script>
 	<script src="ingredients.js"></script>
 	<script src="recipeIngredients.js"></script>
@@ -272,7 +272,7 @@
 		<div style="clear: both;"></div>
 		<div id="macro-actions-row">
 			<button onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
-			<button onclick="window.Recipe.addRealIngredient('metarice')"> Prepare dish </button>
+			<button onclick="window.Recipe.addRawIngredient('metarice')"> Prepare dish </button>
 			
 			<button onclick="document.querySelector('#recipeWindow').classList.remove('hidden')"> + Find Recipe
 			</button>
@@ -341,9 +341,9 @@
 		<div class="delta-ingredient-note">
 			<label for="recipeIngredientSelect" style="float: left">Choose an subrecipe to add:</label>
 			<select id="recipeIngredientSelect" style="float: left;width:70%; left:0;" onchange="">
-				<option value="">Manual template...</option>
+				<option value="{}">Manual template...</option>
 			</select>
-			<button style="float: right; width:23%" onclick="window.Recipe.addRealIngredient('boiledRice')"> + Add </button>
+			<button style="float: right; width:23%" onclick="window.Recipe.addRealIngredient()"> + Add </button>
 			<div style="clear: both;"></div>
 		</div>
 
@@ -355,7 +355,7 @@
 
 		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
 			<button style="width: 48%;" onclick="alert('Cooking all ingredients...')">Cook All</button>
-			<button style="width: 48%;" onclick="alert('Store where?')">Store</button>
+			<button style="width: 48%;" onclick="window.Hermes.CommitIngredientState();">Store as dish</button>
 
 		</div>
 	</div>
@@ -510,9 +510,9 @@
 		<label for="shoppingBuyPeriod">Window Size (days)</label>
 		<input type="number" id="shoppingBuyPeriod" value="7" placeholder="e.g., 7 for weekly">
 
-		<button class="subtle" onclick="window.Recipe.applyIngredientIntent('bought')">Pay</button>
-		<button class="subtle" onclick="window.Recipe.applyIngredientIntent('trashed')">Surrender</button>
-		<button class="subtle" onclick="window.Recipe.applyIngredientIntent('commited')">Demand</button>
+		<button class="subtle" onclick="window.Hermes.applyIngredientIntent('bought')">Pay</button>
+		<button class="subtle" onclick="window.Hermes.applyIngredientIntent('trashed')">Surrender</button>
+		<button class="subtle" onclick="window.Hermes.applyIngredientIntent('commited')">Demand</button>
 
 	</div>
 
