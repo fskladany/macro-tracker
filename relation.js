@@ -40,6 +40,8 @@
 
           window.addEventListener('pointermove', followPointer);
           window.addEventListener('pointerup', finishConnection);
+          window.addEventListener('touchend', finishConnection);
+          window.addEventListener('touchcancel', finishConnection);
 
           followPointer(origEvent);
      }
@@ -106,9 +108,14 @@
 
           window.removeEventListener('pointermove', followPointer);
           window.removeEventListener('pointerup', finishConnection);
+          window.removeEventListener('touchmove', followPointer);
+          window.removeEventListener('touchend', finishConnection);
+          window.removeEventListener('touchcancel', finishConnection);
+
           document.body.classList.remove("dragging-anchor");
 
           const hitElements = document.elementsFromPoint(e.clientX, e.clientY);
+          alert("Hit elements: " + hitElements.map(el => el.className).join(', '));
           const targetAnchorElement = hitElements.find(el => el.classList && el.classList.contains('anchor'));
 
           if (targetAnchorElement) {

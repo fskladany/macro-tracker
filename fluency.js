@@ -95,6 +95,10 @@
           const exitDragDurationDepressurize = function () {
                document.onmouseup = null;
                document.onmousemove = null;
+               document.ontouchend = null;
+               document.ontouchcancel = null;
+               document.ontouchmove = null;
+               
           }
 
           if (document.getElementById(element.id + "Header")) {
@@ -102,6 +106,7 @@
           } else {
                element.addEventListener('mousedown', dragMouseDown);
                element.addEventListener('touchstart', dragMouseDown);
+
           }
 
           
