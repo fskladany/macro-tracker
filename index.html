@@ -25,6 +25,7 @@
 			height: 100vh;
 			overflow: hidden;
 		}
+
 	</style>
 	<script src="restrainings.js"></script>
 	<script src="Hermes.js"></script>
@@ -177,6 +178,7 @@
 			window.canvasFrame = document.querySelector(".flow-canvas");
 			window.loadFlowConnections();
 			window.demonstrateFlowPresence();
+
 		});
 
 
@@ -195,6 +197,8 @@
 	</div>
 	<div id="startMenu" class="draggable">
 		<button id="startMenuToggle" class="circle-button"> M
+
+
 			<svg id="demonstrateActiveFlowsId" class="vibrating-orbit hidden" width="200" height="200">
 				<path>
 					<animate attributeName="d" dur="2s" repeatCount="indefinite" values="
@@ -332,7 +336,7 @@
 
 
 		<div style="display: flex; justify-content: space-between; align-items: center;">
-			<h1 style="margin-bottom:10px;">Recipe Process - Beef with Rice</h1>
+			<h2 style="margin-bottom:10px;">Recipe Process</h2>
 			<button class="subtle" style="width: 30%; margin: 0;" onclick="alert('No instructions defined')">Cooking
 				Instructions</button>
 
@@ -450,7 +454,7 @@
 		<h2>24 hour Window</h2>
 		<div class="totals24">
 			<div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
-			<div class="total-item">Total Mass-Entropy (24h): <span id="t24energy">693</span></div>
+			<div class="total-item">Mass-Entropy (24h): <span id="t24energy">693</span></div>
 			<div class="total-item">Free Ek (24h): <span id="t24kinetics">693</span></div>
 
 		</div>

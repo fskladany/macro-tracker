@@ -171,6 +171,131 @@
                
      }
 
+     function CreateIngredientLine(recipeIngredient){
+   
+          const ingredientProcessItem = document.createElement('div');
+          const ingredientConfigurationKey = {};
+          ingredientProcessItem.className = 'ingredient-process-item';
+
+          const recipeIngredientKey = recipeIngredient['name'];
+     
+          const ingredientNameMeta = document.createElement('span');
+          const ingredientName = document.createElement('span');
+          ingredientNameMeta.textContent="Food: ";
+          ingredientNameMeta.appendChild(ingredientName);
+          
+          ingredientName.textContent = recipeIngredientKey;
+          ingredientProcessItem.appendChild(ingredientNameMeta);
+
+          ingredientConfigurationKey['name'] = recipeIngredientKey;
+
+          const availableIngredientActions = document.createElement('div');
+          availableIngredientActions.className = 'ingredient-actions';
+
+          const amountLabel = document.createElement('label');
+          amountLabel.for="unique-key";
+          amountLabel.innerText="Amount:";
+
+          subIngredients = new Array();
+          subiSrc = recipeIngredient['subIngredients']
+          if (!subiSrc){
+               alert("no sub ingredients!)");
+               return ingredientProcessItem;
+          }
+          Object.keys(recipeIngredient['subIngredients']).forEach(numKey => {
+               ingre = recipeIngredient['subIngredients'][numKey];
+               subIngredients.push(ingre);
+               console.log(ingre);
+          })
+          // ingredients.forEach (subIngredientKey => window.Hermes.ingredientAvailable(subIngredientKey) )
+          const subIngredientDiv = document.createElement('div');
+          subIngredientDiv.style="display:table";
+          subIngredientDiv.className = 'ingredient-actions';
+          subIngredientDiv.textContent = "Includes: ";
+               
+          subIngredients.forEach (subIngredientKey => {
+               const subIngredientSpan = document.createElement('span');
+               subIngredientSpan.className = 'sub-ingredient';
+               subIngredientSpan.textContent = subIngredientKey;
+               subIngredientDiv.appendChild(subIngredientSpan);
+
+               ingredientProcessItem.appendChild(subIngredientDiv);
+               if (!window.Hermes.ingredientAvailable(recipeIngredientKey)) {
+                    subIngredientSpan.style="color: red";
+                    const findIngredientButton = document.createElement('button');
+                    subIngredientSpan.textContent += ' (not available)';
+                    findIngredientButton.className = 'subtle';
+                    findIngredientButton.textContent = 'Find ' + subIngredientKey;
+                    findIngredientButton.onclick = function() {
+                         toggleWindow('shoppingWindow');
+                         // window.Hermes.searchForIngredient(recipeIngredientKey);
+                    };
+                    subIngredientSpan.appendChild(findIngredientButton);
+               
+               } else {
+                    const availableSpan = document.createElement('span');
+                    availableSpan.textContent = ' ✅  ';
+                    subIngredientSpan.appendChild(availableSpan);
+               }
+          });
+               
+
+          for (let j = 0; j < 3; j++) {
+               const actionButton = document.createElement('button');
+               actionButton.className = 'subtle';
+
+               if (j === 0) {
+                    actionButton.textContent = 'Instructions';
+                    const instructionText = window.recipeIngredients[recipeIngredientKey];
+                    if (!instructionText){
+                         actionButton.textContent = 'Instructions (not available)';
+                         actionButton.disabled=true;
+                    }
+                    actionButton.onclick = function() {
+                         alert(instructionText['instructions']);
+                         
+                    };
+               } else if (j === 1){
+                    createCookButton(actionButton, recipeIngredientKey, ingredientName, ingredientConfigurationKey, ingredientProcessItem);
+               }
+                    else if (j === 2) {
+                    actionButton.textContent = 'Skip';
+                    actionButton.onclick = function(){
+                         ingredientProcessItem.innerHTML = "";
+                         ingredientProcessItem.textContent = recipeIngredientKey + " (skipped)";
+                         ingredientProcessItem.classList.add("skipped-recipe-item");
+                         ingredientConfigurationKey['skipped'] = true;
+                         ingredientProcessItem.dataset.configuration = JSON.stringify(ingredientConfigurationKey);
+                    }
+               }
+
+               
+               availableIngredientActions.appendChild(actionButton);
+          }
+
+               const amountElem = document.createElement('input');
+          amountElem.type='number';
+          amountElem.id="unique-key";
+          amountElem.value=1;
+          amountElem.placeholder="1=100g";
+          amountElem.step=0.1;
+          amountElem.style="width: 100px";
+          amountElem.classList.add("inputAmount");
+          
+          const ttlDisplay = document.createElement('span');
+          ttlDisplay.className = 'ttl-display';
+          ttlDisplay.textContent = 'TTL: 48h';
+
+          ingredientProcessItem.dataset.configuration = JSON.stringify(ingredientConfigurationKey);
+          ingredientProcessItem.appendChild(subIngredientDiv);
+          availableIngredientActions.appendChild(ttlDisplay);
+          ingredientProcessItem.appendChild(amountLabel);
+          ingredientProcessItem.appendChild(amountElem);
+          ingredientProcessItem.appendChild(availableIngredientActions);
+
+          return ingredientProcessItem;
+     }
+
      function LoadRecipeContent(recipeDivId) {
         
           const fakeIngredients = [];
@@ -178,107 +303,17 @@
           document.getElementById(recipeDivId).innerHTML = '';
 
           fakeIngredients.forEach (recipeIngredientKey => {
-               const ingredientProcessItem = document.createElement('div');
-               const ingredientConfigurationKey = {};
-               ingredientProcessItem.className = 'ingredient-process-item';
-          
-               const ingredientName = document.createElement('span');
-               ingredientName.textContent = recipeIngredientKey;
-               ingredientProcessItem.appendChild(ingredientName);
+               recipeIngredientData = window.recipeIngredients[recipeIngredientKey];
+               if (!recipeIngredientData){
+                    recipeIngredientData = {"name": recipeIngredientKey};
 
-               ingredientConfigurationKey['name'] = recipeIngredientKey;
-
-               const availableIngredientActions = document.createElement('div');
-               availableIngredientActions.className = 'ingredient-actions';
-
-               const amountLabel = document.createElement('label');
-               amountLabel.for="unique-key";
-               amountLabel.innerText="Amount:";
-               
-              
-               
-               
-
-               if (recipeIngredientKey === 'Mushrooms') {
-                    const actionButton = document.createElement('button');
-                    ingredientName.textContent += ' (not available)';
-                    actionButton.className = 'subtle';
-                    ingredientProcessItem.classList.add('not-available');
-                    actionButton.textContent = 'Find Hunting Locations';
-                    actionButton.onclick = function() {
-                         toggleWindow('shoppingWindow');
-                    };
-                    availableIngredientActions.appendChild(actionButton);
-                    ingredientProcessItem.appendChild(availableIngredientActions);
-                    document.getElementById(recipeDivId).appendChild(ingredientProcessItem);
-                    return; // Skip adding other buttons for unavailable ingredient
                }
-
-               else if (recipeIngredientKey === 'Spice Mix') {
-                    const actionButton = document.createElement('button');
-                    actionButton.className = 'subtle';
-                    actionButton.textContent = 'Open Sub-recipe';
-                    actionButton.onclick = function() {
-                         alert('Opening sub-recipe...');
-                    };
-                    availableIngredientActions.appendChild(actionButton);
-               }
-
-
-               for (let j = 0; j < 3; j++) {
-                    const actionButton = document.createElement('button');
-                    actionButton.className = 'subtle';
-
-                    if (j === 0) {
-                         actionButton.textContent = 'Instructions';
-                         const instructionText = window.recipeIngredients[recipeIngredientKey];
-                         if (!instructionText){
-                              actionButton.textContent = 'Instructions (not available)';
-                              actionButton.disabled=true;
-                         }
-                         actionButton.onclick = function() {
-                              alert(instructionText['instructions']);
-                              
-                         };
-                    } else if (j === 1){
-                         createCookButton(actionButton, recipeIngredientKey, ingredientName, ingredientConfigurationKey, ingredientProcessItem);
-                    }
-                     else if (j === 2) {
-                         actionButton.textContent = 'Skip';
-                         actionButton.onclick = function(){
-                              ingredientProcessItem.innerHTML = "";
-                              ingredientProcessItem.textContent = recipeIngredientKey + " (skipped)";
-                              ingredientProcessItem.classList.add("skipped-recipe-item");
-                              ingredientConfigurationKey['skipped'] = true;
-                              ingredientProcessItem.dataset.configuration = JSON.stringify(ingredientConfigurationKey);
-                         }
-                    }
-
-                    
-                    availableIngredientActions.appendChild(actionButton);
-               }
-
-                const amountElem = document.createElement('input');
-               amountElem.type='number';
-               amountElem.id="unique-key";
-               amountElem.value=1;
-               amountElem.placeholder="1=100g";
-               amountElem.step=0.1;
-               amountElem.style="width: 100px";
-               amountElem.classList.add("inputAmount");
-               
-               const ttlDisplay = document.createElement('span');
-               ttlDisplay.className = 'ttl-display';
-               ttlDisplay.textContent = 'TTL: 48h';
-
-               ingredientProcessItem.dataset.configuration = JSON.stringify(ingredientConfigurationKey);
-               availableIngredientActions.appendChild(ttlDisplay);
-               ingredientProcessItem.appendChild(availableIngredientActions);
-               ingredientProcessItem.appendChild(amountLabel);
-               ingredientProcessItem.appendChild(amountElem);
+               console.log("Recipe ingredient data" + recipeIngredientKey);
+               console.log(JSON.stringify(recipeIngredientData));
+               ingredientProcessItem = CreateIngredientLine(recipeIngredientData);
                document.getElementById(recipeDivId).appendChild(ingredientProcessItem);
                
-          })
+          });
 
      }
 

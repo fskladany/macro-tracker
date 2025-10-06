@@ -3,7 +3,6 @@ window.recipeIngredients = {
      // Example templates
      // add {verified: true} to permit copilot templating
 
-     _1: { name: "--- protein ---", servingSize: 0 },
      boiledEgg: {
           name: 'boiled egg', servingSize: 50,
           subIngredients: {
@@ -15,18 +14,27 @@ window.recipeIngredients = {
 
      boiledRice: {
           name: 'boiled rice', servingSize: 500,
+          waterInfusionRatio: 3,
           subIngredients: {
                0: "rice"
           },
           instructions: "Cook rice according to package instructions.",
      },
 
+     grilledBeefWithRice: {
+          name: 'grilled beef with rice', servingSize: 700,
+          subIngredients: {
+               0: "grilledBeef",
+               1: "boiledRice"
+          },
+          instructions: "Prepare grilled beef and boiled rice as per their individual instructions. Serve together.",
+     },
 
      grilledChicken: {
           name: 'grilled chicken', servingSize: 400,
           subIngredients: {
                0: "chicken",
-               1: ["rice", "frenchFries"],
+               1: "rice",
                2: "oil",
                3: "salt",
                4: "pepper"
@@ -45,17 +53,6 @@ window.recipeIngredients = {
                5: "mushrooms"
           },
           instructions: "Preheat pan to scorching heat to induce maillard reaction. Marinate beef with oil, salt, pepper, and garlic. Grill to desired doneness.",
-          variants: {
-               'rare': { servingSize: 180 },
-               'medium': { servingSize: 200 },
-               'well-done': {
-                    servingSize: 220,
-                    subIngredients: { // this may not work as intended
-                         5: null
-                    }
-               }
-
-          }
      }
      // Add more templates as needed
 };

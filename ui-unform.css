@@ -51,6 +51,7 @@ th {
 .totals,
 .totals24 {
      margin-top: 15px;
+     font-size: 20px;
 }
 
 .total-item {
@@ -66,11 +67,6 @@ th {
 
 .halfway-there {
      background-color: rgb(255, 238, 0);
-}
-
-.totals div,
-.totals24 div {
-     font-size: 26px;
 }
 
  body {

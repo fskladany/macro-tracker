@@ -81,14 +81,23 @@
      display: table-column;
      border: none;
      font-size: 16px;
-     width: 40px;
+     width: 50px;
      height: 24px;
      z-index: 10;
      padding: 0;
      margin-top: 0;
      background-color: #89cc975c;
+     border-radius: 70%;
+     margin-left: -15px;
+     margin-top: -5px;
+     border-radius: 10px;
 
 }
+
+.close-btn:hover {
+     background-color: red;
+}
+
 
 
 #recipeWindow {

@@ -1,6 +1,8 @@
 (function (window, document) {
 
-     
+     function ingredientAvailable(ingredientKey) {
+          return false;
+     }
      function applyIngredientIntent (intent) {
           const purposeKeyEl = document.getElementById('shoppingPurposeKey');
           const variantEl = document.getElementById('ingredientVariant');
@@ -46,7 +48,8 @@
 
      window.Hermes = {
           applyIngredientIntent: applyIngredientIntent,
-          CommitIngredientState: commitIngredientState
+          CommitIngredientState: commitIngredientState,
+          ingredientAvailable: ingredientAvailable
          
      };
 
