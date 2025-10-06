@@ -108,8 +108,8 @@
 
 			window.MacroTracker.LoadFoodItemTemplates('templateSelect');
 			window.MacroTracker.LoadFoodItemTemplates('shoppingPurposeKey');
-			window.Shopper.LoadRecipeItemSelection('recipeIngredientSelect');
-			window.Shopper.LoadRecipeContent('ingredientProcessList');
+			window.Recipe.LoadRecipeItemSelection('recipeIngredientSelect');
+			window.Recipe.LoadRecipeContent('ingredientProcessList');
 
 
 			// Initial table and totals update
@@ -191,7 +191,7 @@
 	</svg>
 
 	<div id="externalWindowContainer">
-		Placeholder
+		<!-- Loaded external windows will appear here -->
 	</div>
 	<div id="startMenu" class="draggable">
 		<button id="startMenuToggle" class="circle-button"> M
@@ -272,7 +272,8 @@
 		<div style="clear: both;"></div>
 		<div id="macro-actions-row">
 			<button onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
-			<button onclick="alert('ingredient');"> Save As... </button>
+			<button onclick="window.Recipe.addRealIngredient('metarice')"> Prepare dish </button>
+			
 			<button onclick="document.querySelector('#recipeWindow').classList.remove('hidden')"> + Find Recipe
 			</button>
 		</div>
@@ -291,7 +292,7 @@
 
 		<button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Eat</button>
 
-
+		<button class="subtle" onclick="alert('ingredient');"> Save As... </button>
 	</div>
 
 	<div id="recipeWindow" class="draggable ui-window hidden">
@@ -338,11 +339,11 @@
 
 		</div>
 		<div class="delta-ingredient-note">
-			<label for="recipeIngredientSelect" style="float: left">Choose an ingredient variant:</label>
+			<label for="recipeIngredientSelect" style="float: left">Choose an subrecipe to add:</label>
 			<select id="recipeIngredientSelect" style="float: left;width:70%; left:0;" onchange="">
 				<option value="">Manual template...</option>
 			</select>
-			<button style="float: right; width:23%" onclick="alert('Adding ingredient...')"> + Add </button>
+			<button style="float: right; width:23%" onclick="window.Recipe.addRealIngredient('boiledRice')"> + Add </button>
 			<div style="clear: both;"></div>
 		</div>
 
@@ -350,17 +351,7 @@
 
 		</div>
 
-		<div class="recipe-actions-footer">
-			<div class="recipe-status">
-				<span>Location: <strong id="recipeLocation">potential</strong></span>
-				<span>Est. Remaining: <strong id="recipeRemaining">500g</strong></span>
-			</div>
-			<div class="recipe-consume">
-				<label for="portionToEat">Portion to eat:</label>
-				<input type="number" id="portionToEat" value="0.2" step="0.1" style="width: 60px; margin: 0 10px;">
-				<button onclick="alert('Eating portion...')">Eat!</button>
-			</div>
-		</div>
+
 
 		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
 			<button style="width: 48%;" onclick="alert('Cooking all ingredients...')">Cook All</button>
@@ -492,7 +483,7 @@
 		<h1 style="margin-bottom:20px">Ingredient Commutor</h1>
 
 		<label for="shoppingPurposeKey">Ingredient (PurposeKey)</label>
-		<select id="shoppingPurposeKey" onchange="window.Shopper.handleIngredientSelection();">
+		<select id="shoppingPurposeKey" onchange="window.Recipe.handleIngredientSelection();">
 			<!-- Options will be populated from ingredients.js -->
 			<option value="">Select Ingredient...</option>
 		</select>
@@ -519,9 +510,9 @@
 		<label for="shoppingBuyPeriod">Window Size (days)</label>
 		<input type="number" id="shoppingBuyPeriod" value="7" placeholder="e.g., 7 for weekly">
 
-		<button class="subtle" onclick="window.Shopper.applyIngredientIntent('bought')">Pay</button>
-		<button class="subtle" onclick="window.Shopper.applyIngredientIntent('trashed')">Surrender</button>
-		<button class="subtle" onclick="window.Shopper.applyIngredientIntent('commited')">Demand</button>
+		<button class="subtle" onclick="window.Recipe.applyIngredientIntent('bought')">Pay</button>
+		<button class="subtle" onclick="window.Recipe.applyIngredientIntent('trashed')">Surrender</button>
+		<button class="subtle" onclick="window.Recipe.applyIngredientIntent('commited')">Demand</button>
 
 	</div>
 
@@ -569,6 +560,7 @@
 			<label for="storageUnitSelect">Storage Unit</label>
 			<select id="storageUnitSelect">
 				<option value="all">All</option>
+				<option value="fridge">Kitchen</option>
 				<option value="fridge">Fridge Only</option>
 				<option value="pantry">Pantry Only</option>
 			</select>
@@ -582,12 +574,15 @@
 			<div class="inventory-item">
 				<div class="item-header">
 					<h3>Meal #0</h3>
+					
 					<div>
 						<button class="subtle" style="width:auto; padding: 5px 10px;">Reheat</button>
-						<button class="subtle" style="width:auto; padding: 5px 10px;">Cool</button>
+						<button class="subtle" style="width:auto; padding: 5px 10px;">Send to fridge</button>
 					</div>
 				</div>
 				<div class="item-details">
+					<span>Location: <strong>fridge</strong></span>
+					<span>Est. Remaining: <strong>500g</strong></span>
 					<span>Fresh TTL: <strong>48 hours</strong></span>
 					<span>Refrigerated: <strong>24 hours</strong></span>
 					<span>Room time: <strong>4 hours</strong></span>

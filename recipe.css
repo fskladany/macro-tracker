@@ -49,29 +49,16 @@
     margin-left: 10px;
 }
 
-.recipe-actions-footer {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 2px solid #a0a18480;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+button.cooking {
+    background-color: rgb(230, 78, 12);
+    color:#AAA;
 }
 
-.recipe-status span {
-    margin-right: 20px;
-    font-size: 14px;
+div.done-cooking {
+    background-color: rgb(201, 238, 212);
+    color:#333;
 }
-
-.recipe-consume {
-    display: flex;
-    align-items: center;
-}
-
-.recipe-consume label {
-    font-size: 14px;
-}
-
 
 .recipe-item {
     background-color: #ffffff4a;

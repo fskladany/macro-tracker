@@ -22,6 +22,14 @@ window.recipeIngredients = {
                     instructions: "Cook rice according to package instructions. Sauté beef with spice mix and mushrooms. Combine and serve.",
                },
 
+                boiledRice:  { name: 'boiled rice', servingSize: 200,
+                    subIngredients: {
+                        0: "rice"
+                    },
+                    instructions: "Cook rice according to package instructions.",
+               },
+
+
                grilledChicken:  { name: 'grilled chicken', servingSize: 150,
                     subIngredients: {
                         0: "chicken",

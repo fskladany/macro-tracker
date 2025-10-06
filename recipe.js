@@ -77,51 +77,15 @@
           alert(message);
      }
 
+     var RealIngredients = new Array();
      function LoadRecipeContent(recipeDivId) {
-          cont = `				<!-- Ingredient Row 1: Simple -->
-			<div class="ingredient-process-item">
-				<span>Rice (Basmati)</span>
-				<div class="ingredient-actions">
-					<button class="subtle" onclick="alert('No instructions for Rice')">Instructions</button>
-					<button class="subtle toggle-cook">Cook</button>
-					<button class="subtle">Skip</button>
-					<span class="ttl-display hidden">TTL: 48h</span>
-				</div>
-			</div>
-			<!-- Ingredient Row 2: Simple -->
-			<div class="ingredient-process-item">
-				<span>Beef (15% fat)</span>
-				<div class="ingredient-actions">
-					<button class="subtle" onclick="alert('No instructions for Beef')">Instructions</button>
-					<button class="subtle toggle-cook">Cook</button>
-					<button class="subtle">Skip</button>
-					<span class="ttl-display hidden">TTL: 48h</span>
-				</div>
-			</div>
-			<!-- Ingredient Row 3: Sub-recipe -->
-			<div class="ingredient-process-item">
-				<span>Spice Mix</span>
-				<div class="ingredient-actions">
-					<button class="subtle" onclick="alert('Opening sub-recipe...')">Open Sub-recipe</button>
-					<button class="subtle toggle-cook">Cook</button>
-					<button class="subtle">Skip</button>
-					<span class="ttl-display hidden">TTL: 48h</span>
-				</div>
-			</div>
-			<!-- Ingredient Row 4: Unavailable -->
-			<div class="ingredient-process-item not-available">
-				<span>Mushrooms (not available)</span>
-				<div class="ingredient-actions">
-					<button class="subtle" onclick="toggleWindow('shoppingWindow')">Find
-						Hunting Locations</button>
-				</div>
-			</div>`;
-
+        
           const fakeIngredients = ['Rice', 'Beef', 'Spice Mix', 'Mushrooms'];
+          fakeIngredients.push(...RealIngredients);
           document.getElementById(recipeDivId).innerHTML = '';
           
           // For demonstration, create 4 sample ingredient items
-          for (let i=0; i<4; i++) {
+          for (let i=0; i<fakeIngredients.length; i++) {
                const ingredientProcessItem = document.createElement('div');
                ingredientProcessItem.className = 'ingredient-process-item';
           
@@ -178,6 +142,91 @@
                     } else if (j === 1) {
                          actionButton.textContent = 'Cook';
                          actionButton.classList.add('toggle-cook');
+                         actionButton.dataset.cookingStart=null;
+                         
+                         const recipeCookTime = 30;
+                         var totalCookedMinutes = 0;
+
+                         const simulationRatio = 30;
+                         actionButton.dataset.remainingCookMinutes = recipeCookTime;
+
+                         actionButton.onclick = function() {
+                              let cookingStartTime = null;
+                              console.log("Remaining cook minutes:", actionButton.dataset.remainingCookMinutes);
+                              
+                              
+   
+                              const now = new Date();
+                              if (actionButton.classList.contains('cooking')) {
+                                   actionButton.classList.remove('cooking');
+                                   const startTime = new Date(actionButton.dataset.cookingStart);
+                                   const elapsedMs = now - startTime;
+                                   const elapsedMinutes = Math.floor( elapsedMs / 1000 / 60);
+                                   const displayRemaining = Math.max(0, actionButton.dataset.remainingCookMinutes - elapsedMinutes);
+                                 
+                              } else {          
+                                   actionButton.textContent = 'Finish';
+                                   actionButton.classList.add('cooking');
+
+                                   if (actionButton.dataset.cookingStart == "null" ){
+                                        actionButton.dataset.cookingStart = new Date();
+                                   } else{
+                                        const minuteDelta = recipeCookTime - parseFloat(actionButton.dataset.remainingCookMinutes);
+                                        actionButton.dataset.cookingStart = new Date( Date.now() - recipeCookTime /2 );
+
+                                   }
+                                   recurseUpdate();
+                                 
+                              }
+
+                              function recurseUpdate() {
+
+                                   function cooldownTimer(time){
+                                        setTimeout(function() {
+                                            ingredientName.textContent = "♨ " + fakeIngredients[i];
+                                        }, time);
+                                   }
+                                   const startTime = new Date(actionButton.dataset.cookingStart);
+                                   var elapsedMs = Date.now() - startTime;
+                                   elapsedMs*=simulationRatio;
+                                   const minutes = elapsedMs / 60000;
+
+                                   console.log(`Adding heat to ${fakeIngredients[i]} cooking iteration ms:  ${elapsedMs}`);
+                                   ingredientName.textContent = "🔥 " + fakeIngredients[i];
+                                   if (actionButton.classList.contains('cooking')) {
+                                        const newMinutes = parseFloat(actionButton.dataset.remainingCookMinutes) - minutes;
+                                        actionButton.textContent = 'Pause (' + newMinutes.toFixed(1) + 'm left)';
+                                        
+
+                                        if (newMinutes  <= 0) {
+                                             actionButton.classList.remove('cooking');
+                                             ingredientProcessItem.classList.add('done-cooking');
+                                             actionButton.textContent = 'Done!';
+                                             ingredientName.textContent = "♨️ " + fakeIngredients[i];
+                                             cooldownTimer(1000*60*15/simulationRatio); // 15 minutes, calc: food.weight * 100c * pan weight ... complicated
+                                             return true;
+                                        }
+                                        setTimeout(recurseUpdate, 1000); // Update every 1 second for demo
+                                   }
+                                   else {
+                                       
+                                        console.log("paused cooking:" +elapsedMs);
+                                        
+                                        if (elapsedMs>1000*60){
+                                             console.log("Subtracting " + minutes + " minutes from cook time");
+                                             actionButton.dataset.remainingCookMinutes -= elapsedMs/60000;
+                                        }
+                                        ingredientName.textContent = "♨️ " + fakeIngredients[i];
+
+                                        cooldownTimer(1000*60*5/simulationRatio);
+
+                                        actionButton.textContent = 'Resume (' + parseFloat(actionButton.dataset.remainingCookMinutes).toFixed(1) + 'm left)';
+                                        console.log("Elapsed ms:", elapsedMs);
+                                   }
+                              }
+                          
+                              
+                         };
                     } else if (j === 2) {
                          actionButton.textContent = 'Skip';
                     }
@@ -230,11 +279,24 @@
           });
      }
 
-     window.Shopper = {
+     function addRealIngredient(ingredientKey) {
+          //if (!window.recipeIngredients[ingredientKey]) {
+          //     console.warn("Ingredient key not found:", ingredientKey);
+          //     return;
+          //}
+          //if (!RealIngredients.includes(window.recipeIngredients[ingredientKey].name)) {
+          //     RealIngredients.push(window.recipeIngredients[ingredientKey].name);
+          //}
+          RealIngredients.push(ingredientKey);
+          LoadRecipeContent('ingredientProcessList');
+     }
+
+     window.Recipe = {
           handleIngredientSelection: handleIngredientSelection,
           applyIngredientIntent: applyIngredientIntent,
           LoadRecipeItemSelection: LoadRecipeItemSelection,
-          LoadRecipeContent: LoadRecipeContent
+          LoadRecipeContent: LoadRecipeContent,
+          addRealIngredient: addRealIngredient
      };
 
 })(window, document);
