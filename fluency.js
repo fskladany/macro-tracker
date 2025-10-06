@@ -29,7 +29,7 @@
                }
                
                if (
-                    tagName === 'button' ||
+                    tagName === 'button' || tagName === 'textarea' ||
                     (tagName === 'input' && (type === 'text' || type === 'number')) ||
                     tagName === 'select'
                ) {
