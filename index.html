@@ -154,8 +154,11 @@
 			document.querySelector('#startMenuToggle').addEventListener('mousedown', (e) => {
 				startPos = { 'x': e.clientX, 'y': e.clientY };
 			});
-			document.querySelector('#startMenuToggle').addEventListener('mouseup', (e) => {
+			document.querySelector('#startMenuToggle').addEventListener('touchstart', (e) => {
+				startPos = { 'x': e.clientX, 'y': e.clientY };
+			});
 
+			const conditionalToggle = function (e){
 				setTimeout(() => {
 					const endPos = { 'x': e.clientX, 'y': e.clientY };
 					//alert(`StartPos: ${JSON.stringify(startPos)}, Endpos: ${JSON.stringify(endPos)}`);
@@ -168,8 +171,10 @@
 						e.preventDefault();
 					}
 				}, 100);
+			}
+			document.querySelector('#startMenuToggle').addEventListener('mouseup', conditionalToggle);
 
-			});
+			document.querySelector('#startMenuToggle').addEventListener('touchend', conditionalToggle);
 
 			// Example usage: call this after creating or rendering a window
 			document.querySelectorAll('.ui-window .anchor-group')

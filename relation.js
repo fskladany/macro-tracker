@@ -181,9 +181,6 @@
           }
      }
 
-     // TODO: I was really confused here - relationship mapping between
-     //     nodes for sure should use annotations that do not depend on anchors, right?
-
      function getFlowParentWindowFrom(flow) {
           anchorElem = document.getElementById(flow.fromAnchorId);
           closestParentWindowA = anchorElem.closest('.ui-window');

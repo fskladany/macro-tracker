@@ -101,14 +101,10 @@
                
           }
 
-          if (document.getElementById(element.id + "Header")) {
-               document.getElementById(element.id + "Header").onmousedown = dragMouseDown;
-          } else {
-               element.addEventListener('mousedown', dragMouseDown);
-               element.addEventListener('touchstart', dragMouseDown);
 
-          }
-
+          element.addEventListener('mousedown', dragMouseDown);
+          // TODO: perhaps should be touchmove
+          element.addEventListener('touchmove', dragMouseDown);
           
           
      }
