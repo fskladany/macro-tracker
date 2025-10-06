@@ -18,6 +18,18 @@ button {
      cursor: pointer;
 }
 
+.goal-item {
+  float: left;
+  margin: 10px;
+}
+
+.daily-goals {
+     display: flow-root inline;
+}
+
+.goal-item button {
+  width: auto;
+}
 
 table {
      width: 100%;

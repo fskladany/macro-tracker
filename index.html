@@ -99,6 +99,7 @@
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
+			window.MacroTracker.reloadDailyGoals();
 			// Alternatively (not verified) document.queryFirst('#templateSelector.addEventListner () => {
 			//    LoadTemplateItems(self.id)
 			//})
@@ -133,9 +134,21 @@
 			window.UiNode.dragElement("inventoryWindow");
 			window.UiNode.dragElement("intentionsWindow");
 			window.UiNode.dragElement("actionHistoryWindow");
+			window.UiNode.dragElement("businessPermissionWindow");
 
 
-
+			document.querySelector('.edit-goal[data-macro="protein"]').onclick = () => {
+				window.MacroTracker.editGoal('protein');
+			};
+			document.querySelector('.edit-goal[data-macro="carbs"]').onclick = () => {
+				window.MacroTracker.editGoal('carbs');
+			};
+			document.querySelector('.edit-goal[data-macro="fat"]').onclick = () => {
+				window.MacroTracker.editGoal('fat');
+			};
+			document.querySelector('.edit-goal[data-macro="calories"]').onclick = () => {
+				window.MacroTracker.editGoal('calories');
+			};
 			var startPos = null;
 			document.querySelector('#startMenuToggle').addEventListener('mousedown', (e) => {
 				startPos = { 'x': e.clientX, 'y': e.clientY };
@@ -217,6 +230,7 @@
 					<button onclick="toggleWindow('eatingHistoryWindow')">History</button>
 					<button onclick="toggleWindow('sumDigestionWindow')">Totals</button>
 					<button onclick="toggleWindow('monthlyTrailWindow')">Monthly Trail (28)</button>
+					<button onclick="toggleWindow('businessPermissionWindow')">Daily Goals</button>
 				</div>
 			</div>
 			<button onclick="toggleWindow('recipeWindow')">My Recipes</button>
@@ -412,6 +426,31 @@
 		</div>
 	</div>
 
+	<div id="businessPermissionWindow" class="draggable ui-window hidden">
+		<div class="anchor-group" style="float: right">
+			<div class="anchor" id="business-permission-win-up"> 💿 </div>
+		</div>
+		<h2>Daily goals</h2>
+		<div class="daily-goals">
+		
+			<div class="goal-item">
+				Protein: <span id="goalProtein">150</span>g
+				<button class="edit-goal" data-macro="protein">Edit</button>
+			</div>
+			<div class="goal-item">
+				Carbs: <span id="goalCarbs">300</span>g
+				<button class="edit-goal" data-macro="carbs">Edit</button>
+			</div>
+			<div class="goal-item">
+				Fat: <span id="goalFat">70</span>g
+				<button class="edit-goal" data-macro="fat">Edit</button>
+			</div>
+			<div class="goal-item">
+				Calories: <span id="goalCalories">2500</span>kcal
+				<button class="edit-goal" data-macro="calories">Edit</button>
+			</div>
+		</div>
+	</div>
 
 	<div id="sumDigestionWindow" class="draggable ui-window hidden">
 		<div class="anchor-group" style="float: right">
@@ -420,7 +459,8 @@
 		<h2>24 hour Window</h2>
 		<div class="totals24">
 			<div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
-			<div class="total-item">Mass (24h): <span id="t24weight">693</span>g</div>
+			<div class="total-item">Total Mass-Entropy (24h): <span id="t24energy">693</span></div>
+			<div class="total-item">Free Ek (24h): <span id="t24kinetics">693</span></div>
 
 		</div>
 
@@ -431,10 +471,17 @@
 			<div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
 			<div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
 			<div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
-
-
 		</div>
 
+
+		<h2>Today's Deficit</h2>
+		<div class="totals">
+
+			<div class="total-item">Protein: <span id="deficitProtein" class="halfway-there"></span>g</div>
+			<div class="total-item">Carbs: <span id="deficitCarbs" class=""></span>g</div>
+			<div class="total-item">Fat: <span id="deficitFat" class="goal-reached"></span>g</div>
+			<div class="total-item">Calories: <span id="deficitCalories" class="halfway-there"></span>kcal</div>
+		</div>
 	</div>
 
 	<div id="shoppingWindow" class="draggable ui-window hidden">

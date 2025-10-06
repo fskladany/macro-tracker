@@ -1,6 +1,6 @@
 (function(window, document) {
      const ingredients = window.MacroIngredients;
-     const dailyGoals = window.BusinessPermission.dailyGoals;
+     var dailyGoals = window.BusinessPermission.dailyGoals;
 
      // Function to add an entry
      function addEntry() {
@@ -183,10 +183,20 @@
           // Calculate a more accurate weight using the approximations
           totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
 
+          const calorieDeficit = dailyGoals.calories - totalCalories;
+          const proteinDeficit = dailyGoals.protein - totalProtein;
+          const fatDeficit = dailyGoals.fat - totalFat;
+          const carbDeficit = dailyGoals.carbs - totalCarbs;
+
           updateTotalWithThreshold('totalCalories', totalCalories, dailyGoals.calories);
           updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
           updateTotalWithThreshold('totalProtein', totalProtein, dailyGoals.protein);
           updateTotalWithThreshold('totalFat', totalFat, dailyGoals.fat);
+
+          updateTotalWithThreshold('deficitCalories', -calorieDeficit, dailyGoals.calories);
+          updateTotalWithThreshold('deficitProtein', -proteinDeficit, dailyGoals.protein);
+          updateTotalWithThreshold('deficitFat', -fatDeficit, dailyGoals.fat);
+          updateTotalWithThreshold('deficitCarbs', -carbDeficit, dailyGoals.carbs);
 
           totalWeight = 0
           totalCalories = 0
@@ -199,12 +209,16 @@
                totalProtein += parseFloat(entry.protein);
                totalFat += parseFloat(entry.fat);
                // Calculate calories
-               totalCalories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9;
+               totalCalories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9 ;
           });
 
           totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
-
-          document.getElementById('t24weight').textContent = totalWeight.toFixed(0);
+          const totalEnergy = totalWeight * 0.004184;
+          const kineticMass = totalWeight * 0.25; // body uses 25% of energy for potential movement
+          const freeEnergy = totalEnergy * 0.25; // body uses 75% of energy to maintain potential movement
+          
+          document.getElementById('t24energy').textContent = totalWeight.toFixed(0) + "g (" + totalEnergy.toFixed(2) + "MJ)";
+          document.getElementById('t24kinetics').textContent = kineticMass.toFixed(0) + "g (" + freeEnergy.toFixed(2) + "MJ [kg⋅m²/s²])";
           //updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
           document.getElementById('t24calories').textContent = totalCalories.toFixed(0);
 
@@ -372,6 +386,14 @@
           }
      }
 
+     function reloadDailyGoals() {
+          dailyGoals = JSON.parse(localStorage.getItem('businessDailyGoals')) || dailyGoals;
+          document.getElementById('goalCarbs').textContent = dailyGoals.carbs;
+          document.getElementById('goalProtein').textContent = dailyGoals.protein;
+          document.getElementById('goalFat').textContent = dailyGoals.fat;
+          document.getElementById('goalCalories').textContent = dailyGoals.calories;
+     }
+
      function LoadFoodItemTemplates(templateSelectId) {
           const select = document.getElementById(templateSelectId);
           Object.keys(ingredients).forEach(key => {
@@ -403,6 +425,21 @@
           });
      }
 
+     function editGoal(nutrient) {
+          const currentValue = dailyGoals[nutrient];
+          let newValue = prompt(`Enter new daily goal for ${nutrient} (current: ${currentValue})`, currentValue);
+          if (newValue !== null) {
+               newValue = parseInt(newValue);
+               if (!isNaN(newValue) && newValue > 0) {
+                    dailyGoals[nutrient] = newValue;
+                    localStorage.setItem('businessDailyGoals', JSON.stringify(dailyGoals));
+                    reloadDailyGoals();
+                    updateDailyTotals();
+               } else {
+                    alert("Please enter a valid positive number.");
+               }
+          }
+     }
 
      // Optionally expose a global object for integration
      // How does this expose objects?
@@ -415,7 +452,9 @@
           pasteEntries,
           getEntriesJSON,
           LoadFoodItemTemplates,
-          handleFoodItemSelection
+          handleFoodItemSelection,
+          reloadDailyGoals,
+          editGoal
           // ...add more exports as needed...
      };
 })(window, document);
