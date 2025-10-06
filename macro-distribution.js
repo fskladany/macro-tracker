@@ -183,10 +183,10 @@
           // Calculate a more accurate weight using the approximations
           totalWeight = (totalCarbs) * 1 + totalProtein * 1.35 + totalFat * 1.1;
 
-          const calorieDeficit = dailyGoals.calories - totalCalories;
-          const proteinDeficit = dailyGoals.protein - totalProtein;
-          const fatDeficit = dailyGoals.fat - totalFat;
-          const carbDeficit = dailyGoals.carbs - totalCarbs;
+          const calorieDeficit = totalCalories < dailyGoals.calories? dailyGoals.calories - totalCalories : 0;
+          const proteinDeficit = totalProtein < dailyGoals.protein? dailyGoals.protein - totalProtein : 0;
+          const fatDeficit = totalFat < dailyGoals.fat? dailyGoals.fat - totalFat : 0;
+          const carbDeficit = totalCarbs < dailyGoals.carbs? dailyGoals.carbs - totalCarbs : 0;
 
           updateTotalWithThreshold('totalCalories', totalCalories, dailyGoals.calories);
           updateTotalWithThreshold('totalCarbs', totalCarbs, dailyGoals.carbs);
@@ -310,7 +310,8 @@
 
      function undoLastEntry() {
           const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
-          entries.shift();
+          const poppedEntry = entries.shift();
+          alert("Removed entry: " + JSON.stringify(poppedEntry));
           localStorage.setItem('macroEntries', JSON.stringify(entries));
           displayHistoryTable();
           updateDailyTotals();
