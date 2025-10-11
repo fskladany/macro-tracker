@@ -79,7 +79,7 @@
                cell.id="hrow-" + entry['ts']
 
                cell.onclick= function() {
-                    let user_date = prompt("Change date to: (YYYY-MM-DD HH:SS)", long_date);
+                    let user_date = prompt("Change date to: (YYYY-MM-DD HH:MM)", long_date);
 
                     var new_ts = new Date(user_date).getTime();
                     if (user_date == null) {
@@ -239,16 +239,19 @@
 
           const tbody = table.createTBody();
 
-          var entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+          let entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
           const dailyTotals = {};
           entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
           const dayDelta = 24 * 60 * 60 * 1000;
           // Get the last 28 days
-          /*entries = entries.filter(entry => {
+          entries = entries.filter(entry => {
                const entryDate = new Date(entry.ts);
                return entryDate >= new Date(Date.now() - 28 * dayDelta);
-          });*/
+          });
+
+          const monthlyCaloricReference = 28 * dailyGoals.calories;
+          let monthlyCaloricDefficit = monthlyCaloricReference;
 
           entries.forEach(entry => {
                const { ts, carbs, protein, fat } = entry;
@@ -257,14 +260,25 @@
                if (!dailyTotals[date]) {
                     dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, calories: 0, weight: 0 };
                }
+
+               const verCarbs = Number(carbs) || 0;
+               const verProtein = Number(protein) || 0;
+               const verFat = Number(fat) || 0;
+               const verCalories = ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
+
+               monthlyCaloricDefficit -= verCalories;
+
                // Add checks to ensure the properties are numbers
-               dailyTotals[date].carbs += Number(carbs) || 0;
-               dailyTotals[date].protein += Number(protein) || 0;
-               dailyTotals[date].fat += Number(fat) || 0;
+               dailyTotals[date].carbs += verCarbs;
+               dailyTotals[date].protein += verProtein;
+               dailyTotals[date].fat += verFat;
                // Calculate calories and weight
-               dailyTotals[date].calories += ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
+               dailyTotals[date].calories += verCalories;
                dailyTotals[date].weight += (Number(carbs) || 0) + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
           });
+
+          caloricDeficitSpan = document.querySelector("#caloricDeficit28Window");
+          caloricDeficitSpan.textContent = monthlyCaloricDefficit.toFixed(0) + " kcal";
 
 
           Object.keys(dailyTotals).forEach(date => {

@@ -270,7 +270,7 @@
 
 
 		<label for="templateSelect" style="float: left">Choose an ingredient variant:</label>
-		<label style="float: right;" for="multiplier">Amount:</label>
+		<label style="float: right;" for="multiplier">Amount (100g):</label>
 		<select id="templateSelect" style="float: left;width:70%; left:0;"
 			onchange="window.MacroTracker.handleFoodItemSelection()">
 			<option value="">Manual template...</option>
@@ -414,6 +414,7 @@
 			<div class="anchor" id="day-list-over"> 💿 </div>
 		</div>
 		<h3>Trail marathon (28d)</h3>
+		<p>Caloric deficit (window): <span id="caloricDeficit28Window">Undetermined</span></p>
 
 		<div id="monthlyTrailTableWrapper">
 			<!--

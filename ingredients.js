@@ -5,11 +5,16 @@ window.MacroIngredients = templates = {
 
                _1:              { name: "--- protein ---", servingSize: 0 },
                egg:             { name: 'egg', carbs: 0.7, protein: 12.6, fat: 9.6,     servingSize: 50 },
-               chicken:         { name: 'chicken', carbs: 0.3, protein: 31, fat: 3 },
+               chicken:         { name: 'chicken', carbs: 0.3, protein: 31, fat: 3,
+                                  variants: {
+                                   "raw": { protein: 22 },
+                                   "cooked": {}
+                                  }
+               },
                beef:            { name: 'beef', fat: 8, protein: 26, carbs: 0, servingSize: 100 },
                fish:            { name: 'fish', fat: 3, protein: 17.1, carbs: 0.16, servingSize: 170,     },
                groundBeef:      { name: 'ground beef', fat: 15, protein: 26, carbs: 0, servingSize: 100,
-                    variants: {
+                    variants: { 
                           '15% fat' : {fat: 15}, '30% fat': {fat: 30, protein: 18}
                     }
                },
@@ -27,7 +32,14 @@ window.MacroIngredients = templates = {
                _3:              { name: "--- carbs ---", servingSize: 0 },
                potato:          { name: 'potato', carbs: 20, protein: 2.6, fat: 0.4, },
                oats:            { name: 'oats', carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
-               rice:            { name: 'rice raw (Máyna)', carbs: 77, protein: 8, fat: 0.3 },
+               rice:            { name: 'rice (Máyna)', carbs: 77, protein: 8, fat: 0.3,
+                                variants: {
+                                  "raw": {},
+                                  "boiled 75% water": { carbs: 19.25, protein: 2, fat: 0.08},
+                                  "boiled 66% water": { carbs: 50, protein: 2.6, fat: 0.1},
+                                  "boiled 50% water": { carbs: 38.5, protein: 4, fat: 0.15} 
+                                }
+               },
                bread:           { name: 'bread (Vamex)', carbs: 41.5, protein: 8.3, fat: 1.3, servingSize: 60 },
                orange:          { name: 'orange', carbs: 11.8, protein: 0.9, fat: 0.1, servingSize: 130 },
                fruitFilPierogi: { name: "Fruit-filled pirohy (plum jam)", carbs: 35, protein: 5, fat: 3.5, servingSize: 150},
@@ -41,10 +53,11 @@ window.MacroIngredients = templates = {
                banana:          { name: 'banana', carbs: 23, protein: 1.1, fat: 0.3,     servingSize: 120 },
 
 
-               _4:              { name: "--- side dishes ---", servingSize: 0 },
+               _4:              { name: "--- side dishes & snacks ---", servingSize: 0 },
                porkSauce:       { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
                butter:          { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
-
+               arashidNut:      { name: "arashid nut", fat: 50, carbs: 6.6, protein: 26, salt: 0.78, fiber: 12 },
+               pistachioNut:    { name: "pistachio nut", fat: 50, carbs: 8.9, protein: 24, salt: 1.4, fiber: 9.4 }
 
                // Add more templates as needed
           };

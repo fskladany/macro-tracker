@@ -12,11 +12,14 @@
 
      // Business assertions
      window.BusinessPermission = {
+          // Self-determined recommendations in grams
           dailyGoals: {
                carbs: 320,          // Example goal
                protein: 160,      // Example goal
                fat: 60,               // Example goal
-               calories: 2500     // Example goal
+               calories: 2500,     // Example goal
+               fiber: 50,
+               salt: 1.5
           }
      // Add more permission or flow config as needed
      };
