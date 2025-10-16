@@ -36,6 +36,7 @@
 	<script src="fluency.js"></script>
 	<script src="relation.js"></script>
 	<script src="window-state.js"></script>
+	<script src="sync.js"></script>
 
 
 	<script>
@@ -96,10 +97,12 @@
 
 		// Load external windows
 		loadWindow('External', 'externalWindowContainer');
+		loadWindow('syncWindow', 'externalWindowContainer');
 
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
+			window.Sync.init();
 			window.MacroTracker.reloadDailyGoals();
 			// Alternatively (not verified) document.queryFirst('#templateSelector.addEventListner () => {
 			//    LoadTemplateItems(self.id)
@@ -251,11 +254,12 @@
 			<button onclick="toggleWindow('shoppingWindow')">Shopping</button>
 			<button onclick="toggleWindow('intentionsWindow')">Intentions</button>
 			<button onclick="toggleWindow('actionHistoryWindow')">Action History</button>
+			<button onclick="toggleWindow('syncWindow')">Sync</button>
 			
 		</div>
 	</div>
 
-	<div id="addEntryWindow" class="draggable ui-window" style="z-index: 100;">
+	<div id="addEntryWindow" class="draggable ui-window init-draggable" style="z-index: 100;">
 		<div class="anchor-group" style="float: right">
 			<div class="anchor" id="win-add"> 📀 </div>
 			<div class="anchor" id="win-add-up"> 💿 </div>

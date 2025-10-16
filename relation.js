@@ -251,8 +251,8 @@
      }
 
      function saveFlowConnections() {
-
-          localStorage.setItem("flows", JSON.stringify(flowConnections.map(f => ({ fromAnchorId: f.fromAnchorId, toAnchorId: f.toAnchorId }))));
+          const storageKey = window.Sync.getStorageKey('flows');
+          localStorage.setItem(storageKey, JSON.stringify(flowConnections.map(f => ({ fromAnchorId: f.fromAnchorId, toAnchorId: f.toAnchorId }))));
      }
 
      function processFlowList(flowList) {
@@ -279,7 +279,8 @@
 
      function loadFlowConnections() {
           flowConnections.length = 0;
-          const stored = localStorage.getItem("flows");
+          const storageKey = window.Sync.getStorageKey('flows');
+          const stored = localStorage.getItem(storageKey);
           window.canvasFrame.innerHTML = ''; // Clear existing paths
           if (stored) {
                const arr = JSON.parse(stored);

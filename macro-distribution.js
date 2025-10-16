@@ -17,16 +17,18 @@
           const comment = document.getElementById('comment').value;
           const ts = new Date().getTime();
           const entry = { ts, carbs, protein, fat, comment };
-          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+          const storageKey = window.Sync.getStorageKey('macroEntries');
+          const entries = JSON.parse(localStorage.getItem(storageKey)) || [];
           entries.push(entry);
-          localStorage.setItem('macroEntries', JSON.stringify(entries));
+          localStorage.setItem(storageKey, JSON.stringify(entries));
           displayHistoryTable();
           updateDailyTotals();
      }
 
      // Function to update the table with entries
           function displayHistoryTable() {
-          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+          const storageKey = window.Sync.getStorageKey('macroEntries');
+          const entries = JSON.parse(localStorage.getItem(storageKey)) || [];
           entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
           let whistle_index = entries.length;
@@ -35,7 +37,7 @@
                entry['index'] = whistle_index;
           })
           // Save back to local storage
-          localStorage.setItem('macroEntries', JSON.stringify(entries));
+          localStorage.setItem(storageKey, JSON.stringify(entries));
 
           const historyTable = document.getElementById('historyEntries');
 
@@ -105,7 +107,7 @@
                     })
                     if (found_edit){
                          updated_entries.push({ ...entry,     date: d_date, ts: new_ts,})
-                         localStorage.setItem('macroEntries', JSON.stringify(updated_entries));
+                         localStorage.setItem(storageKey, JSON.stringify(updated_entries));
                          displayHistoryTable();
                     }     
 
@@ -153,7 +155,8 @@
      // Function to update the daily stats in the sidebar
      function updateDailyTotals() {
           const today = new Date().toISOString().split('T')[0];
-          const entries_list = JSON.parse(localStorage.getItem('macroEntries')) || [];
+          const storageKey = window.Sync.getStorageKey('macroEntries');
+          const entries_list = JSON.parse(localStorage.getItem(storageKey)) || [];
           let totalCarbs = 0, totalProtein = 0, totalFat = 0;
           let totalWeight = 0; // More accurate total weight
           let totalCalories = 0; // Total calories
@@ -239,7 +242,8 @@
 
           const tbody = table.createTBody();
 
-          let entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+          const storageKey = window.Sync.getStorageKey('macroEntries');
+          let entries = JSON.parse(localStorage.getItem(storageKey) || []);
           const dailyTotals = {};
           entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
@@ -323,10 +327,11 @@
      }
 
      function undoLastEntry() {
-          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+          const storageKey = window.Sync.getStorageKey('macroEntries');
+          const entries = JSON.parse(localStorage.getItem(storageKey)) || [];
           const poppedEntry = entries.shift();
           alert("Removed entry: " + JSON.stringify(poppedEntry));
-          localStorage.setItem('macroEntries', JSON.stringify(entries));
+          localStorage.setItem(storageKey, JSON.stringify(entries));
           displayHistoryTable();
           updateDailyTotals();
      }
@@ -335,8 +340,9 @@
                let entries_string = prompt("Paste entries JSON", "");
                if (entries_string != null) {
                     const entries = JSON.parse(entries_string) || [];
+                    const storageKey = window.Sync.getStorageKey('macroEntries');
                     // Save back to local storage
-                    localStorage.setItem('macroEntries', JSON.stringify(entries));
+                    localStorage.setItem(storageKey, JSON.stringify(entries));
 
                }
                displayHistoryTable();
@@ -344,7 +350,8 @@
           }
 
      function getEntriesJSON() {
-          var entries = localStorage.getItem('macroEntries');
+          const storageKey = window.Sync.getStorageKey('macroEntries');
+          var entries = localStorage.getItem(storageKey);
           // Copy the text inside the text field
           navigator.clipboard.writeText(entries);
 
@@ -402,7 +409,8 @@
      }
 
      function reloadDailyGoals() {
-          dailyGoals = JSON.parse(localStorage.getItem('businessDailyGoals')) || dailyGoals;
+          const storageKey = window.Sync.getStorageKey('businessDailyGoals');
+          dailyGoals = JSON.parse(localStorage.getItem(storageKey)) || window.BusinessPermission.dailyGoals;
           document.getElementById('goalCarbs').textContent = dailyGoals.carbs;
           document.getElementById('goalProtein').textContent = dailyGoals.protein;
           document.getElementById('goalFat').textContent = dailyGoals.fat;
@@ -447,7 +455,8 @@
                newValue = parseInt(newValue);
                if (!isNaN(newValue) && newValue > 0) {
                     dailyGoals[nutrient] = newValue;
-                    localStorage.setItem('businessDailyGoals', JSON.stringify(dailyGoals));
+                    const storageKey = window.Sync.getStorageKey('businessDailyGoals');
+                    localStorage.setItem(storageKey, JSON.stringify(dailyGoals));
                     reloadDailyGoals();
                     updateDailyTotals();
                } else {

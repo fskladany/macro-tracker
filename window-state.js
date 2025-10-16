@@ -3,34 +3,50 @@
      // Save window positions and visibility
      function saveWindowState() {
           const windows = document.querySelectorAll('.draggable.ui-window');
-          const state = JSON.parse(localStorage.getItem('windowState') || '{}');
+          const storageKey = window.Sync.getStorageKey('windowState');
+          const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
           windows.forEach(win => {
+               const computedStyle = window.getComputedStyle(win);
                state[win.id] = {
                     visible: !win.classList.contains('hidden'),
-                    x: win.style.left || 0 + 'px',
-                    y: win.style.top || 0 + 'px'
+                    x: win.style.left || computedStyle.left,
+                    y: win.style.top || computedStyle.top
                };
           });
-          localStorage.setItem('windowState', JSON.stringify(state));
+          localStorage.setItem(storageKey, JSON.stringify(state));
      }
 
      // Restore window positions and visibility
-     function restoreWindowState() {
-          const state = JSON.parse(localStorage.getItem('windowState') || '{}');
-          Object.keys(state).forEach(id => {
-               const win = document.getElementById(id);
-               if (win) {
-                    win.classList.toggle('hidden', !state[id].visible);
-                    win.style.left = state[id].x || win.style.left;
-                    win.style.top = state[id].y || win.style.top;
+     function restoreWindowState(user = null) {
+          const targetUser = user || window.Sync.getCurrentUser();
+          const isViewingOther = user && user !== window.Sync.getCurrentUser();
+
+          const storageKey = window.Sync.getStorageKey('windowState', targetUser);
+          const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
+          
+          document.querySelectorAll('.draggable.ui-window').forEach(win => {
+               if (state[win.id]) {
+                    win.classList.toggle('hidden', !state[win.id].visible);
+                    win.style.left = state[win.id].x || win.style.left;
+                    win.style.top = state[win.id].y || win.style.top;
                } else {
-                    console.log(`Window ${id} deleted?`);
+                    // Hide windows that don't have a state for the viewed user
+                    win.classList.add('hidden');
+               }
+               
+               if (isViewingOther) {
+                    win.style.pointerEvents = 'none';
+                    win.classList.add('readonly-view');
+               } else {
+                    win.style.pointerEvents = 'auto';
+                    win.classList.remove('readonly-view');
                }
           });
      }
 
      function demonstrateFlowPresence() {
-          const stored = localStorage.getItem("flows");
+          const storageKey = window.Sync.getStorageKey('flows');
+          const stored = localStorage.getItem(storageKey);
           if (stored) {
                const arr = JSON.parse(stored);
                if (arr.length > 0) {
