@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="initial-scale=0.1, maximum-scale=10.0, user-scalable=yes">
 
 	<title>Macro Tracker</title>
 
@@ -155,12 +155,15 @@
 				startPos = { 'x': e.clientX, 'y': e.clientY };
 			});
 			document.querySelector('#startMenuToggle').addEventListener('touchstart', (e) => {
-				startPos = { 'x': e.clientX, 'y': e.clientY };
+				startPos = { 'x': e.touches[0].clientX, 'y': e.touches[0].clientY };
 			});
 
 			const conditionalToggle = function (e){
 				setTimeout(() => {
-					const endPos = { 'x': e.clientX, 'y': e.clientY };
+					const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+					const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+					const endPos = { 'x': endX, 'y': endY };
+					
 					//alert(`StartPos: ${JSON.stringify(startPos)}, Endpos: ${JSON.stringify(endPos)}`);
 					//if (startPos.x == endPos.x && startPos.y == endPos.y){
 					if (Math.abs(startPos.x - endPos.x) < 10 && Math.abs(startPos.y - endPos.y) < 10) {

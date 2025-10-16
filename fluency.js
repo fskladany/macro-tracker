@@ -49,10 +49,12 @@
                element.classList.add("active");
              
                
-
-               e.preventDefault();
-               pos3 = e.clientX;
-               pos4 = e.clientY;
+               if (e.type.startsWith('touch')) {
+                    e.preventDefault(); // Prevent scrolling on touch
+               }
+               
+               pos3 = e.touches ? e.touches[0].clientX : e.clientX;
+               pos4 = e.touches ? e.touches[0].clientY : e.clientY;
                document.onmouseup = exitDragDurationDepressurize;
                document.ontouchcancel = exitDragDurationDepressurize;
                document.ontouchend = exitDragDurationDepressurize;
@@ -65,10 +67,14 @@
           const elementMoveDragAfterClick = function (e) {
                e = e || window.event;
                e.preventDefault();
-               pos1 = pos3 - e.clientX;
-               pos2 = pos4 - e.clientY;
-               pos3 = e.clientX;
-               pos4 = e.clientY;
+               
+               const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+               const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+               pos1 = pos3 - clientX;
+               pos2 = pos4 - clientY;
+               pos3 = clientX;
+               pos4 = clientY;
                element.style.top = (element.offsetTop - pos2) + "px";
                element.style.left = (element.offsetLeft - pos1) + "px";
 
@@ -104,7 +110,7 @@
 
           element.addEventListener('mousedown', dragMouseDown);
           // TODO: perhaps should be touchmove
-          element.addEventListener('touchmove', dragMouseDown);
+          element.addEventListener('touchstart', dragMouseDown);
           
           
      }

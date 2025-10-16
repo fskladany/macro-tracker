@@ -39,6 +39,7 @@
           canvasFrame.appendChild(htmlPathElement);
 
           window.addEventListener('pointermove', followPointer);
+          window.addEventListener('touchmove', followPointer);
           window.addEventListener('pointerup', finishConnection);
           window.addEventListener('touchend', finishConnection);
           window.addEventListener('touchcancel', finishConnection);
@@ -80,6 +81,10 @@
      }
 
      function followPointer(e) {
+          if (e.type.startsWith('touch')) {
+               e.preventDefault(); // Prevent scrolling on touch
+          }
+          
           if (!htmlPathElement || !currentSourceAnchorId) {
                alert("No path element or source anchor to follow");
                return;
@@ -95,7 +100,9 @@
                     return;
                }
                const canvasRect = canvasFrame.getBoundingClientRect();
-               setPathElementAttributes(htmlPathElement, fromPos.x, fromPos.y, e.clientX - canvasRect.left, e.clientY - canvasRect.top);
+               const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+               const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+               setPathElementAttributes(htmlPathElement, fromPos.x, fromPos.y, clientX - canvasRect.left, clientY - canvasRect.top);
                animationFrameId = null;
           });
      }
@@ -114,7 +121,10 @@
 
           document.body.classList.remove("dragging-anchor");
 
-          const hitElements = document.elementsFromPoint(e.clientX, e.clientY);
+          const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+          const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+
+          const hitElements = document.elementsFromPoint(clientX, clientY);
           alert("Hit elements: " + hitElements.map(el => el.className).join(', '));
           const targetAnchorElement = hitElements.find(el => el.classList && el.classList.contains('anchor'));
 
