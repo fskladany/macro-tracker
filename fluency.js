@@ -184,6 +184,7 @@
                colBtn.onclick = function() {
                     collapseWindow(wn.id);
                     h3h3.classList.toggle("hidden");
+                    window.saveWindowState();
 
                };
 
