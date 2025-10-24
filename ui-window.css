@@ -35,7 +35,7 @@
      width: 400px;
 }
 
-#businessPermissionWindow {
+#horizonWindow {
      width: 500px;
 }
 
@@ -194,12 +194,6 @@
 
 .menu-item-group:hover .submenu {
      display: block;
-}
-
-
-#intentionsWindow {
-     width: 400px;
-     height: auto;
 }
 
 .intention-item {

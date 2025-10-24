@@ -1,6 +1,6 @@
 (function(window, document) {
      const ingredients = window.MacroIngredients;
-     var dailyGoals = window.BusinessPermission.dailyGoals;
+     var dailyGoals = window.Horizon.dailyGoals;
 
      // Function to add an entry
      function addEntry() {
@@ -264,6 +264,7 @@
           });
 
           const monthlyCaloricReference = 28 * dailyGoals.calories;
+          // TODO: possible to specify in window.Horizon.monthlyGoal
           let monthlyCaloricDefficit = monthlyCaloricReference;
 
           entries.forEach(entry => {
@@ -433,7 +434,7 @@
 
      function reloadDailyGoals() {
           const storageKey = window.Sync.getStorageKey('businessDailyGoals');
-          dailyGoals = JSON.parse(localStorage.getItem(storageKey)) || window.BusinessPermission.dailyGoals;
+          dailyGoals = JSON.parse(localStorage.getItem(storageKey)) || window.Horizon.dailyGoals;
           document.getElementById('goalCarbs').textContent = dailyGoals.carbs;
           document.getElementById('goalProtein').textContent = dailyGoals.protein;
           document.getElementById('goalFat').textContent = dailyGoals.fat;

@@ -27,7 +27,7 @@
 		}
 
 	</style>
-	<script src="restrainings.js"></script>
+	<script src="horizon.js"></script>
 	<!--<script src="Hermes.js"></script> --> <!-- Deprecated in favor of a unified FoodItem model -->
 	<script src="recipe.js"></script> <!-- Deprecated in favor of a unified FoodItem model -->
 	<script src="ingredients.js"></script> 
@@ -153,7 +153,7 @@
 			window.UiNode.dragElement("startMenu");
 			window.UiNode.dragElement("inventoryFrame");;
 			window.UiNode.dragElement("actionHistoryFrame");
-			window.UiNode.dragElement("businessPermissionFrame");
+			window.UiNode.dragElement("horizonPermissionFrame");
 
 
 
@@ -258,6 +258,7 @@
 					<button onclick="toggleWindow('sumDigestionWindow')">Daily Totals</button>
 					<button onclick="toggleWindow('monthlyTrailWindow')">Monthly Trail (28)</button>
 				</div>
+			</div>
 				
 			<button onclick="toggleWindow('inventoryWindow')">Housekeeping</button>
 			<button onclick="toggleWindow('actionHistoryWindow')">Action History</button>
@@ -265,9 +266,8 @@
 			<div class="menu-item-group">
 				<button>Settings ▸</button>
 				<div class="submenu">
-					<button onclick="toggleWindow('businessPermissionWindow')">Daily Goals</button>
+					<button onclick="toggleWindow('horizonWindow')">Daily Goals</button>
 					<button onclick="toggleWindow('syncWindow')">Sync</button>
-
 				</div>
 			</div>
 			
@@ -376,11 +376,11 @@
 		</div>
 	</div>
 
-	<div id="businessPermissionFrame" class="ui-frame draggable">
+	<div id="horizonPermissionFrame" class="ui-frame draggable">
 		<div class="anchor-group">
 			<div class="anchor" id="business-permission-win-up"> 💿 </div>
 		</div>
-		<div id="businessPermissionWindow" class="ui-window">
+		<div id="horizonWindow" class="ui-window">
 			<h2>Daily goals</h2>
 			<div class="daily-goals">
 			
