@@ -375,13 +375,22 @@
           }
           
           const multiplierInput = document.getElementById('multiplier').value;
+          const waterRatio = parseFloat(document.getElementById('waterRatio').value) || 0;
           const multiplier = multiplierInput || (ingredientTemplateData.servingSize || 100) / 100;
+          
           if (ingredientTemplateData) {
-               const resulting_carbs = ingredientTemplateData.carbs * multiplier || 0;
-               const resulting_protein = ingredientTemplateData.protein * multiplier || 0;
-               const resulting_fat = ingredientTemplateData.fat * multiplier || 0;
+               // Adjust macros based on water ratio
+               const dilutionFactor = waterRatio > 0 ? 1 / (1 + waterRatio) : 1;
+               const resulting_carbs = ingredientTemplateData.carbs * multiplier * dilutionFactor || 0;
+               const resulting_protein = ingredientTemplateData.protein * multiplier * dilutionFactor || 0;
+               const resulting_fat = ingredientTemplateData.fat * multiplier * dilutionFactor || 0;
+               
+               // Calculate total weight including water
+               const originalWeight = 100 * multiplier;
+               const totalWeight = originalWeight * (1 + waterRatio);
+               
                const variant_string_name = variantKey == "normal" ? "" : variantKey;
-               const resulting_comment = `${ingredientTemplateData.name} ${variant_string_name} (${(100 * multiplier).toFixed(0)}g)`;
+               const resulting_comment = `${ingredientTemplateData.name} ${variant_string_name} (${totalWeight.toFixed(0)}g${waterRatio > 0 ? ` with ${waterRatio}:1 water` : ''})`;
                
                document.getElementById('carbs').value = resulting_carbs.toFixed(2);
                document.getElementById('protein').value = resulting_protein.toFixed(2);
