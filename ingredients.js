@@ -118,7 +118,7 @@ window.MacroIngredients = templates = {
                     subItems: [
                          { key: "rice", amount: 2.5 }
 
-                    },
+                    ],
                     instructions: "Cook rice according to package instructions.",
                }
 
