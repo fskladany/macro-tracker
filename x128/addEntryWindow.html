@@ -1,0 +1,51 @@
+<div id="addEntryFrame" class="ui-frame draggable">
+    <div class="anchor-group">
+        <div class="anchor" id="win-add"> 📀 </div>
+        <div class="anchor" id="win-add-up"> 💿 </div>
+        <div class="anchor" id="win-bijection"> ↔️</div>
+        <div class="anchor" id="win-conj">∧</div>
+        <div class="anchor" id="win-disj">∨</div>
+        <div class="anchor" id="win-bij"> ↔️</div>
+        
+        
+    </div>
+    <div id="addEntryWindow" class="ui-window" style="z-index: 100;">
+        <h1 style="margin-bottom:20px">Macro Tracker</h1>
+
+
+        <label for="templateSelect" style="float: left">Choose an ingredient variant:</label>
+        <label style="float: right;" for="multiplier">Amount (100g):</label>
+        <select id="templateSelect" style="float: left;width:70%; left:0;"
+            onchange="window.MacroTracker.handleFoodItemSelection()">
+            <option value="">Manual template...</option>
+        </select>
+
+        <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
+            onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
+        <div style="clear: both;"></div>
+        <div id="macro-actions-row">
+            <button onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
+            <button onclick="window.Recipe.addRawIngredient('metarice')"> Prepare dish </button>
+            <!-- TODO: Here it should be activateWindow() but that is not yet implemented-->
+			
+            <button onclick="toggleWindow('recipeWindow');"> + Find Recipe
+            </button>
+        </div>
+
+        <label for="fat">Fat (g)</label>
+        <input type="number" id="fat" placeholder="Fat (g)" value="0">
+
+        <label for="carbs">Carbs (g)</label>
+        <input type="number" id="carbs" placeholder="Carbs (g)" value="0">
+
+        <label for="protein">Protein (g)</label>
+        <input type="number" id="protein" placeholder="Protein (g)" value="0">
+
+        <label for="comment">Comment</label>
+        <textarea id="comment" placeholder="Describe food nuance..."></textarea>
+
+        <button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Eat</button>
+
+        <button class="subtle" onclick="alert('ingredient');"> Save As... </button>
+    </div>
+</div>

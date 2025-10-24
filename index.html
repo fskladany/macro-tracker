@@ -83,25 +83,36 @@
 
 		}
 
-		function toggleWindow(windowId) {
-			const windowEl = document.getElementById(windowId);
-			if (windowEl) {
-				windowEl.classList.toggle('hidden');
-			}
-
-			if (!windowEl.classList.contains('hidden')){
-				document.querySelectorAll(".draggable.active")
-					.forEach(el => el.classList.remove("active"));
-				windowEl.classList.add('active');
+		function toggleWindow(windowNameId) {
+			let wndElem = document.getElementById(windowNameId);
+			let frame = wndElem.closest('.ui-frame');
+			if (frame) { // e.g. not menu list window
+				const h3h3 = frame.querySelector('.h3h3');
+                h3h3.classList.add("hidden");
+			
+                wndElem.classList.remove('collapsed');		
+				frame.classList.toggle('hidden');
+				
+				if (!wndElem.classList.contains('hidden')){
+					document.querySelectorAll(".draggable.active")
+						.forEach(el => el.classList.remove("active"));
+					frame.classList.add('active');
+				
 				
 			}
+			}
+			else {
+				wndElem.classList.toggle('hidden');
+			}
 
+			
 
 			demonstrateFlowPresence();
 
 
 			window.saveWindowState();
-			updateFlowsForWindow(windowId);
+			window.restoreWindowState();
+			updateFlowsForWindow(windowNameId);
 		};
 
 		function collapseWindow(windowId) {
@@ -143,7 +154,7 @@
 			//Frame.UiNode.dragElement("addEntryFrame");
 			window.UiNode.dragElement("sumDigestionFrame");
 			window.UiNode.dragElement("monthlyTrailFrame");
-			window.UiNode.dragElement("recipeFrame");
+			window.UiNode.dragElement("recipeWindowFrame");
 			window.UiNode.dragElement("shoppingFrame");
 			window.UiNode.dragElement("recipeCreatorFrame");
 			window.UiNode.dragElement("startMenu");
@@ -242,25 +253,25 @@
 			<div class="menu-item-group">
 				<button>Macro Tracker ▸</button>
 				<div class="submenu">
-					<button onclick="toggleWindow('addEntryFrame')">Eat Ingredient</button>
-					<button onclick="toggleWindow('eatingHistoryFrame')">History</button>
-					<button onclick="toggleWindow('sumDigestionFrame')">Totals</button>
-					<button onclick="toggleWindow('monthlyTrailFrame')">Monthly Trail (28)</button>
-					<button onclick="toggleWindow('businessPermissionFrame')">Daily Goals</button>
+					<button onclick="toggleWindow('addEntryWindow')">Eat Ingredient</button>
+					<button onclick="toggleWindow('eatingHistoryWindow')">History</button>
+					<button onclick="toggleWindow('sumDigestionWindow')">Totals</button>
+					<button onclick="toggleWindow('monthlyTrailWindow')">Monthly Trail (28)</button>
+					<button onclick="toggleWindow('businessPermissionWindow')">Daily Goals</button>
 				</div>
 			</div>
-			<button onclick="toggleWindow('recipeFrame')">My Recipes</button>
-			<button onclick="toggleWindow('inventoryFrame')">Local storage</button>
-			<button onclick="toggleWindow('recipeCreatorFrame')">Recipe Creator</button>
-			<button onclick="toggleWindow('shoppingFrame')">Shopping</button>
-			<button onclick="toggleWindow('intentionsFrame')">Intentions</button>
-			<button onclick="toggleWindow('actionHistoryFrame')">Action History</button>
-			<button onclick="toggleWindow('syncWindowFrame')">Sync</button>
+			<button onclick="toggleWindow('recipeWindow')">My Recipes</button>
+			<button onclick="toggleWindow('inventoryWindow')">Local storage</button>
+			<button onclick="toggleWindow('recipeCreatorWindow')">Recipe Creator</button>
+			<button onclick="toggleWindow('shoppingWindow')">Shopping</button>
+			<button onclick="toggleWindow('intentionsWindow')">Intentions</button>
+			<button onclick="toggleWindow('actionHistoryWindow')">Action History</button>
+			<button onclick="toggleWindow('syncWindowWindow')">Sync</button>
 			
 		</div>
 	</div>
 
-	<div id="recipeFrame" class="draggable ui-frame">
+	<div id="recipeWindowFrame" class="draggable ui-frame">
 		<div class="anchor-group">
 			<div class="anchor" id="recipe-win-1"> 📀 </div>
 			<div class="anchor" id="recipe-win-up-1"> 💿 </div>
@@ -281,8 +292,10 @@
 					<span class="recipe-age">Created: 1 day ago</span>
 				</div>
 
+				<!-- TODO: Here it should be activateWindow() but that is not yet implemented-->
 				<div data-name="beef-recipe" class="recipe-item"
-					onclick="document.querySelector('#recipeCreatorFrame').classList.remove('hidden');">
+					
+					onclick="toggleWindow('recipeCreatorWindow');">
 					<span class="recipe-name">Beef with Rice</span>
 					<span class="recipe-age">Created: 1 hour ago</span>
 				</div>

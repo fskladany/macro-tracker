@@ -163,6 +163,7 @@
           const frame = anchorGroup.closest('.ui-frame');
           const wn = frame.querySelector('.ui-window');
           
+          
           if (!frame){
                console.log("Frame not found for: ", anchorGroup);
                return;
@@ -171,10 +172,12 @@
                const closeBtn = document.createElement('button');
                closeBtn.classList.add('close-btn');
                closeBtn.textContent = '㆝';
-
+               
+               
                closeBtn.onclick = function() {
                     toggleWindow(frame.id);
-                  
+                    window.saveWindowState();
+
                };
 
                const colBtn = document.createElement('button');
