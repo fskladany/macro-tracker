@@ -2,15 +2,20 @@
 
      // Save window positions and visibility
      function saveWindowState() {
-          const windows = document.querySelectorAll('.draggable.ui-window');
+          const frames = document.querySelectorAll('.draggable.ui-frame');
           const storageKey = window.Sync.getStorageKey('windowState');
           const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
-          windows.forEach(win => {
+          frames.forEach(frame => {
+               win = frame.querySelector('.ui-window');
+               if (!win){
+                    console.error ("Closest win not found for frame: " +frame.id);
+                    return;
+               }
                const computedStyle = window.getComputedStyle(win);
-               state[win.id] = {
+               state[frame.id] = {
                     visible: !win.classList.contains('hidden'),
-                    x: win.style.left || computedStyle.left,
-                    y: win.style.top || computedStyle.top
+                    x: frame.style.left || computedStyle.left,
+                    y: frame.style.top || computedStyle.top
                };
           });
           localStorage.setItem(storageKey, JSON.stringify(state));
@@ -24,14 +29,19 @@
           const storageKey = window.Sync.getStorageKey('windowState', targetUser);
           const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
           
-          document.querySelectorAll('.draggable.ui-window').forEach(win => {
+          document.querySelectorAll('.draggable.ui-frame').forEach(frame => {
+               win = frame.querySelector('.ui-window');
+               if (!win){
+                    console.error ("Closest win not found for frame: " +frame.id);
+                    return;
+               }
                if (state[win.id]) {
-                    win.classList.toggle('hidden', !state[win.id].visible);
-                    win.style.left = state[win.id].x || win.style.left;
-                    win.style.top = state[win.id].y || win.style.top;
+                    frame.classList.toggle('hidden', !state[win.id].visible);
+                    frame.style.left = state[win.id].x || win.style.left;
+                    frame.style.top = state[win.id].y || win.style.top;
                } else {
                     // Hide windows that don't have a state for the viewed user
-                    win.classList.add('hidden');
+                    frame.classList.add('hidden');
                }
                
                if (isViewingOther) {
@@ -67,7 +77,7 @@
 
      // Save state on drag or toggle
      window.addEventListener('mouseup', function () {
-          document.querySelectorAll('.ui-window').forEach(win => ensureWindowIsTopLevel(win));
+          document.querySelectorAll('.ui-frame').forEach(win => ensureWindowIsTopLevel(win));
           saveWindowState();
      });
 

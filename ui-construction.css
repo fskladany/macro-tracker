@@ -74,21 +74,22 @@
 
 .anchor-group {
      display: flex;
-     height: 18px;
-     top: 1px;
-     position: fixed;
-     left: 5px;
-     width: 50%;
-
+     height: 24px;
+     position: sticky;
+     background-color: #777;
+     width: inherit;
+     border-radius: 60px;
+     padding-right: 30px;
 }
+
 
 .anchor {
 
      width: 16px;
      height: 16px;
      pointer-events: auto;
-     margin: 0 auto;
      margin-top: 3px;
+     margin-left: 29px;
      
 }
 

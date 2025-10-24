@@ -9,7 +9,7 @@
      function clickDragUpkeepingPressure(e) {
           const draggingSourceElement = e.target.closest && e.target.closest('.anchor');
           if (draggingSourceElement) {
-               draggingSourceWindow = draggingSourceElement.closest('.ui-window');
+               draggingSourceWindow = draggingSourceElement.closest('.ui-frame');
                if (!draggingSourceWindow) {
                     alert("No dragging source window found C");
                     return false;
@@ -58,8 +58,9 @@
           if (!anchorElement || !canvasFrame) return null;
 
           // Find parent .ui-window for this anchor
-          let parentWindowElement = anchorElement.closest('.ui-window');
-          if (parentWindowElement && parentWindowElement.classList.contains('hidden')) {
+          let parentGroup = anchorElement.closest('.anchor-group');
+          let parentWindowFrameElement = parentGroup.closest('.ui-frame');
+          if (parentWindowFrameElement && parentWindowFrameElement.classList.contains('hidden')) {
                // Fallback to start menu anchor if parent window is hidden
                anchorElement = document.querySelector('#startMenuToggle');
                if (!anchorElement) return null;
@@ -191,14 +192,14 @@
           }
      }
 
-     function getFlowParentWindowFrom(flow) {
+     function getFlowFrameFrom(flow) {
           anchorElem = document.getElementById(flow.fromAnchorId);
-          closestParentWindowA = anchorElem.closest('.ui-window');
+          closestParentWindowA = anchorElem.closest('.ui-frame');
           return closestParentWindowA;
      }
-     function getFlowParentWindowTo(flow) {
+     function getFlowFrameTo(flow) {
           anchorElem = document.getElementById(flow.toAnchorId);
-          closestParentWindowA = anchorElem.closest('.ui-window');
+          closestParentWindowA = anchorElem.closest('.ui-frame');
           return closestParentWindowA;
      }
 
@@ -209,6 +210,7 @@
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
           }
+          console.log("Window id: ", windowId);
 
           const windowElement = document.getElementById(windowId);
           if (!windowElement) {
@@ -216,37 +218,39 @@
                return;
           }
 
-          const anchorElements = windowElement.querySelectorAll(`.anchor`);
+          const frameGroup = windowElement.closest(".ui-frame");
+          const anchorElements = frameGroup.querySelectorAll(`.anchor`);
+         
 
           // This seems to cause problems
           //animationFrameId = requestAnimationFrame(() => {
-               anchorElements.forEach(anchorEl => {
-                    const anchorId = anchorEl.id;
-                    flowConnections.forEach(f => {
-                         if (f.fromAnchorId == anchorId || f.toAnchorId == anchorId) {
-                              console.log(`found relationship on ${windowId} from: ${f.fromAnchorId} to ${f.toAnchorId}`);
+          anchorElements.forEach(anchorEl => {
+               const anchorId = anchorEl.id;
+               flowConnections.forEach(f => {
+                    if (f.fromAnchorId == anchorId || f.toAnchorId == anchorId) {
+                         console.log(`found relationship on ${windowId} from: ${f.fromAnchorId} to ${f.toAnchorId}`);
 
-                              var closestParentWindowA = getFlowParentWindowFrom(f);
-                              var closestParentWindowB = getFlowParentWindowTo(f);
+                         var parentFrameA = getFlowFrameFrom(f);
+                         var parentFrameB = getFlowFrameTo(f);
 
 
-                              if (closestParentWindowA && closestParentWindowA.classList.contains('oneDirectionalWindow')) {
-                                   f.pathElement.classList.add('oscillating');
-                                   setTimeout(() => { f.pathElement.classList.remove('oscillating'); }, 3000);
-                              }
-                              if (closestParentWindowB && closestParentWindowB.classList.contains('oneDirectionalWindow')) {
-                                   f.pathElement.classList.add('oscillating');
-                                   setTimeout(() => { f.pathElement.classList.remove('oscillating'); }, 3000);
-                              }
-
-                              const fromPos = getAnchorPosition(f.fromAnchorId);
-                              const toPos = getAnchorPosition(f.toAnchorId);
-                              if (fromPos && toPos) setPathElementAttributes(f.pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
-                              else (alert("fromPos or toPos missing!"));
+                         if (parentFrameA && parentFrameA.classList.contains('oneDirectionalWindow')) {
+                              f.pathElement.classList.add('oscillating');
+                              setTimeout(() => { f.pathElement.classList.remove('oscillating'); }, 3000);
                          }
-                    });
+                         if (parentFrameB && parentFrameB.classList.contains('oneDirectionalWindow')) {
+                              f.pathElement.classList.add('oscillating');
+                              setTimeout(() => { f.pathElement.classList.remove('oscillating'); }, 3000);
+                         }
+
+                         const fromPos = getAnchorPosition(f.fromAnchorId);
+                         const toPos = getAnchorPosition(f.toAnchorId);
+                         if (fromPos && toPos) setPathElementAttributes(f.pathElement, fromPos.x, fromPos.y, toPos.x, toPos.y);
+                         else (alert("fromPos or toPos missing!"));
+                    }
                });
-               animationFrameId = null;
+          });
+          animationFrameId = null;
           //});
      }
 

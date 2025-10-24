@@ -1,8 +1,15 @@
+.ui-frame {
+     position: absolute;
+     max-width: 100%;
+     max-height: 90vh;
+     min-height: 200px;
+}
+
 .ui-window {
      position: absolute;
-     width: 450px;
      background-color: #fff0;
      padding: 20px;
+     padding-top: 0px;
      border: 2px solid #7db0b733;
      border-radius: 8px;
      box-shadow: inset 17px 20px 19px 0px rgb(198 244 245 / 7%);
@@ -10,10 +17,7 @@
      z-index: 10;
      resize: both;
      overflow: auto;
-     max-width: 100%;
-     max-height: 90vh;
-     min-width: 300px;
-     min-height: 200px;
+     margin-left: -20px;
      backdrop-filter: blur(2px) contrast(0.9);
 }
 
@@ -22,16 +26,17 @@
      display: none;
 }
 
+.collapsed {
+     display: none;
+}
+
+
 #shoppingWindow {
-     top: 110px;
-     left: 280px;
      width: 400px;
 }
 
 
 #sumDigestionWindow {
-     top: 80px;
-     right: 10px;
      max-width: 300px;
 }
 
@@ -40,8 +45,6 @@
 }
 
 #eatingHistoryWindow {
-     top: 70px;
-     left: 40px;
      width: 400px;
 
 }
@@ -54,19 +57,8 @@
      resize: none;
 }
 
-#costlyWillWindow {
-     left: 10px;
-     top: 63%;
-}
-
-#timeWindow {
-     left: 10px;
-     top: 83%;
-}
 
 #monthlyTrailWindow {
-     top: 600px;
-     right: 10px;
      max-width: 500px;
      max-height: 500px;
 }
@@ -85,11 +77,26 @@
      height: 24px;
      z-index: 10;
      padding: 0;
-     margin-top: 0;
-     background-color: #89cc975c;
+     background-color: #036;
      border-radius: 70%;
-     margin-left: -15px;
-     margin-top: -5px;
+     margin-left: -20px;
+     margin-top: -0px;
+     border-radius: 10px;
+
+}
+
+.col-btn {
+     display: table-column;
+     border: none;
+     font-size: 16px;
+     width: 50px;
+     height: 24px;
+     z-index: 10;
+     padding: 0;
+     background-color: #036;
+     border-radius: 70%;
+     margin-left: -20px;
+     margin-top: -0px;
      border-radius: 10px;
 
 }
@@ -101,8 +108,6 @@
 
 
 #recipeWindow {
-     top: 200px;
-     left: 40px;
      width: 400px;
      height: 350px;
 }
@@ -186,8 +191,6 @@
 
 
 #intentionsWindow {
-     top: 200px;
-     left: 100px;
      width: 400px;
      height: auto;
 }
@@ -210,8 +213,6 @@
 
 
 #actionHistoryWindow {
-     top: 100px;
-     left: 320px;
      width: 400px;
      height: auto;
 }
@@ -230,8 +231,6 @@
 }
 
 #syncWindow {
-    top: 250px;
-    left: 150px;
     width: 450px;
     height: auto;
 }

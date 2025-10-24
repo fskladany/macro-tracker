@@ -5,8 +5,6 @@
 }
 
 #recipeCreatorWindow {
-    top: 100px;
-    left: 700px;
     width: 550px;
     height: auto;
 }
@@ -91,8 +89,6 @@ div.done-cooking {
 }
 
 #inventoryWindow {
-    top: 150px;
-    left: 100px;
     width: 450px;
     height: 600px;
     max-height: 90vh;

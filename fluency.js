@@ -153,29 +153,53 @@
                // ...add more exports as needed...
      };
 
-     function addCloseButtonToWindow(farElement) {
-          const windowElement = farElement.closest('.ui-window');
-          if (!windowElement) {
-               console.warn("No parent .ui-window found for element:", farElement);
+     function addCloseButtonToAnchorGroup(anchorGroup) {
+          const frame = anchorGroup.closest('.ui-frame');
+          const wn = frame.querySelector('.ui-window');
+          
+          if (!frame){
+               console.log("Frame not found for: ", anchorGroup);
                return;
           }
-
-          if (!windowElement.querySelector('.close-btn')) {
+          if (!anchorGroup.querySelector('.close-btn')) {
                const closeBtn = document.createElement('button');
                closeBtn.classList.add('close-btn');
                closeBtn.textContent = '㆝';
 
                closeBtn.onclick = function() {
-                    toggleWindow(windowElement.id);
+                    toggleWindow(frame.id);
                   
                };
 
-               farElement.prepend(closeBtn);
+               const colBtn = document.createElement('button');
+               colBtn.classList.add('col-btn');
+               colBtn.textContent = '--';
+
+               colBtn.onclick = function() {
+                    h3h3.classList.toggle("hidden");
+                    
+                    setTimeout(()=>{
+                         collapseWindow(wn.id);
+                    },300);
+                    
+                  
+               };
+
+               const h3h3 = document.createElement('h3');
+               h3h3.textContent = wn.id;
+               h3h3.style= "margin-left: 10px; margin-top:0; color:white";
+               h3h3.classList.add("hidden");
+
+               anchorGroup.prepend(h3h3);
+               anchorGroup.prepend(closeBtn);
+               anchorGroup.prepend(colBtn);
+              
+               
           }
      }
 
      window.Fluency = {
-          addCloseButtonToWindow: addCloseButtonToWindow
+          addCloseButtonToAnchorGroup: addCloseButtonToAnchorGroup
      };
 
 })(window, document);
