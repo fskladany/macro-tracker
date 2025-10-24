@@ -63,7 +63,6 @@
             }
 			window.MacroTracker.reloadDailyGoals();
 			window.MacroTracker.LoadFoodItemTemplates('templateSelect');
-			window.MacroTracker.LoadFoodItemTemplates('shoppingPurposeKey');
 
 			// Initial table and totals update
 			window.MacroTracker.displayHistoryTable();

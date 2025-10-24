@@ -28,10 +28,9 @@
 
 	</style>
 	<script src="restrainings.js"></script>
-	<script src="Hermes.js"></script>
-	<script src="recipe.js"></script>
-	<script src="ingredients.js"></script>
-	<script src="recipeIngredients.js"></script>
+	<!--<script src="Hermes.js"></script> --> <!-- Deprecated in favor of a unified FoodItem model -->
+	<script src="recipe.js"></script> <!-- Deprecated in favor of a unified FoodItem model -->
+	<script src="ingredients.js"></script> 
 	<script src="macro-distribution.js"></script>
 	<script src="fluency.js"></script>
 	<script src="relation.js"></script>
@@ -142,11 +141,7 @@
 			//})
 
 			window.restoreWindowState();
-
-			window.Recipe.LoadRecipeItemSelection('recipeIngredientSelect');
-			window.Recipe.LoadRecipeContent('ingredientProcessList');
-			
-
+			window.MacroTracker.LoadFoodItemTemplates('recipeIngredientSelect'); // Deprecated
 
 			// Activate the drag function for the draggable elements
 
@@ -154,12 +149,9 @@
 			//Frame.UiNode.dragElement("addEntryFrame");
 			window.UiNode.dragElement("sumDigestionFrame");
 			window.UiNode.dragElement("monthlyTrailFrame");
-			window.UiNode.dragElement("recipeWindowFrame");
-			window.UiNode.dragElement("shoppingFrame");
 			window.UiNode.dragElement("recipeCreatorFrame");
 			window.UiNode.dragElement("startMenu");
-			window.UiNode.dragElement("inventoryFrame");
-			window.UiNode.dragElement("intentionsFrame");
+			window.UiNode.dragElement("inventoryFrame");;
 			window.UiNode.dragElement("actionHistoryFrame");
 			window.UiNode.dragElement("businessPermissionFrame");
 
@@ -250,58 +242,35 @@
 
 
 		<div id="startMenuList" onmouseleave="toggleWindow('startMenuList')" class="draggable hidden">
+
 			<div class="menu-item-group">
-				<button>Macro Tracker ▸</button>
+				<button>Eat ▸</button>
 				<div class="submenu">
-					<button onclick="toggleWindow('addEntryWindow')">Eat Ingredient</button>
+					<button onclick="toggleWindow('addEntryWindow')">Eat Fast</button>
+					<button onclick="toggleWindow('recipeCreatorWindow')">Eat Slow</button>
+					<button onclick="toggleWindow('sportsWindow')">Eat Time</button>
+				</div>
+			</div>
+			<div class="menu-item-group">
+				<button>Analyze ▸</button>
+				<div class="submenu">
 					<button onclick="toggleWindow('eatingHistoryWindow')">History</button>
-					<button onclick="toggleWindow('sumDigestionWindow')">Totals</button>
+					<button onclick="toggleWindow('sumDigestionWindow')">Daily Totals</button>
 					<button onclick="toggleWindow('monthlyTrailWindow')">Monthly Trail (28)</button>
-					<button onclick="toggleWindow('businessPermissionWindow')">Daily Goals</button>
 				</div>
-			</div>
-			<button onclick="toggleWindow('recipeWindow')">My Recipes</button>
-			<button onclick="toggleWindow('inventoryWindow')">Local storage</button>
-			<button onclick="toggleWindow('recipeCreatorWindow')">Recipe Creator</button>
-			<button onclick="toggleWindow('shoppingWindow')">Shopping</button>
-			<button onclick="toggleWindow('intentionsWindow')">Intentions</button>
+				
+			<button onclick="toggleWindow('inventoryWindow')">Housekeeping</button>
 			<button onclick="toggleWindow('actionHistoryWindow')">Action History</button>
-			<button onclick="toggleWindow('syncWindowWindow')">Sync</button>
-			
-		</div>
-	</div>
 
-	<div id="recipeWindowFrame" class="draggable ui-frame">
-		<div class="anchor-group">
-			<div class="anchor" id="recipe-win-1"> 📀 </div>
-			<div class="anchor" id="recipe-win-up-1"> 💿 </div>
-		</div>
-		<div id="recipeWindow" class="ui-window">
+			<div class="menu-item-group">
+				<button>Settings ▸</button>
+				<div class="submenu">
+					<button onclick="toggleWindow('businessPermissionWindow')">Daily Goals</button>
+					<button onclick="toggleWindow('syncWindow')">Sync</button>
 
-
-			<h1 style="margin-bottom:20px">My Recipes</h1>
-
-			<div id="recipeList">
-				<!-- Example recipe items. These would be generated dynamically. -->
-				<div class="recipe-item">
-					<span class="recipe-name">Scrambled Eggs & Ham</span>
-					<span class="recipe-age">Created: 2 hours ago</span>
-				</div>
-				<div class="recipe-item">
-					<span class="recipe-name">Protein Shake</span>
-					<span class="recipe-age">Created: 1 day ago</span>
-				</div>
-
-				<!-- TODO: Here it should be activateWindow() but that is not yet implemented-->
-				<div data-name="beef-recipe" class="recipe-item"
-					
-					onclick="toggleWindow('recipeCreatorWindow');">
-					<span class="recipe-name">Beef with Rice</span>
-					<span class="recipe-age">Created: 1 hour ago</span>
 				</div>
 			</div>
-
-			<button id="createNewRecipeBtn" style="margin-top: 20px;">+ Create New Recipe</button>
+			
 		</div>
 	</div>
 
@@ -325,7 +294,7 @@
 			<select id="recipeIngredientSelect" style="float: left;width:70%; left:0;" onchange="">
 				<option value="{}">Manual template...</option>
 			</select>
-			<button style="float: right; width:23%" onclick="window.Recipe.addRealIngredient()"> + Add </button>
+			<button style="float: right; width:23%" onclick="window.Recipe.addRawIngredient();"> + Add </button>
 			<div style="clear: both;"></div>
 		</div>
 
@@ -337,7 +306,7 @@
 
 		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
 			<button style="width: 48%;" onclick="alert('Cooking all ingredients...')">Cook All</button>
-			<button style="width: 48%;" onclick="window.Hermes.CommitIngredientState();">Store as dish</button>
+			<button style="width: 48%;" onclick="window.Recipe.DefineRecipeTree();">Store as dish</button>
 
 		</div>
 		</div>
@@ -469,90 +438,13 @@
 		</div>
 	</div>
 
-	<div id="shoppingFrame" class="draggable ui-frame">
-		<div class="anchor-group">
-			<div class="anchor" id="shopping-win-1"> 📀 </div>
-		</div>
-		<div id="shoppingWindow" class="ui-window">
-			<div class="anchor" id="shopping-win-up-1"> 💿 </div>
-			<h1 style="margin-bottom:20px">Ingredient Commutor</h1>
-
-			<label for="shoppingPurposeKey">Ingredient (PurposeKey)</label>
-			<select id="shoppingPurposeKey" onchange="window.Recipe.handleIngredientSelection();">
-				<!-- Options will be populated from ingredients.js -->
-				<option value="">Select Ingredient...</option>
-			</select>
-
-			<label for="ingredientVariant">Ingredient Variant</label>
-			<button class="subtle" onclick="prompt('Variant key for new item template', '');">Branch</button>
-			<select id="ingredientVariant" placeholder="e.g. 30% fat beef">
-			</select>
-
-			<label for="SourceAreaName">Source Area</label>
-			<label for="shoppingPrice" style="float: right;">Price</label>
-			<select style="float: left; width:73%;" id="SourceAreaName">
-				<option value="">Automatic (agnostic)</option>
-				<option value="">City center</option>
-				<option value="">City north</option>
-				<option value="">City south</option>
-				<option value="">City east</option>
-				<option value="">City west</option>
-
-			</select>
-			<input type="number" id="shoppingPrice" style="float: right; width:23%;" value="1" placeholder="1.00">
-			<div style="clear: both;"></div>
-			<br />
-			<label for="shoppingBuyPeriod">Window Size (days)</label>
-			<input type="number" id="shoppingBuyPeriod" value="7" placeholder="e.g., 7 for weekly">
-
-			<button class="subtle" onclick="window.Hermes.applyIngredientIntent('bought')">Pay</button>
-			<button class="subtle" onclick="window.Hermes.applyIngredientIntent('trashed')">Surrender</button>
-			<button class="subtle" onclick="window.Hermes.applyIngredientIntent('commited')">Demand</button>
-
-		</div>
-	</div>
-
-
-	<div id="intentionsFrame" class="draggable ui-frame">
-
-		<div class="anchor-group">
-			<div class="anchor" id="intentions-win-1"> 📀 </div>
-		</div>
-		<div id="intentionsWindow" class="ui-window">
-			<h1>Intentions</h1>
-			<p>Demanded ingredients and evaporated intents.</p>
-			<div class="intentions-list">
-				<div class="intention-item">
-					<span>Mushrooms</span>
-					<span class="intention-timer">Time to buy: <strong>2 days</strong></span>
-				</div>
-				<div class="intention-item">
-					<span>Ground Beef (30% fat)</span>
-					<span class="intention-timer">Time to buy: <strong>4 days</strong></span>
-				</div>
-			</div>
-		</div>
-	</div>
 
 
 	<div id="actionHistoryFrame" class="draggable ui-frame">
 		<div class="anchor-group">
 			<div class="anchor" id="action-history-win-1"> 📀 </div>
 		</div>
-		<div id="actionHistoryWindow" class="ui-window">
-			<h1>Action History</h1>
-			<p>Log of bought ingredients and storage actions.</p>
-			<div class="action-history-list">
-				<div class="action-item">
-					<span><strong>Bought:</strong> Chicken (1000g)</span>
-					<span class="action-meta">Stored in: <strong>Fridge</strong> | 2 hours ago</span>
-				</div>
-				<div class="action-item">
-					<span><strong>Bought:</strong> Rice (500g)</span>
-					<span class="action-meta">Stored in: <strong>Pantry</strong> | 5 hours ago</span>
-				</div>
-			</div>
-		</div>
+
 		
 	</div>
 

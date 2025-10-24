@@ -16,7 +16,12 @@
           const fat = parseFloat(document.getElementById('fat').value) || 0;
           const comment = document.getElementById('comment').value;
           const ts = new Date().getTime();
-          const entry = { ts, carbs, protein, fat, comment };
+
+          let type = "eat";
+          if (comment.toLowerCase().includes('kcal')) {
+               type = "sport";
+          }
+          const entry = { ts, carbs, protein, fat, comment, type: type };
           const storageKey = window.Sync.getStorageKey('macroEntries');
           const entries = JSON.parse(localStorage.getItem(storageKey)) || [];
           entries.push(entry);
@@ -69,8 +74,12 @@
                } else {
                     d_date = long_date;
                }
-                    
-               entry = { date: d_date, ...entry }
+
+               if (!entry['type']) {
+                    entry['type'] = "Unaction";
+               }
+               comment = entry['type'] + ": " + entry['comment'];
+               entry = { index: entry['index'], date: d_date, carbs: entry['carbs'], protein: entry['protein'], fat: entry['fat'], comment: comment };
                index = entry['index'];
                
                
@@ -379,22 +388,27 @@
           const multiplier = multiplierInput || (ingredientTemplateData.servingSize || 100) / 100;
           
           if (ingredientTemplateData) {
-               // Adjust macros based on water ratio
-               const dilutionFactor = waterRatio > 0 ? 1 / (1 + waterRatio) : 1;
-               const resulting_carbs = ingredientTemplateData.carbs * multiplier * dilutionFactor || 0;
-               const resulting_protein = ingredientTemplateData.protein * multiplier * dilutionFactor || 0;
-               const resulting_fat = ingredientTemplateData.fat * multiplier * dilutionFactor || 0;
-               
-               // Calculate total weight including water
-               const originalWeight = 100 * multiplier;
-               const totalWeight = originalWeight * (1 + waterRatio);
+               // The dilutionFactor represents how much the original mass is diluted.
+               // e.g., 1 part rice to 3 parts water (waterRatio=3) means the final mass is 4 times
+               // the original, so the macros per 100g are diluted by a factor of 4.
+               // A negative waterRatio can signify concentration (drying).
+               const dilutionFactor = 1 + waterRatio;
+
+               // We calculate the macros for the total amount selected (e.g., 50g of raw rice)
+               const baseCarbs = (ingredientTemplateData.carbs || 0) * multiplier;
+               const baseProtein = (ingredientTemplateData.protein || 0) * multiplier;
+               const baseFat = (ingredientTemplateData.fat || 0) * multiplier;
+
+               // Then, we apply the dilution to get the final values for the journal entry.
+               // The total weight of the consumed portion is (100 * multiplier) * dilutionFactor.
+               // The macros are what was in the original portion.
+               const totalWeight = (100 * multiplier) * dilutionFactor;
                
                const variant_string_name = variantKey == "normal" ? "" : variantKey;
-               const resulting_comment = `${ingredientTemplateData.name} ${variant_string_name} (${totalWeight.toFixed(0)}g${waterRatio > 0 ? ` with ${waterRatio}:1 water` : ''})`;
-               
-               document.getElementById('carbs').value = resulting_carbs.toFixed(2);
-               document.getElementById('protein').value = resulting_protein.toFixed(2);
-               document.getElementById('fat').value = resulting_fat.toFixed(2);
+               const resulting_comment = `${ingredientTemplateData.name} ${variant_string_name} (${totalWeight.toFixed(0)}g${waterRatio !== 0 ? `, water ratio 1:${waterRatio}` : ''})`;
+               document.getElementById('carbs').value = baseCarbs.toFixed(2);
+               document.getElementById('protein').value = baseProtein.toFixed(2);
+               document.getElementById('fat').value = baseFat.toFixed(2);
                document.getElementById('comment').value = resulting_comment;
           }
      }

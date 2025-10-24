@@ -171,6 +171,12 @@
                
      }
 
+     function DefineRecipeTree() {
+          alert("Define recipe tree not implemented yet");
+          return;
+     }
+
+
      function CreateIngredientLine(recipeIngredient){
    
           const ingredientProcessItem = document.createElement('div');
@@ -197,38 +203,41 @@
           amountLabel.innerText="Amount:";
 
           subIngredients = new Array();
-          subiSrc = recipeIngredient['subIngredients']
-          if (!subiSrc){
-               alert("no sub ingredients!)");
+          subItems = recipeIngredient['subItems'];
+
+          Object.keys(recipeIngredient['subItems']).forEach(numKey => {
+               ingre = recipeIngredient['subItems'][numKey];
+               subIngredients.push(ingre);
+               console.log("Subingredient: ", ingre);
+          })
+
+          if (!subItems){
+               alert("no sub items!");
                return ingredientProcessItem;
           }
-          Object.keys(recipeIngredient['subIngredients']).forEach(numKey => {
-               ingre = recipeIngredient['subIngredients'][numKey];
-               subIngredients.push(ingre);
-               console.log(ingre);
-          })
+          
           // ingredients.forEach (subIngredientKey => window.Hermes.ingredientAvailable(subIngredientKey) )
           const subIngredientDiv = document.createElement('div');
           subIngredientDiv.style="display:table";
           subIngredientDiv.className = 'ingredient-actions';
           subIngredientDiv.textContent = "Includes: ";
                
-          subIngredients.forEach (subIngredientKey => {
+          subIngredients.forEach (subIngredient => {
+               const subIngredientKey = subIngredient['key'];
                const subIngredientSpan = document.createElement('span');
                subIngredientSpan.className = 'sub-ingredient';
                subIngredientSpan.textContent = subIngredientKey;
                subIngredientDiv.appendChild(subIngredientSpan);
 
                ingredientProcessItem.appendChild(subIngredientDiv);
-               if (!window.Hermes.ingredientAvailable(recipeIngredientKey)) {
+               if (true) {
                     subIngredientSpan.style="color: red";
                     const findIngredientButton = document.createElement('button');
                     subIngredientSpan.textContent += ' (not available)';
                     findIngredientButton.className = 'subtle';
                     findIngredientButton.textContent = 'Find ' + subIngredientKey;
                     findIngredientButton.onclick = function() {
-                         toggleWindow('shoppingWindow');
-                         // window.Hermes.searchForIngredient(recipeIngredientKey);
+                         alert("Just go outside first");
                     };
                     subIngredientSpan.appendChild(findIngredientButton);
                
@@ -246,7 +255,7 @@
 
                if (j === 0) {
                     actionButton.textContent = 'Instructions';
-                    const instructionText = window.recipeIngredients[recipeIngredientKey];
+                    const instructionText = window.MacroIngredients[recipeIngredientKey];
                     if (!instructionText){
                          actionButton.textContent = 'Instructions (not available)';
                          actionButton.disabled=true;
@@ -303,7 +312,7 @@
           document.getElementById(recipeDivId).innerHTML = '';
 
           fakeIngredients.forEach (recipeIngredientKey => {
-               recipeIngredientData = window.recipeIngredients[recipeIngredientKey];
+               recipeIngredientData = window.MacroIngredients[recipeIngredientKey];
                if (!recipeIngredientData){
                     recipeIngredientData = {"name": recipeIngredientKey};
 
@@ -317,72 +326,16 @@
 
      }
 
-
-     function LoadRecipeItemSelection(templateSelectId) {
-          const select = document.getElementById(templateSelectId);
-          Object.keys(window.recipeIngredients).forEach(key => {
-               var variants = window.recipeIngredients[key].variants;
-               if (!variants) {
-                    variants = {"normal": {}}
-               } 
-
-               Object.keys(variants).forEach(variantKey => {
-                    const elemOption = document.createElement('option');
-                    elemOption.value = JSON.stringify({foodKey: key, variantKey: variantKey});
-                    var servingSize = window.recipeIngredients[key].servingSize;
-                    if (servingSize == 0) elemOption.disabled = true;
-                    if (!servingSize && servingSize != 0) servingSize = 100;
-                    elemOption.textContent = window.recipeIngredients[key].name;
-
-                    if (servingSize != 0) {
-                         if (variantKey != "normal"){
-                              elemOption.textContent += ' [' + variantKey + ']';
-                         }
-
-                         elemOption.textContent += ' (' + servingSize + 'g)';
-                    }
-                    select.appendChild(elemOption);
-
-
-               })
-
-               
-          });
-     }
-
-     function addRealIngredient() {
-   
+     function addRawIngredient() {
           const ingredientOptionValue = JSON.parse(document.getElementById('recipeIngredientSelect').value);
-
           if (Object.keys(ingredientOptionValue).length === 0) {
                alert("Select recipe ingredient");
                return;
           }
 
           const ingredientKey = ingredientOptionValue.foodKey;
-          const variantKey = ingredientOptionValue.variantKey;
-          recipeIngredient = window.recipeIngredients[ingredientKey];
-          if (!recipeIngredient) {
-               alert("Recipe for ingredient " + ingredientKey + " not found.");
-               return;
-          }
-          //if (!RealIngredients.includes(window.recipeIngredients[ingredientKey].name)) {
-          //     RealIngredients.push(window.recipeIngredients[ingredientKey].name);
-          //}
-           if (variantKey != "normal"){
-
-               RealIngredients.push(ingredientKey + "(" + variantKey + ")");
-           }
-           else{
-               RealIngredients.push(ingredientKey);
-
-           }
-
-           
-          LoadRecipeContent('ingredientProcessList');
-     }
-
-     function addRawIngredient(ingredientKey) {
+          // const variantKey = ingredientOptionValue.variantKey;
+          
           RealIngredients.push(ingredientKey);
           LoadRecipeContent('ingredientProcessList');
      }
@@ -413,11 +366,13 @@
      window.Recipe = {
           handleIngredientSelection: handleIngredientSelection,
           applyIngredientIntent: applyIngredientIntent,
-          LoadRecipeItemSelection: LoadRecipeItemSelection,
           LoadRecipeContent: LoadRecipeContent,
-          addRealIngredient: addRealIngredient,
           addRawIngredient: addRawIngredient,
+          DefineRecipeTree: DefineRecipeTree,
           commitDishState: commitDishState
      };
+
+     // When creating ingredient lines for recipes, apply water ratio logic recursively if sub-ingredients have their own water ratios.
+     // This can be implemented by traversing subIngredients and applying dilutionFactor as in macro-distribution.js.
 
 })(window, document);

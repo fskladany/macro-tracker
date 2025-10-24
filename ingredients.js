@@ -2,6 +2,9 @@ window.MacroIngredients = templates = {
 
                // Example templates
                // add {verified: true} to permit copilot templating
+               _0:              { name: "--- sports ---", servingSize: 0 },
+               running:         { name: 'running (400kcal)', protein: -25, carbs: -75, servingSize: 100 },
+               
 
                _1:              { name: "--- protein ---", servingSize: 0 },
                egg:             { name: 'egg', carbs: 0.7, protein: 12.6, fat: 9.6,     servingSize: 50 },
@@ -57,7 +60,67 @@ window.MacroIngredients = templates = {
                porkSauce:       { name: "pork sauce (Lunter)", servingSize: 150, fat: 25, carbs: 5.8, protein: 8.1 },
                butter:          { fat: 66, cabs: 33, name: 'butter and honey', servingSize: 20 },
                arashidNut:      { name: "arashid nut", fat: 50, carbs: 6.6, protein: 26, salt: 0.78, fiber: 12 },
-               pistachioNut:    { name: "pistachio nut", fat: 50, carbs: 8.9, protein: 24, salt: 1.4, fiber: 9.4 }
+               pistachioNut:    { name: "pistachio nut", fat: 50, carbs: 8.9, protein: 24, salt: 1.4, fiber: 9.4 },
+
+               _5:              { name: "--- dishes ---", servingSize: 0 },
+
+               grilledChicken: {
+                    name: 'grilled chicken', 
+                    servingSize: 300,
+                    subItems: [
+                         { key: 'chicken', amount: 150, waterRatio: -0.5 }, // 150g chicken, dried out by 50%
+                         { key: 'boiledRice', amount: 150 },          // 50g raw rice, boiled in 2x water
+                         { key: 'oil', amount: 10 },
+                         { key: 'salt', amount: 0.005 },
+                         { key: 'pepper', amount: 0.002 }
+                    ],
+                    instructions: "Marinate chicken with oil, salt, and pepper. Grill until cooked through."
+               },
+
+               grilledBeefWithRice: {
+                    name: 'grilled beef with rice',
+                    servingSize: 300,
+                    subItems: [
+                         { key: 'grilledBeef', amount: 120, waterRatio: -0.01 }, // account for extra 1% weight loss due to reheating
+                         { key: 'boiledRice', amount: 50, waterRatio: 0.01 },    // account for extra 10g due to rehydration
+                         { key: 'mushrooms', amount: 50, waterRatio: 0 }
+                    ],
+                    instructions: "Prepare grilled beef and boiled rice. Serve together."
+               },
+
+               grilledBeef: {
+                    name: 'grilled beef', 
+                    servingSize: 250,
+                    subItems: [
+                         { key: 'beef', amount: 150, waterRatio: -0.2 }, // 150g beef, dried out by 20%
+                         { key: 'oil', amount: 10 },
+                         { key: 'salt', amount: 0.005 },
+                         { key: 'pepper', amount: 0.005 },
+                         { key: 'garlic', amount: 0.5 },
+
+                    ],
+                    instructions: "Preheat pan to scorching heat to induce maillard reaction. Marinate beef with oil, salt, pepper, and garlic. Grill to desired doneness."
+               },
+
+               boiledEgg: {
+                    name: 'boiled egg', servingSize: 50,
+                    subItems: [
+                         { key: "egg", amount: 1 },
+                         { key: "salt", amount: 0.05 }
+                    ],
+                    instructions: "Boil the egg for 8-10 minutes. Cool, peel, and season with salt.",
+               },
+
+               boiledRice: {
+                    name: 'boiled rice', servingSize: 500,
+                    waterInfusionRatio: 3,
+
+                    subItems: [
+                         { key: "rice", amount: 2.5 }
+
+                    },
+                    instructions: "Cook rice according to package instructions.",
+               }
 
                // Add more templates as needed
           };
