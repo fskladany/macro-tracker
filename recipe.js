@@ -205,17 +205,19 @@
           subIngredients = new Array();
           subItems = recipeIngredient['subItems'];
 
+
+          if (!subItems){
+               alert("no sub items!");
+               return ingredientProcessItem;
+          }
+          // TODO: THIS  needs a thorough rework
           Object.keys(recipeIngredient['subItems']).forEach(numKey => {
                ingre = recipeIngredient['subItems'][numKey];
                subIngredients.push(ingre);
                console.log("Subingredient: ", ingre);
           })
 
-          if (!subItems){
-               alert("no sub items!");
-               return ingredientProcessItem;
-          }
-          
+     
           // ingredients.forEach (subIngredientKey => window.Hermes.ingredientAvailable(subIngredientKey) )
           const subIngredientDiv = document.createElement('div');
           subIngredientDiv.style="display:table";
