@@ -48,6 +48,46 @@
         window.location.reload();
     }
 
+    function loadMainMacroWindow(users, retries = 5){
+            // functio waitForMainWindow () {
+
+            const addEntryWindow = document.getElementById('templateSelect');
+            if (!addEntryWindow){
+                if (retries > 0){
+                    setTimeout(()=> loadMainMacroWindow(users, retries -1), 500);
+                } else{
+                    console.error("Could not load addEntryWindow");
+                }
+                return;
+
+            }
+			window.MacroTracker.reloadDailyGoals();
+			window.MacroTracker.LoadFoodItemTemplates('templateSelect');
+			window.MacroTracker.LoadFoodItemTemplates('shoppingPurposeKey');
+
+			// Initial table and totals update
+			window.MacroTracker.displayHistoryTable();
+			window.MacroTracker.updateDailyTotals();
+
+			window.MacroTracker.DisplayDailyTotals();
+            window.KeyboardPermission.SetKeyboardEvents();
+
+
+
+			document.querySelector('.edit-goal[data-macro="protein"]').onclick = () => {
+				window.MacroTracker.editGoal('protein');
+			};
+			document.querySelector('.edit-goal[data-macro="carbs"]').onclick = () => {
+				window.MacroTracker.editGoal('carbs');
+			};
+			document.querySelector('.edit-goal[data-macro="fat"]').onclick = () => {
+				window.MacroTracker.editGoal('fat');
+			};
+			document.querySelector('.edit-goal[data-macro="calories"]').onclick = () => {
+				window.MacroTracker.editGoal('calories');
+			};
+    }
+
     function populateUserDropdown(users, retries = 5) {
         const userSelect = document.getElementById('userSelect');
         if (!userSelect) {
@@ -158,6 +198,7 @@
         }
         
         populateUserDropdown(users);
+        loadMainMacroWindow(users);
     }
 
     window.Sync = {

@@ -98,37 +98,29 @@
 		// Load external windows
 		loadWindow('External', 'externalWindowContainer');
 		loadWindow('syncWindow', 'externalWindowContainer');
+		loadWindow('addEntryWindow', 'externalWindowContainer');
+		
 
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
 			window.Sync.init();
-			window.MacroTracker.reloadDailyGoals();
+			
 			// Alternatively (not verified) document.queryFirst('#templateSelector.addEventListner () => {
 			//    LoadTemplateItems(self.id)
 			//})
 
 			window.restoreWindowState();
-
-			window.MacroTracker.LoadFoodItemTemplates('templateSelect');
-			window.MacroTracker.LoadFoodItemTemplates('shoppingPurposeKey');
+			
 			window.Recipe.LoadRecipeItemSelection('recipeIngredientSelect');
 			window.Recipe.LoadRecipeContent('ingredientProcessList');
-
-
-			// Initial table and totals update
-			window.MacroTracker.displayHistoryTable();
-			window.MacroTracker.updateDailyTotals();
-
-			window.MacroTracker.DisplayDailyTotals();
-			window.KeyboardPermission.SetKeyboardEvents();
-
+			
 
 
 			// Activate the drag function for the draggable elements
 
 			window.UiNode.dragElement("eatingHistoryWindow");
-			window.UiNode.dragElement("addEntryWindow");
+			//window.UiNode.dragElement("addEntryWindow");
 			window.UiNode.dragElement("sumDigestionWindow");
 			window.UiNode.dragElement("monthlyTrailWindow");
 			window.UiNode.dragElement("recipeWindow");
@@ -141,18 +133,7 @@
 			window.UiNode.dragElement("businessPermissionWindow");
 
 
-			document.querySelector('.edit-goal[data-macro="protein"]').onclick = () => {
-				window.MacroTracker.editGoal('protein');
-			};
-			document.querySelector('.edit-goal[data-macro="carbs"]').onclick = () => {
-				window.MacroTracker.editGoal('carbs');
-			};
-			document.querySelector('.edit-goal[data-macro="fat"]').onclick = () => {
-				window.MacroTracker.editGoal('fat');
-			};
-			document.querySelector('.edit-goal[data-macro="calories"]').onclick = () => {
-				window.MacroTracker.editGoal('calories');
-			};
+
 			var startPos = null;
 			document.querySelector('#startMenuToggle').addEventListener('mousedown', (e) => {
 				startPos = { 'x': e.clientX, 'y': e.clientY };
@@ -257,49 +238,6 @@
 			<button onclick="toggleWindow('syncWindow')">Sync</button>
 			
 		</div>
-	</div>
-
-	<div id="addEntryWindow" class="draggable ui-window init-draggable" style="z-index: 100;">
-		<div class="anchor-group" style="float: right">
-			<div class="anchor" id="win-add"> 📀 </div>
-			<div class="anchor" id="win-add-up"> 💿 </div>
-		</div>
-		<h1 style="margin-bottom:20px">Macro Tracker</h1>
-
-
-		<label for="templateSelect" style="float: left">Choose an ingredient variant:</label>
-		<label style="float: right;" for="multiplier">Amount (100g):</label>
-		<select id="templateSelect" style="float: left;width:70%; left:0;"
-			onchange="window.MacroTracker.handleFoodItemSelection()">
-			<option value="">Manual template...</option>
-		</select>
-
-		<input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
-			onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
-		<div style="clear: both;"></div>
-		<div id="macro-actions-row">
-			<button onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
-			<button onclick="window.Recipe.addRawIngredient('metarice')"> Prepare dish </button>
-			
-			<button onclick="document.querySelector('#recipeWindow').classList.remove('hidden')"> + Find Recipe
-			</button>
-		</div>
-
-		<label for="fat">Fat (g)</label>
-		<input type="number" id="fat" placeholder="Fat (g)" value="0">
-
-		<label for="carbs">Carbs (g)</label>
-		<input type="number" id="carbs" placeholder="Carbs (g)" value="0">
-
-		<label for="protein">Protein (g)</label>
-		<input type="number" id="protein" placeholder="Protein (g)" value="0">
-
-		<label for="comment">Comment</label>
-		<textarea id="comment" placeholder="Describe food nuance..."></textarea>
-
-		<button class="subtle" onclick="window.MacroTracker.UndoLastEntry()">Undo Eat</button>
-
-		<button class="subtle" onclick="alert('ingredient');"> Save As... </button>
 	</div>
 
 	<div id="recipeWindow" class="draggable ui-window hidden">
