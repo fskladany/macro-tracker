@@ -2,18 +2,22 @@
 
      // Save window positions and visibility
      function saveWindowState() {
+          console.log("Window state saved");
           const frames = document.querySelectorAll('.draggable.ui-frame');
+          console.log("Frame count: ", frames.length);
           const storageKey = window.Sync.getStorageKey('windowState');
           const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
+          
           frames.forEach(frame => {
                win = frame.querySelector('.ui-window');
                if (!win){
                     console.error ("Closest win not found for frame: " +frame.id);
                     return;
                }
-               const computedStyle = window.getComputedStyle(win);
+               const computedStyle = window.getComputedStyle(frame);
                state[frame.id] = {
-                    visible: !win.classList.contains('hidden'),
+                    visible: !frame.classList.contains('hidden'),
+                    collapsed: win.classList.contains('collapsed'),
                     x: frame.style.left || computedStyle.left,
                     y: frame.style.top || computedStyle.top
                };
@@ -29,19 +33,41 @@
           const storageKey = window.Sync.getStorageKey('windowState', targetUser);
           const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
           
-          document.querySelectorAll('.draggable.ui-frame').forEach(frame => {
+          const frames =  document.querySelectorAll('.draggable.ui-frame');
+          console.log("restoring frame windows: "+ frames.length);
+          
+          frames.forEach(frame => {
                win = frame.querySelector('.ui-window');
                if (!win){
                     console.error ("Closest win not found for frame: " +frame.id);
                     return;
                }
-               if (state[win.id]) {
-                    frame.classList.toggle('hidden', !state[win.id].visible);
-                    frame.style.left = state[win.id].x || win.style.left;
-                    frame.style.top = state[win.id].y || win.style.top;
+
+
+               if (state[frame.id]) {
+                    frame.classList.toggle('hidden', !state[frame.id].visible);
+                    win.classList.toggle('collapsed', state[frame.id].collapsed);
+                    if (state[frame.id].collapsed == true){
+                         console.log("not collapsed: " + frame.id);
+                    
+                         const header = frame.querySelector('.h3h3');
+                         if (header){
+                              header.classList.remove('hidden');
+                         }
+                         else{
+                              console.log("header not found in "+ frame.id);
+                         }
+                    
+                        
+                         
+                    }
+                    frame.style.left = state[frame.id].x || frame.style.left;
+                    frame.style.top = state[frame.id].y || frame.style.top;
+
                } else {
                     // Hide windows that don't have a state for the viewed user
                     frame.classList.add('hidden');
+                    console.log("State not found for frame: "+frame.id);
                }
                
                if (isViewingOther) {

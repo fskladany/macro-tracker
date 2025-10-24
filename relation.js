@@ -205,7 +205,7 @@
 
      // Update all flows for a given window (by window id)
      function updateFlowsForWindow(windowId) {
-
+          if (windowId == "startMenuList") return; // this is hacky but not that much
           
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
@@ -218,7 +218,13 @@
                return;
           }
 
+
+
           const frameGroup = windowElement.closest(".ui-frame");
+          if (!frameGroup){
+               console.error("Error finding frame for window: " +windowId);
+               return;
+          }
           const anchorElements = frameGroup.querySelectorAll(`.anchor`);
          
 

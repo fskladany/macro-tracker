@@ -24,6 +24,12 @@
                     return;
                } 
 
+               if (target.classList.contains('collapsed')) {
+                    console.log("This is an collapsed window!");
+            
+                    return;
+               } 
+
                if (!target.classList.contains('.flow-line')){
                      document.querySelectorAll('.clicked-path').forEach(e => e.classList.remove('clicked-path'));
                }
@@ -176,19 +182,22 @@
                colBtn.textContent = '--';
 
                colBtn.onclick = function() {
+                    collapseWindow(wn.id);
                     h3h3.classList.toggle("hidden");
-                    
-                    setTimeout(()=>{
-                         collapseWindow(wn.id);
-                    },300);
-                    
-                  
+
                };
 
                const h3h3 = document.createElement('h3');
                h3h3.textContent = wn.id;
+               h3h3.classList.add('h3h3');
                h3h3.style= "margin-left: 10px; margin-top:0; color:white";
-               h3h3.classList.add("hidden");
+               
+
+               if (!win.classList.contains('collapsed')){
+                    h3h3.classList.add("hidden");
+               }
+           
+               
 
                anchorGroup.prepend(h3h3);
                anchorGroup.prepend(closeBtn);

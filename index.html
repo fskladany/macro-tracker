@@ -89,6 +89,14 @@
 				windowEl.classList.toggle('hidden');
 			}
 
+			if (!windowEl.classList.contains('hidden')){
+				document.querySelectorAll(".draggable.active")
+					.forEach(el => el.classList.remove("active"));
+				windowEl.classList.add('active');
+				
+			}
+
+
 			demonstrateFlowPresence();
 
 
@@ -100,9 +108,10 @@
 			const windowEl = document.getElementById(windowId);
 			if (windowEl) {
 				windowEl.classList.toggle('collapsed');
+				window.saveWindowState();
+				updateFlowsForWindow(windowId);
 			}
-			window.saveWindowState();
-			updateFlowsForWindow(windowId);
+			
 		};
 
 

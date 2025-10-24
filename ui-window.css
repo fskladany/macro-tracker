@@ -1,8 +1,7 @@
 .ui-frame {
      position: absolute;
      max-width: 100%;
-     max-height: 90vh;
-     min-height: 200px;
+
 }
 
 .ui-window {
@@ -28,6 +27,7 @@
 
 .collapsed {
      display: none;
+     pointer-events: none;
 }
 
 
@@ -38,6 +38,11 @@
 
 #sumDigestionWindow {
      max-width: 300px;
+     width: 400px;
+}
+
+#businessPermissionWindow {
+     width: 500px;
 }
 
 #addEntryWindow {
@@ -63,10 +68,18 @@
      max-height: 500px;
 }
 
-.ui-window.active {
+.ui-frame.active .ui-window {
      z-index: 110 !important;
      backdrop-filter: blur(3px) contrast(0.6);
-     background-color: #ddf2ea45;
+     background-color: #9feed094;
+}
+
+.ui-frame.active {
+     z-index: 110 !important;
+}
+
+.ui-frame.active .anchor-group {
+     background-color: red;
 }
 
 .close-btn {
