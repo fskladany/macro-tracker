@@ -9,10 +9,10 @@ window.MacroIngredients = templates = {
                _1:              { name: "--- protein ---", servingSize: 0 },
                egg:             { name: 'egg', carbs: 0.7, protein: 12.6, fat: 9.6,     servingSize: 50 },
                chicken:         { name: 'chicken', carbs: 0.3, protein: 31, fat: 3,
-                                  variants: {
-                                   "raw": { protein: 22 },
-                                   "cooked": {}
-                                  }
+                    variants: {
+                         "raw": { protein: 22 },
+                         "cooked": {}
+                    }
                },
                beef:            { name: 'beef', fat: 8, protein: 26, carbs: 0, servingSize: 100 },
                fish:            { name: 'fish', fat: 3, protein: 17.1, carbs: 0.16, servingSize: 170,     },
@@ -33,9 +33,31 @@ window.MacroIngredients = templates = {
                mayo:            { name: 'mayonnaise', fat: 70, protein: 1, carbs: 1, servingSize: 15 },
 
                _3:              { name: "--- carbs ---", servingSize: 0 },
-               potato:          { name: 'potato', carbs: 20, protein: 2.6, fat: 0.4, },
-               oats:            { name: 'oats', carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
-               rice:            { name: 'rice (Máyna)', carbs: 77, protein: 8, fat: 0.3,
+               splitPeas:       { name: 'Split peas', carbs: 40, protein: 23, fat: 1.4, servingSize: 500,
+                    variants: { 'yellow': {}, 'green': { protein: 25 } }
+               },
+               whiteBeans:      { name: 'Beans (white)', carbs: 60, protein: 22.5, fat: 0.9, fiber: 15.2, servingSize: 500,
+                    variants: { 'canned': { carbs: 14, protein: 5.2, fat: 0.3, fiber: 3.5 } }
+               },
+               instantRice:     { name: 'Instant rice', carbs: 75, protein: 9.3, fat: 6.5, servingSize: 50, salt: 0.25, waterInfusionRatio: 3,
+                    variants: { 'Dr. Oetker': {}, 'Maggi': {} }
+               },
+               cinnamonShells: { name: 'Cinnamon shells', fat: 3.9, carbs: 74, protein: 9.1, salt: 0.25, servingSize: 150,
+                    variants: { "Fresh": {} }
+                },
+               chocolateOrbs:  { name: 'Chocolate orbs', fat: 5.7, carbs: 75, protein: 7.8, fiber: -1, salt: 0.51, servingSize: 150,
+                    variants: { 
+                         "Fresh": {}
+                    }
+               },
+               
+               spaghetti:       { name: 'Spaghetti', fat: 1.4, carbs: 69, fiber: 3.1, protein: 14.5, servingSize: 500,
+                    variants: { 'Favourites (Kaufland)': {} }
+                },
+               
+               potato:          { name: 'Potato', carbs: 20, protein: 2.6, fat: 0.4, },
+               oats:            { name: 'Oats', carbs: 62, fat: 5.7, protein: 12, servingSize: 50 },
+               rice:            { name: 'Rice (Máyna)', carbs: 77, protein: 8, fat: 0.3,
                                 variants: {
                                   "raw": {},
                                   "boiled 75% water": { carbs: 19.25, protein: 2, fat: 0.08},
