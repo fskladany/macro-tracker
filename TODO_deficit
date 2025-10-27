@@ -1,0 +1,13 @@
+Daily Totals (sumDigestionWindow)
+  : Make it so calorie deficit counts sports, but totals do not
+  : 24 hour window 
+    Calories eaten (24h)
+    Free energy (24h)
+    Free energy kinetic (Joules)
+
+  : Today's Totals (Food energy)
+    Protein, Carbs, Fat, Calories
+    - Does not include sports
+
+  : Today's deficit (includes sports)
+    Protein, Carbs, Fat, Calories
