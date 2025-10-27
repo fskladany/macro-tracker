@@ -82,6 +82,31 @@
 
 		}
 
+		function activateWindow(windowNameId) {
+			let wndElem = document.getElementById(windowNameId);
+			let frame = wndElem.closest('.ui-frame');
+			if (frame) { // e.g. not menu list window
+				const h3h3 = frame.querySelector('.h3h3');
+                h3h3.classList.add("hidden");
+			
+                wndElem.classList.remove('collapsed');		
+				frame.classList.remove('hidden');
+				
+				if (!wndElem.classList.contains('hidden')){
+					document.querySelectorAll(".draggable.active")
+						.forEach(el => el.classList.remove("active"));
+					frame.classList.add('active');
+				}	
+			}
+			else {
+				wndElem.classList.remove('hidden');
+			}
+
+			window.saveWindowState();
+			window.restoreWindowState();
+			updateFlowsForWindow(windowNameId);
+		};
+
 		function toggleWindow(windowNameId) {
 			let wndElem = document.getElementById(windowNameId);
 			let frame = wndElem.closest('.ui-frame');
