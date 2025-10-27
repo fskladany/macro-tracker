@@ -172,7 +172,20 @@
      }
 
      function DefineRecipeTree() {
-          alert("Define recipe tree not implemented yet");
+          
+          // do with amount 1: for each ingredient
+          const ingredientAmount = 1;
+          // amount = document.getElementById('definedRecipeAmount').value;
+          
+          const result = new Array();
+
+          Object.keys(RealIngredients).forEach(IngredientName => {
+               result.push({[RealIngredients[IngredientName]]: ingredientAmount});
+          });
+
+          const serialized_attempt = JSON.stringify(result);
+          alert("Serialized recipe ingredients: " + serialized_attempt);
+        
           return;
      }
 
@@ -207,7 +220,7 @@
 
 
           if (!subItems){
-               alert("no sub items!");
+              // TODO: add metadata to div
                return ingredientProcessItem;
           }
           // TODO: THIS  needs a thorough rework
@@ -314,6 +327,8 @@
           document.getElementById(recipeDivId).innerHTML = '';
 
           fakeIngredients.forEach (recipeIngredientKey => {
+               // TODO: handle variants
+               variant = "???";
                recipeIngredientData = window.MacroIngredients[recipeIngredientKey];
                if (!recipeIngredientData){
                     recipeIngredientData = {"name": recipeIngredientKey};
@@ -328,7 +343,7 @@
 
      }
 
-     function addRawIngredient() {
+     function addRecipeColumn() {
           const ingredientOptionValue = JSON.parse(document.getElementById('recipeIngredientSelect').value);
           if (Object.keys(ingredientOptionValue).length === 0) {
                alert("Select recipe ingredient");
@@ -336,6 +351,27 @@
           }
 
           const ingredientKey = ingredientOptionValue.foodKey;
+          // const variantKey = ingredientOptionValue.variantKey;
+          
+          RealIngredients.push(ingredientKey);
+          LoadRecipeContent('ingredientProcessList');
+     }
+
+     function addRawIngredient() {
+          const ingredientOptionValue = document.getElementById('templateSelect').value;
+          
+          if (ingredientOptionValue == ""){
+               alert("Select ingredient");
+               return;
+          }
+
+          const JSONkey = JSON.parse(document.getElementById('templateSelect').value);
+          if (Object.keys(JSONkey).length === 0) {
+               alert("Select ingredient");
+               return;
+          }
+
+          const ingredientKey = JSONkey.foodKey;
           // const variantKey = ingredientOptionValue.variantKey;
           
           RealIngredients.push(ingredientKey);
@@ -369,6 +405,7 @@
           handleIngredientSelection: handleIngredientSelection,
           applyIngredientIntent: applyIngredientIntent,
           LoadRecipeContent: LoadRecipeContent,
+          addRecipeColumn: addRecipeColumn,
           addRawIngredient: addRawIngredient,
           DefineRecipeTree: DefineRecipeTree,
           commitDishState: commitDishState

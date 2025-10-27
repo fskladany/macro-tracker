@@ -121,8 +121,6 @@
 					document.querySelectorAll(".draggable.active")
 						.forEach(el => el.classList.remove("active"));
 					frame.classList.add('active');
-				
-				
 			}
 			}
 			else {
@@ -166,7 +164,7 @@
 			//})
 
 			window.restoreWindowState();
-			window.MacroTracker.LoadFoodItemTemplates('recipeIngredientSelect'); // Deprecated
+			window.MacroTracker.LoadFoodItemTemplates('recipeIngredientSelect', { recipesOnly: true });
 
 			// Activate the drag function for the draggable elements
 
@@ -319,7 +317,7 @@
 			<select id="recipeIngredientSelect" style="float: left;width:70%; left:0;" onchange="">
 				<option value="{}">Manual template...</option>
 			</select>
-			<button style="float: right; width:23%" onclick="window.Recipe.addRawIngredient();"> + Add </button>
+			<button style="float: right; width:23%" onclick="window.Recipe.addRecipeColumn();"> + Add </button>
 			<div style="clear: both;"></div>
 		</div>
 
@@ -330,8 +328,7 @@
 
 
 		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
-			<button style="width: 48%;" onclick="alert('Cooking all ingredients...')">Cook All</button>
-			<button style="width: 48%;" onclick="window.Recipe.DefineRecipeTree();">Store as dish</button>
+			<button style="width: 48%;" onclick="window.Recipe.DefineRecipeTree();">Create Metarecipe</button>
 
 		</div>
 		</div>

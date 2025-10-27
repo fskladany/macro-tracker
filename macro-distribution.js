@@ -441,13 +441,17 @@
           document.getElementById('goalCalories').textContent = dailyGoals.calories;
      }
 
-     function LoadFoodItemTemplates(templateSelectId) {
+     function LoadFoodItemTemplates(templateSelectId, recipesOnly = false) {
           const select = document.getElementById(templateSelectId);
           Object.keys(ingredients).forEach(key => {
                var variants = ingredients[key].variants;
                if (!variants) {
                     variants = {"normal": {}}
                } 
+
+               if (recipesOnly && !ingredients[key]['subItems']) {
+                    return;
+               }
 
                Object.keys(variants).forEach(variantKey => {
                     const elemOption = document.createElement('option');
