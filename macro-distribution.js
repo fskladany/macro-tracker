@@ -12,11 +12,16 @@
 
      // Function to add an entry
      function addEntry() {
-          const carbs = parseFloat(document.getElementById('carbs').value) || 0;
-          const protein = parseFloat(document.getElementById('protein').value) || 0;
-          const fat = parseFloat(document.getElementById('fat').value) || 0;
+          var carbs = parseFloat(document.getElementById('carbs').value) || 0;
+          var protein = parseFloat(document.getElementById('protein').value) || 0;
+          var fat = parseFloat(document.getElementById('fat').value) || 0;
           const comment = document.getElementById('comment').value;
           const ts = new Date().getTime();
+
+          const amount = parseFloat(document.getElementById('multiplier').value) || 1;
+          carbs*=amount;
+          fat*=amount;
+          fat*=amount;
 
           let type = "eat";
           if (comment.toLowerCase().includes('kcal')) {
