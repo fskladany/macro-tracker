@@ -25,61 +25,57 @@
           localStorage.setItem(storageKey, JSON.stringify(state));
      }
 
-     // Restore window positions and visibility
-     function restoreWindowState(user = null) {
-          const targetUser = user || window.Sync.getCurrentUser();
-          const isViewingOther = user && user !== window.Sync.getCurrentUser();
+// Restore window positions and visibility (single-user mode)
+function restoreWindowState() {
+    const storageKey = 'default_windowState';
+    const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
 
-          const storageKey = window.Sync.getStorageKey('windowState', targetUser);
-          const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
-          
-          const frames =  document.querySelectorAll('.draggable.ui-frame');
-          console.log("restoring frame windows: "+ frames.length);
-          
-          frames.forEach(frame => {
-               win = frame.querySelector('.ui-window');
-               if (!win){
-                    console.error ("Closest win not found for frame: " +frame.id);
-                    return;
-               }
+    const frames = document.querySelectorAll('.draggable.ui-frame');
+    console.log("restoring frame windows: " + frames.length);
 
+    frames.forEach(frame => {
+        const win = frame.querySelector('.ui-window');
 
-               if (state[frame.id]) {
-                    frame.classList.toggle('hidden', !state[frame.id].visible);
-                    win.classList.toggle('collapsed', state[frame.id].collapsed);
-                    if (state[frame.id].collapsed == true){
-                         console.log("not collapsed: " + frame.id);
-                    
-                         const header = frame.querySelector('.h3h3');
-                         if (header){
-                              header.classList.remove('hidden');
-                         }
-                         else{
-                              console.log("header not found in "+ frame.id);
-                         }
-                    
-                        
-                         
-                    }
-                    frame.style.left = state[frame.id].x || frame.style.left;
-                    frame.style.top = state[frame.id].y || frame.style.top;
+        if (!win) {
+            console.error("Closest win not found for frame: " + frame.id);
+            return;
+        }
 
-               } else {
-                    // Hide windows that don't have a state for the viewed user
-                    frame.classList.add('hidden');
-                    console.log("State not found for frame: "+frame.id);
-               }
-               
-               if (isViewingOther) {
-                    win.style.pointerEvents = 'none';
-                    win.classList.add('readonly-view');
-               } else {
-                    win.style.pointerEvents = 'auto';
-                    win.classList.remove('readonly-view');
-               }
-          });
-     }
+        const frameState = state[frame.id];
 
+        if (frameState) {
+            // visibility
+            frame.classList.toggle('hidden', !frameState.visible);
+
+            // collapse state
+            win.classList.toggle('collapsed', frameState.collapsed);
+
+            if (frameState.collapsed === true) {
+                console.log("collapsed: " + frame.id);
+
+                const header = frame.querySelector('.h3h3');
+                if (header) {
+                    header.classList.remove('hidden');
+                } else {
+                    console.log("header not found in " + frame.id);
+                }
+            }
+
+            // position restore
+            if (frameState.x != null) frame.style.left = frameState.x;
+            if (frameState.y != null) frame.style.top = frameState.y;
+
+        } else {
+            // No saved state → keep default visible instead of hiding
+            frame.classList.remove('hidden');
+            console.log("State not found for frame: " + frame.id);
+        }
+
+        // always interactive in single-user mode
+        win.style.pointerEvents = 'auto';
+        win.classList.remove('readonly-view');
+    });
+}
      function demonstrateFlowPresence() {
           const storageKey = window.Sync.getStorageKey('flows');
           const stored = localStorage.getItem(storageKey);

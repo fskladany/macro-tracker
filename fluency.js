@@ -33,6 +33,12 @@
                if (!target.classList.contains('.flow-line')){
                      document.querySelectorAll('.clicked-path').forEach(e => e.classList.remove('clicked-path'));
                }
+
+               // Add this **above** the existing interactive element check
+               if (target.closest('#ct-customTemplateSelect')) {
+                   // Clicked inside the dropdown, prevent dragging
+                   return;
+               }
                
                if (
                     tagName === 'button' || tagName === 'textarea' ||
@@ -69,13 +75,26 @@
                document.ontouchmove = elementMoveDragAfterClick;
                
           }
-
+          let isDragging = false;
+          let startX = 0;
+          let startY = 0;
+          const DRAG_THRESHOLD = 5;
           const elementMoveDragAfterClick = function (e) {
                e = e || window.event;
                e.preventDefault();
                
                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+              const dx = Math.abs(clientX - startX);
+              const dy = Math.abs(clientY - startY);
+
+              // 🚫 don't activate drag immediately
+              if (!isDragging && (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD)) {
+                  isDragging = true;
+              }
+
+              if (!isDragging) return;
 
                pos1 = pos3 - clientX;
                pos2 = pos4 - clientY;
@@ -158,58 +177,61 @@
           SetKeyboardEvents
                // ...add more exports as needed...
      };
+function addCloseButtonToAnchorGroup(anchorGroup) {
+    const frame = anchorGroup.closest('.ui-frame');
+    if (!frame) {
+        console.log("Frame not found for: ", anchorGroup);
+        return;
+    }
 
-     function addCloseButtonToAnchorGroup(anchorGroup) {
-          const frame = anchorGroup.closest('.ui-frame');
-          const wn = frame.querySelector('.ui-window');
-          
-          
-          if (!frame){
-               console.log("Frame not found for: ", anchorGroup);
-               return;
-          }
-          if (!anchorGroup.querySelector('.close-btn')) {
-               const closeBtn = document.createElement('button');
-               closeBtn.classList.add('close-btn');
-               closeBtn.textContent = '㆝';
-               
-               
-               closeBtn.onclick = function() {
-                    toggleWindow(frame.id);
-                    window.saveWindowState();
+    const win = frame.querySelector('.ui-window');
+    if (!win) {
+        console.log("Window not found for frame: ", frame.id);
+        return;
+    }
 
-               };
+    // Prevent duplicate buttons
+    if (anchorGroup.querySelector('.close-btn')) return;
 
-               const colBtn = document.createElement('button');
-               colBtn.classList.add('col-btn');
-               colBtn.textContent = '--';
+    // Header
+    const h3h3 = document.createElement('h3');
+    h3h3.textContent = win.id || frame.id;
+    h3h3.classList.add('h3h3');
+    h3h3.style.cssText = "margin-left: 10px; margin-top:0; color:white";
 
-               colBtn.onclick = function() {
-                    collapseWindow(wn.id);
-                    h3h3.classList.toggle("hidden");
-                    window.saveWindowState();
+    if (win.classList.contains('collapsed')) {
+        h3h3.classList.remove('hidden');
+    } else {
+        h3h3.classList.add('hidden');
+    }
 
-               };
+    // Close button
+    const closeBtn = document.createElement('button');
+    closeBtn.classList.add('close-btn');
+    closeBtn.textContent = '✕';
 
-               const h3h3 = document.createElement('h3');
-               h3h3.textContent = wn.id;
-               h3h3.classList.add('h3h3');
-               h3h3.style= "margin-left: 10px; margin-top:0; color:white";
-               
+    closeBtn.onclick = function () {
+        toggleWindow(frame.id);
+        window.saveWindowState();
+    };
 
-               if (!win.classList.contains('collapsed')){
-                    h3h3.classList.add("hidden");
-               }
-           
-               
+    // Collapse button
+    const colBtn = document.createElement('button');
+    colBtn.classList.add('col-btn');
+    colBtn.textContent = '--';
 
-               anchorGroup.prepend(h3h3);
-               anchorGroup.prepend(closeBtn);
-               anchorGroup.prepend(colBtn);
-              
-               
-          }
-     }
+    colBtn.onclick = function () {
+        collapseWindow(win.id);
+
+        h3h3.classList.toggle("hidden");
+        window.saveWindowState();
+    };
+
+    // Insert controls
+    anchorGroup.prepend(h3h3);
+    anchorGroup.prepend(closeBtn);
+    anchorGroup.prepend(colBtn);
+}
 
      window.Fluency = {
           addCloseButtonToAnchorGroup: addCloseButtonToAnchorGroup

@@ -4,6 +4,10 @@
 
 }
 
+#ct-templateSelectWrapper select {
+    padding-left: 40px; /* leaves room for the thumbnail */
+}
+
 .ui-window {
      position: absolute;
      background-color: #fff0;
@@ -33,10 +37,6 @@
 #sumDigestionWindow {
      max-width: 300px;
      width: 400px;
-}
-
-#horizonWindow {
-     width: 500px;
 }
 
 #addEntryWindow {
@@ -133,6 +133,8 @@
      border-radius: 45%;
      padding: 23px;
      font-size: 24px;
+     left:45%;
+     top:45%;
      margin: 0;
      border: 2px solid #7db0b733;
      background-color: #ddf2ea45;
@@ -213,10 +215,6 @@
 }
 
 
-#actionHistoryWindow {
-     width: 400px;
-     height: auto;
-}
 
 .action-item {
      padding: 12px 8px;
@@ -269,4 +267,130 @@
     font-size: 14px;
     color: #555;
     text-align: center;
+}
+
+/* Custom Template Dropdown - Scoped to avoid conflicts */
+.ct-selected span {
+  float: right;
+  margin-top: -5px;
+}
+
+.ct-select-dropdown {
+  overflow: hidden;
+  height: 0;
+  transition: height 0.2s ease;
+}
+
+.ct-select-dropdown.ct-opened {
+  height: 500px;
+  transition: height 0.2s ease;
+}
+
+.ct-selected {
+  height: 23px;
+  padding: 10px 10px;
+  background: #f0f0f0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ct-select {
+  text-align: left;
+  display: inline-block;
+  width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0px 0px 7px 0px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.ct-item-search {
+  padding: 15px 10px;
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
+}
+
+.ct-item-search input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 2px solid #eee;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.ct-item-search input:focus {
+  outline: none;
+  border: 1px solid #4fa5ff;
+  margin: 1px;
+  box-shadow: 0 0 0 5px #afd6ff;
+}
+
+.ct-items {
+  height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ct-item-count {
+  padding: 15px 10px;
+  background: #fafafa;
+  border-top: 1px solid #ccc;
+}
+
+.ct-items > article {
+  border-top: 1px solid #eee;
+  font-size: 0; /* remove inline text spacing */
+  display: flex;
+  align-items: flex-start;
+}
+
+.ct-items > article:hover {
+  background: #fcfcfc;
+  cursor: pointer;
+}
+
+.ct-items > article:last-child {
+  border-bottom: 1px solid #eee;
+}
+
+.ct-img {
+  vertical-align: top;
+  display: inline-block;
+  width: 80px;
+  padding: 12px 0 0 12px;
+}
+
+.ct-img img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.ct-content {
+  display: inline-block;
+  width: calc(100% - 120px);
+  padding: 10px;
+  font-size: 15px;
+}
+
+.ct-badge {
+  border: 1px solid #ccc;
+  padding: 3px 10px;
+  font-size: 13px;
+  background: #fafafa;
+  border-radius: 4px;
+}
+
+.ct-select::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.ct-select::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 5px;
 }

@@ -1,16 +1,17 @@
 (function(window, document) {
      const ingredients = window.MacroIngredients;
-     var dailyGoals = window.Horizon.dailyGoals;
+     var dailyGoals = {
+          carbs: 320,          // Example goal
+          protein: 160,      // Example goal
+          fat: 60,               // Example goal
+          calories: 2500,     // Example goal
+          fiber: 50,
+          salt: 1.5
+     }
+
 
      // Function to add an entry
      function addEntry() {
-          const confirm = "I promise";
-          const gate_keeper = prompt('Type "' + confirm + '" to confirm adding an entry.', "Gatekeeper");
-          if (gate_keeper != confirm) {
-               alert("Entry not added. Confirmation text did not match.");
-               return;
-          }
-
           const carbs = parseFloat(document.getElementById('carbs').value) || 0;
           const protein = parseFloat(document.getElementById('protein').value) || 0;
           const fat = parseFloat(document.getElementById('fat').value) || 0;
@@ -264,7 +265,6 @@
           });
 
           const monthlyCaloricReference = 28 * dailyGoals.calories;
-          // TODO: possible to specify in window.Horizon.monthlyGoal
           let monthlyCaloricDefficit = monthlyCaloricReference;
 
           entries.forEach(entry => {
@@ -368,113 +368,185 @@
            alert("Copied the text: " + entries);
 
 }
+function hookDropdownEvents() {
+    const root = document.getElementById('ct-customTemplateSelect');
+    if (!root) return;
+
+    const selectHeader = root.querySelector('.ct-selected');
+    const dropdown = root.querySelector('.ct-select-dropdown');
+
+    if (!selectHeader || !dropdown) return;
+
+    const searchInput = dropdown.querySelector('input');
+
+    selectHeader.addEventListener('click', () => {
+        dropdown.classList.toggle('ct-opened');
+        if (dropdown.classList.contains('ct-opened') && searchInput) {
+            searchInput.focus();
+        }
+    });
+}
 
 
+function makeFoodItemTemplate(templateKey, variantKey = "normal") {
 
-     function makeFoodItemTemplate(templateKey, variantKey) {
-          const ingredientTemplateData = structuredClone(ingredients[templateKey]);
-          const variants = ingredientTemplateData['variants'];
-          if (variantKey != "normal"){
-               var variantUpdateData = variants[variantKey];
-               if ( variantUpdateData == null){
-                    alert("Did not find variant data");
-               }
-               Object.keys(variantUpdateData).forEach(copyKey => {
-                    ingredientTemplateData[copyKey] = variantUpdateData[copyKey];
-               })
-          }
-          
-          const multiplierInput = document.getElementById('multiplier').value;
-          const waterRatio = parseFloat(document.getElementById('waterRatio').value) || 0;
-          const multiplier = multiplierInput || (ingredientTemplateData.servingSize || 100) / 100;
-          
-          if (ingredientTemplateData) {
-               // The dilutionFactor represents how much the original mass is diluted.
-               // e.g., 1 part rice to 3 parts water (waterRatio=3) means the final mass is 4 times
-               // the original, so the macros per 100g are diluted by a factor of 4.
-               // A negative waterRatio can signify concentration (drying).
-               const dilutionFactor = 1 + waterRatio;
+    const base = structuredClone(ingredients[templateKey]);
+    if (!base) return;
 
-               // We calculate the macros for the total amount selected (e.g., 50g of raw rice)
-               const baseCarbs = (ingredientTemplateData.carbs || 0) * multiplier;
-               const baseProtein = (ingredientTemplateData.protein || 0) * multiplier;
-               const baseFat = (ingredientTemplateData.fat || 0) * multiplier;
+    const variants = base.variants || {};
 
-               // Then, we apply the dilution to get the final values for the journal entry.
-               // The total weight of the consumed portion is (100 * multiplier) * dilutionFactor.
-               // The macros are what was in the original portion.
-               const totalWeight = (100 * multiplier) * dilutionFactor;
-               
-               const variant_string_name = variantKey == "normal" ? "" : variantKey;
-               const resulting_comment = `${ingredientTemplateData.name} ${variant_string_name} (${totalWeight.toFixed(0)}g${waterRatio !== 0 ? `, water ratio 1:${waterRatio}` : ''})`;
-               document.getElementById('carbs').value = baseCarbs.toFixed(2);
-               document.getElementById('protein').value = baseProtein.toFixed(2);
-               document.getElementById('fat').value = baseFat.toFixed(2);
-               document.getElementById('comment').value = resulting_comment;
-          }
+     if (variantKey !== "normal" && variants[variantKey]) {
+         const v = variants[variantKey];
+
+         for (const k in v) {
+             base[k] = v[k];
+         }
      }
 
- 
-     function handleFoodItemSelection(bypass = false) {
-          const selectionKey = JSON.parse(document.getElementById('templateSelect').value);
-          if (selectionKey == "") return;
+    const multiplierInput =
+        parseFloat(document.getElementById('multiplier').value);
 
-          const foodKey = selectionKey.foodKey;
-          const variantKey = selectionKey.variantKey;
+    const waterRatio =
+        parseFloat(document.getElementById('waterRatio').value) || 0;
 
-          var multiplier = ingredients[foodKey].servingSize;
-          if (!multiplier && multiplier != 0) multiplier = 100;
-          if (bypass !== true) {
-               document.getElementById('multiplier').value = multiplier / 100;
-          }
-          if (multiplier != 0) {
-               makeFoodItemTemplate(foodKey, variantKey);
-          }
-     }
+    const multiplier =
+        multiplierInput || ((base.servingSize || 100) / 100);
 
-     function reloadDailyGoals() {
-          const storageKey = window.Sync.getStorageKey('businessDailyGoals');
-          dailyGoals = JSON.parse(localStorage.getItem(storageKey)) || window.Horizon.dailyGoals;
-          document.getElementById('goalCarbs').textContent = dailyGoals.carbs;
-          document.getElementById('goalProtein').textContent = dailyGoals.protein;
-          document.getElementById('goalFat').textContent = dailyGoals.fat;
-          document.getElementById('goalCalories').textContent = dailyGoals.calories;
-     }
+    const dilutionFactor = 1 + waterRatio;
 
-     function LoadFoodItemTemplates(templateSelectId, recipesOnly = false) {
-          const select = document.getElementById(templateSelectId);
-          Object.keys(ingredients).forEach(key => {
-               var variants = ingredients[key].variants;
-               if (!variants) {
-                    variants = {"normal": {}}
-               } 
+    const carbs = (base.carbs || 0) * multiplier;
+    const protein = (base.protein || 0) * multiplier;
+    const fat = (base.fat || 0) * multiplier;
 
-               if (recipesOnly && !ingredients[key]['subItems']) {
-                    return;
-               }
+    const totalWeight = (100 * multiplier) * dilutionFactor;
 
-               Object.keys(variants).forEach(variantKey => {
-                    const elemOption = document.createElement('option');
-                    elemOption.value = JSON.stringify({foodKey: key, variantKey: variantKey});
-                    var multiplier = ingredients[key].servingSize;
-                    if (multiplier == 0) elemOption.disabled = true;
-                    if (!multiplier && multiplier != 0) multiplier = 100;
-                    elemOption.textContent = ingredients[key].name;
+    const variantText =
+        variantKey !== "normal" ? ` ${variantKey}` : '';
 
+    const comment =
+        `${base.name}${variantText} (${totalWeight.toFixed(0)}g` +
+        `${waterRatio ? `, water ratio 1:${waterRatio}` : ''})`;
 
-                    if (multiplier != 0) {
-                         if (variantKey != "normal"){
-                              elemOption.textContent += ' [' + variantKey + ']';
-                         }
-                         
-                         elemOption.textContent += ' (' + multiplier + 'g)';
-                    }
-                    select.appendChild(elemOption);
-               })
+    document.getElementById('carbs').value = carbs.toFixed(2);
+    document.getElementById('protein').value = protein.toFixed(2);
+    document.getElementById('fat').value = fat.toFixed(2);
+    document.getElementById('comment').value = comment;
+}
+function handleFoodItemSelection(foodKey, variantKey = "normal", bypass = false) {
 
-               
-          });
-     }
+    if (!foodKey) return;
+
+    let multiplier = ingredients[foodKey].servingSize;
+
+    if (!multiplier && multiplier != 0) {
+        multiplier = 100;
+    }
+
+    if (bypass !== true) {
+        document.getElementById('multiplier').value = multiplier / 100;
+    }
+
+    if (multiplier != 0) {
+        makeFoodItemTemplate(foodKey, variantKey);
+    }
+}
+
+function LoadFoodItemTemplates() {
+
+    const root = document.getElementById('ct-customTemplateSelect');
+    if (!root) return;
+
+    const dropdown = root.querySelector('.ct-select-dropdown');
+    const itemsContainer = dropdown.querySelector('.ct-items');
+    const selected = root.querySelector('.ct-selected div');
+    const searchInput = dropdown.querySelector('input');
+
+    if (!itemsContainer) return;
+
+    // reset list
+    itemsContainer.innerHTML = '';
+
+    Object.keys(window.MacroIngredients).forEach(foodKey => {
+
+        const itemData = window.MacroIngredients[foodKey];
+
+        // skip category separators
+        if (foodKey.startsWith('_')) return;
+
+        // 🚫 SKIP RECIPES (ingredients only mode)
+        if (itemData.subItems) return;
+
+        const variants = itemData.variants || { normal: {} };
+
+        Object.keys(variants).forEach(variantKey => {
+
+            const variant = variants[variantKey] || {};
+            const merged = { ...itemData, ...variant };
+
+            const multiplier = merged.servingSize || 100;
+
+            const item = document.createElement('section');
+            item.className = 'ct-item';
+
+            item.dataset.foodKey = foodKey;
+            item.dataset.variantKey = variantKey;
+
+            // thumbnail (optional fallback)
+            const img = document.createElement('img');
+            img.className = 'ct-item-thumb';
+            img.src = merged.image || 'https://placehold.co/32x32';
+            img.alt = merged.name;
+
+            const content = document.createElement('section');
+            content.className = 'ct-item-content';
+
+            content.innerHTML = `
+                <div>
+                    <b>${merged.name}</b>
+                    ${variantKey !== 'normal' ? ` [${variantKey}]` : ''}
+                </div>
+                <div>${multiplier}g</div>
+            `;
+
+            item.appendChild(img);
+            item.appendChild(content);
+
+            // selection
+            item.addEventListener('click', () => {
+
+                selected.textContent =
+                    merged.name +
+                    (variantKey !== 'normal' ? ` [${variantKey}]` : '');
+
+                dropdown.classList.remove('ct-opened');
+
+                if (searchInput) searchInput.value = '';
+
+                handleFoodItemSelection(foodKey, variantKey);
+            });
+
+            itemsContainer.appendChild(item);
+        });
+    });
+
+    // search (bind once)
+    if (searchInput && !searchInput.dataset.bound) {
+
+        searchInput.dataset.bound = "1";
+
+        searchInput.addEventListener('input', () => {
+
+            const q = searchInput.value.toLowerCase();
+
+            itemsContainer.querySelectorAll('.ct-item').forEach(el => {
+                el.style.display =
+                    el.textContent.toLowerCase().includes(q)
+                        ? ''
+                        : 'none';
+            });
+        });
+    }
+}
 
      function editGoal(nutrient) {
           const currentValue = dailyGoals[nutrient];
@@ -485,7 +557,6 @@
                     dailyGoals[nutrient] = newValue;
                     const storageKey = window.Sync.getStorageKey('businessDailyGoals');
                     localStorage.setItem(storageKey, JSON.stringify(dailyGoals));
-                    reloadDailyGoals();
                     updateDailyTotals();
                } else {
                     alert("Please enter a valid positive number.");
@@ -505,8 +576,8 @@
           getEntriesJSON,
           LoadFoodItemTemplates,
           handleFoodItemSelection,
-          reloadDailyGoals,
-          editGoal
+          editGoal,
+          hookDropdownEvents
           // ...add more exports as needed...
      };
 })(window, document);

@@ -15,20 +15,33 @@
 
         <label for="templateSelect" style="float: left">Choose an ingredient variant:</label>
         <label style="float: right;" for="multiplier">Amount (100g):</label>
-        <select id="templateSelect" style="float: left;width:70%; left:0;"
-            onchange="window.MacroTracker.handleFoodItemSelection()">
+        <div id="ct-customTemplateSelect" class="ct-select" style="width:65%; float:left; margin-right:3%;">
+          <select id="ct-templateSelect" style="display:none" onchange="window.MacroTracker.handleFoodItemSelection()">
             <option value="">Manual template...</option>
-        </select>
+          </select>
+
+          <header class="ct-selected">
+            <img class="ct-thumb" src="https://via.placeholder.com/30" alt="thumb" />
+            <div>Choose an ingredient variant...</div>
+            <span>&#8597;</span>
+          </header>
+
+          <aside class="ct-select-dropdown">
+            <section class="ct-item-search">
+              <input type="text" placeholder="Search ingredient..." autocomplete="off">
+            </section>
+            <section class="ct-items"></section>
+          </aside>
+        </div>
 
         <input style="float: right; width:23%" type="number" id="multiplier" placeholder="1=100g" step="0.5"
             onchange="window.MacroTracker.handleFoodItemSelection(true)" value="0.5">
         <div style="clear: both;"></div>
         <div id="macro-actions-row">
-            <button onclick="window.MacroTracker.AddEntry()"> Eat Raw </button>
+            <button onclick="window.MacroTracker.AddEntry()"> Eat </button>
+            <button onclick=""> Bundle </button>
             <!-- TODO: Here it should be activateWindow() but that is not yet implemented-->
-			
-            <button onclick="activateWindow('recipeCreatorWindow'); window.Recipe.addRawIngredient();"> + Add to Recipe
-            </button>
+		
         </div>
 
         <label for="fat">Fat (g)</label>

@@ -27,15 +27,13 @@
 		}
 
 	</style>
-	<script src="horizon.js"></script>
-	<!--<script src="Hermes.js"></script> --> <!-- Deprecated in favor of a unified FoodItem model -->
-	<script src="recipe.js"></script> <!-- Deprecated in favor of a unified FoodItem model -->
 	<script src="ingredients.js"></script> 
 	<script src="macro-distribution.js"></script>
 	<script src="fluency.js"></script>
 	<script src="relation.js"></script>
 	<script src="window-state.js"></script>
 	<script src="sync.js"></script>
+
 
 
 	<script>
@@ -149,8 +147,6 @@
 
 
 		// Load external windows
-		loadWindow('External', 'externalWindowContainer');
-		loadWindow('syncWindow', 'externalWindowContainer');
 		loadWindow('addEntryWindow', 'externalWindowContainer');
 		
 
@@ -171,14 +167,7 @@
 			window.UiNode.dragElement("eatingHistoryFrame");
 			//Frame.UiNode.dragElement("addEntryFrame");
 			window.UiNode.dragElement("sumDigestionFrame");
-			window.UiNode.dragElement("monthlyTrailFrame");
-			window.UiNode.dragElement("recipeCreatorFrame");
 			window.UiNode.dragElement("startMenu");
-			window.UiNode.dragElement("inventoryFrame");;
-			window.UiNode.dragElement("actionHistoryFrame");
-			window.UiNode.dragElement("horizonPermissionFrame");
-
-
 
 			var startPos = null;
 			document.querySelector('#startMenuToggle').addEventListener('mousedown', (e) => {
@@ -267,70 +256,14 @@
 		<div id="startMenuList" onmouseleave="toggleWindow('startMenuList')" class="draggable hidden">
 
 			<div class="menu-item-group">
-				<button>Eat ▸</button>
-				<div class="submenu">
-					<button onclick="toggleWindow('addEntryWindow')">Eat Fast</button>
-					<button onclick="toggleWindow('recipeCreatorWindow')">Eat Slow</button>
-					<button onclick="toggleWindow('sportsWindow')">Eat Time</button>
-				</div>
+				<button onclick="toggleWindow('addEntryWindow')">Eat Fast</button>
 			</div>
-			<div class="menu-item-group">
-				<button>Analyze ▸</button>
-				<div class="submenu">
-					<button onclick="toggleWindow('eatingHistoryWindow')">History</button>
-					<button onclick="toggleWindow('sumDigestionWindow')">Daily Totals</button>
-					<button onclick="toggleWindow('monthlyTrailWindow')">Monthly Trail (28)</button>
-				</div>
-			</div>
-				
-			<button onclick="toggleWindow('inventoryWindow')">Housekeeping</button>
-			<button onclick="toggleWindow('actionHistoryWindow')">Action History</button>
 
 			<div class="menu-item-group">
-				<button>Settings ▸</button>
-				<div class="submenu">
-					<button onclick="toggleWindow('horizonWindow')">Daily Goals</button>
-					<button onclick="toggleWindow('syncWindow')">Sync</button>
-				</div>
+				<button onclick="toggleWindow('eatingHistoryWindow')">History</button>
+				<button onclick="toggleWindow('sumDigestionWindow')">Daily Totals</button>
 			</div>
 			
-		</div>
-	</div>
-
-	<div id="recipeCreatorFrame" class="draggable ui-frame">
-		<div class="anchor-group">
-			<div class="anchor" id="recipe-creator-win-1"> 📀 </div>
-			<div class="anchor" id="recipe-creator-win-up-1"> 💿 </div>
-		</div>
-		<div id="recipeCreatorWindow" class="ui-window">
-
-
-		<div style="display: flex; justify-content: space-between; align-items: center;">
-			<h2 style="margin-bottom:10px;">Recipe Process</h2>
-			<button class="subtle" style="width: 30%; margin: 0;" onclick="alert('No instructions defined')">Cooking
-				Instructions</button>
-
-
-		</div>
-		<div class="delta-ingredient-note">
-			<label for="recipeIngredientSelect" style="float: left">Choose an subrecipe to add:</label>
-			<select id="recipeIngredientSelect" style="float: left;width:70%; left:0;" onchange="">
-				<option value="{}">Manual template...</option>
-			</select>
-			<button style="float: right; width:23%" onclick="window.Recipe.addRecipeColumn();"> + Add </button>
-			<div style="clear: both;"></div>
-		</div>
-
-		<div id="ingredientProcessList">
-
-		</div>
-
-
-
-		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
-			<button style="width: 48%;" onclick="window.Recipe.DefineRecipeTree();">Save as recipe</button>
-
-		</div>
 		</div>
 	</div>
 
@@ -398,33 +331,6 @@
 		</div>
 	</div>
 
-	<div id="horizonPermissionFrame" class="ui-frame draggable">
-		<div class="anchor-group">
-			<div class="anchor" id="business-permission-win-up"> 💿 </div>
-		</div>
-		<div id="horizonWindow" class="ui-window">
-			<h2>Daily goals</h2>
-			<div class="daily-goals">
-			
-				<div class="goal-item">
-					Protein: <span id="goalProtein">150</span>g
-					<button class="edit-goal" data-macro="protein">Edit</button>
-				</div>
-				<div class="goal-item">
-					Carbs: <span id="goalCarbs">300</span>g
-					<button class="edit-goal" data-macro="carbs">Edit</button>
-				</div>
-				<div class="goal-item">
-					Fat: <span id="goalFat">70</span>g
-					<button class="edit-goal" data-macro="fat">Edit</button>
-				</div>
-				<div class="goal-item">
-					Calories: <span id="goalCalories">2500</span>kcal
-					<button class="edit-goal" data-macro="calories">Edit</button>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<div id="sumDigestionFrame" class="ui-frame draggable">
 		<div class="anchor-group">
@@ -459,142 +365,6 @@
 		</div>
 		</div>
 	</div>
-
-
-
-	<div id="actionHistoryFrame" class="draggable ui-frame">
-		<div class="anchor-group">
-			<div class="anchor" id="action-history-win-1"> 📀 </div>
-		</div>
-		<div id="actionHistoryWindow" class="ui-window">
-			<h1>Assertion History</h1>
-			<p>Log of bought ingredients and storage actions.</p>
-			<div class="action-history-list">
-				<div class="action-item">
-					<span><strong>Burn:</strong> Calories (-2000kcal)</span>
-					<span class="action-meta">Sport: <strong>Marathon</strong> | 2 hours ago</span>
-				</div>
-				<div class="action-item">
-					<span><strong>Bought:</strong> Chicken (1000g)</span>
-					<span class="action-meta">Stored in: <strong>Freezer</strong> | 2 hours ago</span>
-				</div>
-				<div class="action-item">
-					<span><strong>Bought:</strong> Rice (500g)</span>
-					<span class="action-meta">Stored in: <strong>Pantry</strong> | 5 hours ago</span>
-				</div>
-				<div class="intention-item">
-					<span><strong>ShoppingList:</strong>Mushrooms</span>
-					<span class="intention-timer">Time to buy: <strong>2 days</strong></span>
-				</div>
-				<div class="intention-item">
-					<span><strong>ShoppingList: </strong>Ground Beef (30% fat)</span>
-					<span class="intention-timer">Time to buy: <strong>0 days</strong></span>
-				</div>
-				<div class="intention-item">
-					<span><strong>Digest: </strong>Rice</span>
-					<span class="intention-timer">Time to eat: <strong  style="color: red;">0 days</strong></span>
-				</div>
-			</div>
-
-		</div>
-		
-	</div>
-
-	
-
-	<div id="inventoryFrame" class="draggable ui-frame">
-		<div class="anchor-group">
-			<div class="anchor" id="inventory-win-1"> 📀 </div>
-		</div>
-		<div id="inventoryWindow" class="ui-window">
-
-			<div class="header-group">
-				<h1 style="margin-bottom:10px;">Fridge and Pantry</h1>
-
-				<label for="storageUnitSelect">Storage Unit</label>
-				<select id="storageUnitSelect">
-					<option value="all">All</option>
-					<option value="fridge">Kitchen</option>
-					<option value="fridge">Fridge Only</option>
-					<option value="pantry">Pantry Only</option>
-				</select>
-			</div>
-	
-
-			<div class="inventory-list">
-				<!-- Item 1 -->
-				<div class="inventory-item">
-					<div class="item-header">
-						<h3>Meal #0</h3>
-						
-						<div>
-							<button class="subtle" style="width:auto; padding: 5px 10px;">Reheat</button>
-							<button class="subtle" style="width:auto; padding: 5px 10px;">Send to fridge</button>
-						</div>
-					</div>
-					<div class="item-details">
-						<span>Location: <strong>fridge</strong></span>
-						<span>Est. Remaining: <strong>500g</strong></span>
-						<span>Fresh TTL: <strong>48 hours</strong></span>
-						<span>Refrigerated: <strong>24 hours</strong></span>
-						<span>Room time: <strong>4 hours</strong></span>
-					</div>
-					<div class="portions-list">
-						<h4>Portions:</h4>
-						<div class="portion-item">
-							<span>Meat 50g</span>
-							<div>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Eat</button>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Trash</button>
-							</div>
-						</div>
-						<div class="portion-item">
-							<span>Meat 50g</span>
-							<div>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Eat</button>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Trash</button>
-							</div>
-						</div>
-						<div class="portion-item">
-							<span>Rice 100g</span>
-							<div>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Eat</button>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Trash</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Item 2 -->
-				<div class="inventory-item">
-					<div class="item-header">
-						<h3>Salad #1</h3>
-						<div>
-							<button class="subtle" style="width:auto; padding: 5px 10px;">Reheat</button>
-							<button class="subtle" style="width:auto; padding: 5px 10px;">Cool</button>
-						</div>
-					</div>
-					<div class="item-details">
-						<span>Fresh TTL: <strong>12 hours remaining</strong></span>
-						<span>Refrigerated: <strong>12 hours</strong></span>
-						<span>Room time: <strong>2 hours</strong></span>
-					</div>
-					<div class="portions-list">
-						<h4>Portions:</h4>
-						<div class="portion-item">
-							<span>Salad 30g</span>
-							<div>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Eat</button>
-								<button class="subtle" style="width:auto; padding: 2px 8px;">Trash</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-	</div>
-
-
 
 
 
