@@ -10,7 +10,8 @@
         user_bundle_item,
         user_bundle_undo,
         user_bundle_clear,
-        user_export_caloric_history
+        user_export_caloric_history,
+        user_record_bundle
     };
     window.userSelection = null; // Global variable to store the current selection
 
@@ -72,6 +73,29 @@
         return { ts, carbs, protein, fat, comment, weight};
     }
 
+    function user_record_bundle() {
+        var bundle_entries = JSON.parse(localStorage.getItem('bundleEntries'));
+        var entries = JSON.parse(localStorage.getItem('macroEntries'));
+
+
+        const delta_to_now = 1 + new Date().getTime() - bundle_entries[0].ts;
+        bundle_entries.forEach(item => {
+            item.ts += delta_to_now;
+        })
+        
+        bundle_entries=bundle_entries.sort((a,b) => b.ts - a.ts); // sort descending by timestamp
+        bundle_entries.unshift({skip:true, comment: "---begin-bundle---", ts: bundle_entries[0].ts-10});
+        bundle_entries.push({skip: true, comment: "---end-bundle---", ts: bundle_entries[bundle_entries.length-1].ts+10});
+
+  
+
+        entries.push(...bundle_entries);
+        entries=entries.sort((b,a) => b.ts - a.ts); // sort descending by timestamp
+
+        localStorage.setItem('macroEntries', JSON.stringify(entries));
+        window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
+        window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
+    }
     // Function to add an entry
     function user_bundle_item() {
         if (!window.userSelection) {

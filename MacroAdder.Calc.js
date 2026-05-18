@@ -4,7 +4,7 @@
         function_pure_scaled_goals,
         compute_deficit_json,
         function_filter_cut_time_window,
-        get_entries_sum,
+        sum_entry_sequence,
         get_userfirendly_timestring,
         function_scale_macro_template
     };
@@ -106,10 +106,13 @@
     }
 
 
-    function get_entries_sum(entries_list) {
+    function sum_entry_sequence(entries_list) {
         // Using array.acumulator array.reduce((accumulator, currentValue) => ..., initialValue)
 
         return entries_list.reduce((totals, entry) => {
+            if (entry.skip==true){
+                return totals;
+            }
             totals.carbs += parseFloat(entry.carbs);
             totals.protein += parseFloat(entry.protein);
             totals.fat += parseFloat(entry.fat);

@@ -74,8 +74,8 @@
         const totals16 = window.MacroAdder.Calc.function_filter_cut_time_window(entries_list, 16);
         const totals32 = window.MacroAdder.Calc.function_filter_cut_time_window(entries_list, 40);
 
-        const sum_macros_day = window.MacroAdder.Calc.get_entries_sum(totals16);
-        const sum_macros_48 = window.MacroAdder.Calc.get_entries_sum(totals32);
+        const sum_macros_day = window.MacroAdder.Calc.sum_entry_sequence(totals16);
+        const sum_macros_48 = window.MacroAdder.Calc.sum_entry_sequence(totals32);
 
 
         console.log("sum_macros_day: " + JSON.stringify(sum_macros_day));
@@ -129,9 +129,9 @@
 
     function frontend_repaint_WindowBundle_repaint() {
         const entries = JSON.parse(localStorage.getItem('bundleEntries')) || [];
-        MacroAdder.Calc.get_entries_sum(entries);
+        MacroAdder.Calc.sum_entry_sequence(entries);
 
-        const { carbs, protein, fat, comment, weight } = MacroAdder.Calc.get_entries_sum(entries);
+        const { carbs, protein, fat, comment, weight } = MacroAdder.Calc.sum_entry_sequence(entries);
 
         document.getElementById('carbs_bundle').value = carbs.toFixed(2);
         document.getElementById('protein_bundle').value = protein.toFixed(2);
@@ -142,9 +142,9 @@
 
     function frontend_repaint_WindowBundle_clear() {
         const entries = JSON.parse(localStorage.getItem('bundleEntries')) || [];
-        MacroAdder.Calc.get_entries_sum(entries);
+        MacroAdder.Calc.sum_entry_sequence(entries);
 
-        const { carbs, protein, fat, comment } = MacroAdder.Calc.get_entries_sum(entries);
+        const { carbs, protein, fat, comment } = MacroAdder.Calc.sum_entry_sequence(entries);
 
         document.getElementById('carbs_bundle').value = carbs.toFixed(2);
         document.getElementById('protein_bundle').value = protein.toFixed(2);

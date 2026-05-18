@@ -7,3 +7,16 @@ button.subtle {
     width: 31%;
     margin-left: 1%;
 }
+
+input.input-minimized {
+    padding: none;
+    padding: 10px;
+    margin: 0;
+    margin-left: 10%;
+    font-size: 24px;
+    width: 60%;
+}
+
+span.span-align-bundle{
+    padding-right:30%;
+}
