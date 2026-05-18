@@ -1,14 +1,13 @@
 <div id="WindowStatHistory" class="ui-window">
 	<h3 style="float:left">Eating History</h3>
-	<button class="eatingHistoryMem" onclick="window.MacroAdder.Act.user_paste_entries()">
+	<button class="WindowStatHistory_MemoryOptions" onclick="window.MacroAdder.Act.user_paste_entries()">
 		Load ...</button>
-	<button class="eatingHistoryMem" onclick="window.MacroAdder.Act.user_export_caloric_history()">
+	<button class="WindowStatHistory_MemoryOptions" onclick="window.MacroAdder.Act.user_export_caloric_history()">
 		Backup</button>
 
-	<div id="showMoreHistoryDiv">
+	<div id="WindowStatHistory_ShowMoreSection">
 		<input type="checkbox" id="fullEatingHistoryCheckbox" style="margin-left: 10px; width: 20px;"
 			onchange="window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint()">
-
 		<label for="fullEatingHistoryCheckbox" onclick="window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint()">show all</label>
 	</div>
 

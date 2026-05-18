@@ -1,25 +1,24 @@
-<div id="WindowMacroAdder" class="ui-window" style="z-index: 100;">
+<div id="WindowMacroAdder" class="ui-window">
     <h1 style="margin-bottom:20px">Macro Tracker</h1>
 
 
     <label for="templateSelect" style="float: left">Choose an ingredient variant:</label>
-
-    <div id="ct-customTemplateSelect" class="ct-select" style="width:65%; float:left; margin-right:3%;">
-        <select id="ct-templateSelect" style="display:none" onchange="window.MacroTracker.handleFoodItemSelection()">
+    <div id="search-Element-container" class="ct-select">
+        <select id="search-Element-Bar" style="display:none" onchange="window.MacroTracker.handleFoodItemSelection()">
             <option value="">Manual template...</option>
         </select>
 
-        <header class="ct-selected">
-            <img class="ct-thumb" src="res/unknown.png" style="max-width: 50px; max-height: 50px;" alt="thumb" />
+        <header class="search-Element-base-option">
+            <img class="search-Element-base-image" src="res/unknown.png" alt="thumb" />
             <div>Choose an ingredient variant...</div>
             <span>&#8597;</span>
         </header>
 
-        <aside class="ct-select-dropdown">
-            <section class="ct-item-search">
+        <aside class="search-Element-dropdown-container">
+            <section class="search-Element-userinput-container">
                 <input type="text" placeholder="Search ingredient..." autocomplete="off">
             </section>
-            <section class="ct-items"></section>
+            <section class="search-Element-Dropdown-Items-Section"></section>
         </aside>
     </div>
 

@@ -40,11 +40,11 @@
     }
 
     function hookDropdownEvents() {
-        const root = document.getElementById('ct-customTemplateSelect');
+        const root = document.getElementById('search-Element-container');
         if (!root) return;
 
-        const selectHeader = root.querySelector('.ct-selected');
-        const dropdown = root.querySelector('.ct-select-dropdown');
+        const selectHeader = root.querySelector('.search-Element-base-option');
+        const dropdown = root.querySelector('.search-Element-dropdown-container');
 
         if (!selectHeader || !dropdown) return;
 
@@ -69,13 +69,13 @@
 
 
     function hookDropdownListItemEvents() {
-        const root = document.getElementById('ct-customTemplateSelect');
-        const dropdown = root.querySelector('.ct-select-dropdown');
-        const selected = root.querySelector('.ct-selected div');
+        const root = document.getElementById('search-Element-container');
+        const dropdown = root.querySelector('.search-Element-dropdown-container');
+        const selected = root.querySelector('.search-Element-base-option div');
         if (!root) return;
 
         const searchInput = dropdown.querySelector('input');
-        const itemsContainer = dropdown.querySelector('.ct-items');
+        const itemsContainer = dropdown.querySelector('.search-Element-Dropdown-Items-Section');
         items = itemsContainer.querySelectorAll('.ct-item');
 
 

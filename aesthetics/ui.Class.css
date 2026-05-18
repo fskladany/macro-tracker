@@ -1,0 +1,14 @@
+.ui-window {
+    position: absolute;
+    background-color: #fff0;
+    padding: 20px;
+    padding-top: 0px;
+    border: 2px solid #7db0b733;
+    border-radius: 8px;
+    box-shadow: inset 17px 20px 19px 0px rgb(198 244 245 / 7%);
+    z-index: 10;
+    resize: both;
+    overflow: auto;
+    margin-left: -20px;
+    backdrop-filter: blur(2px) contrast(0.9);
+}

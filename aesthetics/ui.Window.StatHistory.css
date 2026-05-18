@@ -1,0 +1,20 @@
+.WindowStatHistory_MemoryOptions {
+     float: left;
+     height: 30px;
+     width: 20%;
+     font-size: 15px;
+     margin-left: 10px;
+     padding: 0;
+     margin-top: 15px;
+}
+
+#WindowStatHistory .history-scroll {
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+}
+
+#WindowStatHistory_ShowMoreSection {
+     margin-top: 15px;
+}

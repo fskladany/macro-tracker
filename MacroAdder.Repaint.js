@@ -2,9 +2,9 @@
 
 
     function frontend_repaint_WindowMacroAdder_dropdown_templates() {
-        const root = document.getElementById('ct-customTemplateSelect');
-        const dropdown = root.querySelector('.ct-select-dropdown');
-        const itemsContainer = dropdown.querySelector('.ct-items');
+        const root = document.getElementById('search-Element-container');
+        const dropdown = root.querySelector('.search-Element-dropdown-container');
+        const itemsContainer = dropdown.querySelector('.search-Element-Dropdown-Items-Section');
         items = window.MacroAdder.Templating.function_generate_dropdown_food_items()
         itemsContainer.innerHTML = '';
         itemsContainer.append(...items);
@@ -95,10 +95,10 @@
 
         // Change color based on the percentage of the goal reached
         if (percentage >= 100) {
-            element.classList.add('goal-reached');
+            element.classList.add('color-goal-reached');
         }
         else if (percentage >= 50) {
-            element.classList.add('halfway-there');
+            element.classList.add('color-halfway-there');
         }
     }
 
@@ -144,7 +144,7 @@
         document.getElementById('fat').value = fat.toFixed(2);
         document.getElementById('comment').value = comment;
 
-        document.querySelector('.ct-thumb').src="res/" + ingredientKeyName + ".png";
+        document.querySelector('.search-Element-base-image').src="res/" + ingredientKeyName + ".png";
     }
 
     function frontend_assert_WindowMacroAdder_serving_size(foodKey) {

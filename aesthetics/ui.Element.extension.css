@@ -1,0 +1,9 @@
+button.subtle {
+    background-color: rgb(229 226 150 / 33%);
+    color: rgb(82, 79, 79);
+
+    cursor: pointer;
+    margin: auto;
+    width: 31%;
+    margin-left: 1%;
+}

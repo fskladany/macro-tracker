@@ -1,0 +1,14 @@
+.color-goal-reached {
+     background-color: rgb(255, 0, 0);
+     color: white;
+}
+
+.color-halfway-there {
+     background-color: rgb(255, 238, 0);
+}
+
+.readonly-view {
+     opacity: 0.7;
+     filter: grayscale(80%);
+}
+

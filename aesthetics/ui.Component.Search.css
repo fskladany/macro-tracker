@@ -1,55 +1,29 @@
-.ui-frame {
-    position: absolute;
-    max-width: 100%;
-
-}
-
-#ct-templateSelectWrapper select {
-    padding-left: 40px;
-    /* leaves room for the thumbnail */
-}
-
-.ui-window {
-    position: absolute;
-    background-color: #fff0;
-    padding: 20px;
-    padding-top: 0px;
-    border: 2px solid #7db0b733;
-    border-radius: 8px;
-    box-shadow: inset 17px 20px 19px 0px rgb(198 244 245 / 7%);
-    z-index: 10;
-    resize: both;
-    overflow: auto;
-    margin-left: -20px;
-    backdrop-filter: blur(2px) contrast(0.9);
-}
-
-#WindowStatHistory .history-scroll {
-    max-height: 60vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 8px;
-}
-
 
 /* Custom Template Dropdown - Scoped to avoid conflicts */
-.ct-selected span {
+.search-Element-base-option span {
     float: right;
     margin-top: -5px;
 }
 
-.ct-select-dropdown {
+.search-Element-dropdown-container {
     overflow: hidden;
     height: 0;
     transition: height 0.2s ease;
 }
 
-.ct-select-dropdown.ct-opened {
+.search-Element-dropdown-container.ct-opened {
     height: 500px;
     transition: height 0.2s ease;
 }
+.search-Element-base-image{
+    max-width: 50px; max-height: 50px;
+}
 
-.ct-selected {
+.search-Element-container{
+    width:65%; float:left; margin-right:3%;
+}
+
+.search-Element-base-option {
     height: 23px;
     padding: 10px 10px;
     background: #f0f0f0;
@@ -70,13 +44,13 @@
     font-family: Arial, sans-serif;
 }
 
-.ct-item-search {
+.search-Element-userinput-container {
     padding: 2px 30px;
     background: #e2ecffc4;
     border-bottom: 1px solid #ddd;
 }
 
-.ct-item-search input {
+.search-Element-userinput-container input {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
@@ -85,14 +59,14 @@
     font-size: 16px;
 }
 
-.ct-item-search input:focus {
+.search-Element-userinput-container input:focus {
     outline: none;
     border: 1px solid #4fa5ff;
     margin: 1px;
     box-shadow: 0 0 0 5px #afd6ff;
 }
 
-.ct-items {
+.search-Element-Dropdown-Items-Section {
     height: 380px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -112,17 +86,17 @@
     margin-top: 10px;
 }
 
-.ct-items>article {
-    border-top: 1px solid ligtgray;
+.search-Element-Dropdown-Items-Section>article {
+    border-top: 1px solid lightgray;
     align-items: flex-start;
 }
 
-.ct-items>article:hover {
+.search-Element-Dropdown-Items-Section>article:hover {
     background: #fcfcfc;
     cursor: pointer;
 }
 
-.ct-items>article:last-child {
+.search-Element-Dropdown-Items-Section>article:last-child {
     border-bottom: 1px solid #eee;
 }
 
@@ -133,26 +107,6 @@
     padding: 12px 0 0 12px;
 }
 
-.ct-img img {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-}
-
-.ct-content {
-    display: inline-block;
-    width: calc(100% - 120px);
-    padding: 10px;
-    font-size: 15px;
-}
-
-.ct-badge {
-    border: 1px solid #ccc;
-    padding: 3px 10px;
-    font-size: 13px;
-    background: #fafafa;
-    border-radius: 4px;
-}
 
 .ct-select::-webkit-scrollbar {
     width: 8px;
@@ -162,4 +116,11 @@
 .ct-select::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
+}
+
+
+
+#search-Element-BarWrapper select {
+    padding-left: 40px;
+    /* leaves room for the thumbnail */
 }

@@ -18,13 +18,14 @@
 
         const without_old_entry = entries.filter(historic_entry => {
             const filter_opt = 'hrow-' + historic_entry['ts']
-            return filter_opt == this['id']
+            return filter_opt != this['id']
         })
-
-        if (without_old_entry.length < entries.length) {
+        console.log(without_old_entry);
+        if (without_old_entry.length == entries.length) {
             entry['ts'] = new_date;
             alert("Entry date changed to: " + new Date(new_date).toLocaleString());
             without_old_entry.push(entry)
+            console.log(without_old_entry);
             localStorage.setItem('macroEntries', JSON.stringify(without_old_entry));
             window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
         } else{
@@ -89,6 +90,7 @@
             cell = row.insertCell();
             button=document.createElement('button');
             button.textContent = 'Edit';
+            button.id='hrow-' + entry.ts;
             button.onclick = () => onCellClick(entries, entry);
             cell.append(button);
 
@@ -113,11 +115,11 @@
     }
 
     function hookDropdownEvents() {
-        const root = document.getElementById('ct-customTemplateSelect');
+        const root = document.getElementById('search-Element-container');
         if (!root) return;
 
-        const selectHeader = root.querySelector('.ct-selected');
-        const dropdown = root.querySelector('.ct-select-dropdown');
+        const selectHeader = root.querySelector('.search-Element-base-option');
+        const dropdown = root.querySelector('.search-Element-dropdown-container');
 
         if (!selectHeader || !dropdown) return;
 
@@ -186,12 +188,12 @@
 
     function LoadFoodItemTemplates() {
 
-        const root = document.getElementById('ct-customTemplateSelect');
+        const root = document.getElementById('search-Element-container');
         if (!root) return;
 
-        const dropdown = root.querySelector('.ct-select-dropdown');
-        const itemsContainer = dropdown.querySelector('.ct-items');
-        const selected = root.querySelector('.ct-selected div');
+        const dropdown = root.querySelector('.search-Element-dropdown-container');
+        const itemsContainer = dropdown.querySelector('.search-Element-Dropdown-Items-Section');
+        const selected = root.querySelector('.search-Element-base-option div');
         const searchInput = dropdown.querySelector('input');
 
         if (!itemsContainer) return;

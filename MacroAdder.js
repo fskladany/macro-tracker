@@ -1,7 +1,7 @@
 (function(window, document) {
 
     function loadMainMacroWindow(retries = 5) {
-        const WindowMacroAdder = document.getElementById('ct-templateSelect');
+        const WindowMacroAdder = document.getElementById('search-Element-Bar');
 
         if (!WindowMacroAdder) {
             if (retries > 0) {

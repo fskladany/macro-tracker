@@ -1,32 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="mixed">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<meta charset="UTF-8">
-	<meta name="viewport" content="initial-scale=0.1, maximum-scale=10.0, user-scalable=yes">
-
 	<title>Macro Tracker</title>
-
-	<link rel="stylesheet" href="ui-unform.css">
-	<link rel="stylesheet" href="ui-window.css">
-	<link rel="stylesheet" href="ui-layout.css">
-	<style>
-		body {
-			font-family: 'Arial', sans-serif;
-			background-color: #f7f7f7;
-			margin: 0;
-			padding: 20px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100vh;
-			overflow: hidden;
-		}
-
-	</style>
-	<script src="DOM.js"></script> 
-	<script src="ingredients.js"></script> 
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="aesthetics/ui.Class.css">
+	<link rel="stylesheet" href="aesthetics/ui.Component.Color.css">
+	<link rel="stylesheet" href="aesthetics/ui.Component.Search.css">
+	<link rel="stylesheet" href="aesthetics/ui.Element.css">
+	<link rel="stylesheet" href="aesthetics/ui.Element.extension.css">
+	<link rel="stylesheet" href="aesthetics/ui.Layout.css">
+	<link rel="stylesheet" href="aesthetics/ui.Window.MacroAdder.css">
+	<link rel="stylesheet" href="aesthetics/ui.Window.StatHistory.css">
+	<link rel="stylesheet" href="aesthetics/ui.Window.StatConsumption.css">
+	
+	<script src="DOM.js"></script>
+	<script src="ingredients.js"></script>
 	<script src="MacroAdder.Act.js"></script>
 	<script src="MacroAdder.Calc.js"></script>
 	<script src="MacroAdder.Template.js"></script>
@@ -38,7 +26,7 @@
 		// This forced me to python -m http.server
 		// This decision is not final
 		function loadWindow(windowId, targetDiv) {
-			fetch('x128/' + windowId + '.html')
+			fetch('html/' + windowId + '.html')
 				.then(response => response.text())
 				.then(html => {
 					//console.log(html);
@@ -66,14 +54,10 @@
 
 		}
 
-
-
 		// Load external windows
 		loadWindow('WindowStatHistory', 'externalWindowContainer');
 		loadWindow('WindowStatConsumption', 'externalWindowContainer');
 		loadWindow('WindowMacroAdder', 'externalWindowContainer');
-		
-
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
@@ -82,7 +66,7 @@
 				window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
 				window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
 			}, 1000);
-		
+
 		});
 
 
