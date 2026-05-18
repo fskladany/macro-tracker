@@ -1,0 +1,25 @@
+<div id="WindowBundle" class="ui-window">
+    <h1 style="margin-bottom:20px">Bundle</h1>
+    <div style="clear: both;"></div>
+    <div id="macro-actions-row">
+        <button onclick="window.MacroAdder.Act.user_add_record()"> Eat </button>
+    </div>
+
+    <label for="fat">Fat (g)</label>
+    <input type="number" id="fat_bundle" placeholder="Fat (g)" value="0" disabled>
+
+    <label for="carbs">Carbs (g)</label>
+    <input type="number" id="carbs_bundle" placeholder="Carbs (g)" value="0" disabled>
+
+    <label for="protein">Protein (g)</label>
+    <input type="number" id="protein_bundle" placeholder="Protein (g)" value="0" disabled>
+
+    <label for="multiplier">Weight (100g):</label>
+    <input type="number" id="weight_bundle" placeholder="Total weight" value="0" disabled>
+
+    <label for="comment">Comment</label>
+    <textarea id="comment_bundle" placeholder="Describe food nuance..."></textarea>
+
+    <button class="subtle" onclick="window.MacroAdder.Act.user_bundle_clear()">Clear bundle</button>
+    <button class="subtle" onclick="window.MacroAdder.Act.user_bundle_undo()">Undo last entry</button>
+</div>

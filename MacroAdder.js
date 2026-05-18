@@ -17,6 +17,7 @@
         }
 
         window.MacroAdder.Repaint.frontend_repaint_WindowMacroAdder_dropdown_templates();
+        window.MacroAdder.Repaint.frontend_repaint_WindowBundle_repaint();
         window.MacroAdder.Act.hookDropdownEvents();
         window.MacroAdder.Act.hookDropdownListItemEvents();
     }
