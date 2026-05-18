@@ -32,8 +32,7 @@ button {
 }
 
 table {
-     width: 100%;
-     border-collapse: collapse;
+     
      margin-top: 20px;
 }
 
@@ -90,31 +89,6 @@ th {
      box-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
 }
 
-.vibrating-orbit {
-     position: absolute;
-     top: 50%;
-     left: 50%;
-     transform: translate(-50%, -50%);
-     pointer-events: none;
-     z-index: 1;
-}
-
-.vibrating-orbit path {
-     fill: #fff4;
-     stroke: #00bcd4;
-     stroke-width: 10;
-     stroke-dasharray: 10;
-     animation: vibrate-path 2.5s infinite;
-}
-
-@keyframes vibrate-path {
-     0% {
-     stroke-dashoffset: 0;
-     }
-     100% {
-     stroke-dashoffset: -20;
-     }
-}
 
 
 #macro-actions-row button {

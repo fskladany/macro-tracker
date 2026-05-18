@@ -1,0 +1,35 @@
+<div id="WindowStatHistory" class="ui-window">
+	<h3 style="float:left">Eating History</h3>
+	<button class="eatingHistoryMem" onclick="window.MacroAdder.Act.user_paste_entries()">
+		Load ...</button>
+	<button class="eatingHistoryMem" onclick="window.MacroAdder.Act.user_export_caloric_history()">
+		Backup</button>
+
+	<div id="showMoreHistoryDiv">
+		<input type="checkbox" id="fullEatingHistoryCheckbox" style="margin-left: 10px; width: 20px;"
+			onchange="window.MacroAdder.Repaint.displayHistoryTable()">
+
+		<label for="fullEatingHistoryCheckbox" onclick="window.MacroAdder.Repaint.displayHistoryTable()">show all</label>
+	</div>
+
+	<div style="clear: both;"></div>
+
+	<div class="history-scroll">
+		<table id="historyEntries">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Date</th>
+					<th>Carbs</th>
+					<th>Prot</th>
+					<th>Fat</th>
+					<th>Note</th>
+				</tr>
+			</thead>
+			<tbody id="historyEntriesBody">
+				<!-- History entries will be dynamically inserted here -->
+			</tbody>
+		</table>
+
+	</div>
+</div>

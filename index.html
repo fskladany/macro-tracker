@@ -10,8 +10,7 @@
 
 	<link rel="stylesheet" href="ui-unform.css">
 	<link rel="stylesheet" href="ui-window.css">
-	<link rel="stylesheet" href="ui-construction.css">
-
+	<link rel="stylesheet" href="ui-layout.css">
 	<style>
 		body {
 			font-family: 'Arial', sans-serif;
@@ -26,10 +25,14 @@
 		}
 
 	</style>
+	<script src="DOM.js"></script> 
 	<script src="ingredients.js"></script> 
-	<script src="macro-distribution.js"></script>
-	<script src="fluency.js"></script>
-	<script src="relation.js"></script>
+	<script src="MacroAdder.Act.js"></script>
+	<script src="MacroAdder.Calc.js"></script>
+	<script src="MacroAdder.Template.js"></script>
+	<script src="MacroAdder.Repaint.js"></script>
+
+	<script src="MacroAdder.js"></script>
 	<script>
 
 		// This forced me to python -m http.server
@@ -53,14 +56,7 @@
 					template.content.childNodes.forEach(childNone => {
 						console.log(childNone);
 						targetDivElem.appendChild(childNone);
-						window.UiNode.dragElement(childNone.id);
-
-
 					})
-
-					targetDivElem.querySelectorAll('.anchor-group')
-						.forEach(window.Fluency.addCloseButtonToAnchorGroup);
-
 
 				})
 				.catch(error => {
@@ -68,271 +64,35 @@
 				})
 
 
-
-
 		}
 
-		function activateWindow(windowNameId) {
-			let wndElem = document.getElementById(windowNameId);
-			let frame = wndElem.closest('.ui-frame');
-			if (frame) { // e.g. not menu list window
-				const h3h3 = frame.querySelector('.h3h3');
-                h3h3.classList.add("hidden");
-			
-                wndElem.classList.remove('collapsed');		
-				frame.classList.remove('hidden');
-				
-				if (!wndElem.classList.contains('hidden')){
-					document.querySelectorAll(".draggable.active")
-						.forEach(el => el.classList.remove("active"));
-					frame.classList.add('active');
-				}	
-			}
-			else {
-				wndElem.classList.remove('hidden');
-			}
-
-			updateFlowsForWindow(windowNameId);
-		};
-
-		function toggleWindow(windowNameId) {
-			let wndElem = document.getElementById(windowNameId);
-			let frame = wndElem.closest('.ui-frame');
-			if (frame) { // e.g. not menu list window
-				const h3h3 = frame.querySelector('.h3h3');
-                h3h3.classList.add("hidden");
-			
-                wndElem.classList.remove('collapsed');		
-				frame.classList.toggle('hidden');
-				
-				if (!wndElem.classList.contains('hidden')){
-					document.querySelectorAll(".draggable.active")
-						.forEach(el => el.classList.remove("active"));
-					frame.classList.add('active');
-			}
-			}
-			else {
-				wndElem.classList.toggle('hidden');
-			}
-
-			
-
-			window.demonstrateFlowPresence();
-
-			updateFlowsForWindow(windowNameId);
-		};
-
-		function collapseWindow(windowId) {
-			const windowEl = document.getElementById(windowId);
-			if (windowEl) {
-				windowEl.classList.toggle('collapsed');
-				updateFlowsForWindow(windowId);
-			}
-			
-		};
 
 
 		// Load external windows
-		loadWindow('addEntryWindow', 'externalWindowContainer');
+		loadWindow('WindowStatHistory', 'externalWindowContainer');
+		loadWindow('WindowStatConsumption', 'externalWindowContainer');
+		loadWindow('WindowMacroAdder', 'externalWindowContainer');
 		
 
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
-			window.MacroTracker.loadMainMacroWindow();
-			
-			// Alternatively (not verified) document.queryFirst('#templateSelector.addEventListner () => {
-			//    LoadTemplateItems(self.id)
-			//})
-
-			window.MacroTracker.LoadFoodItemTemplates('recipeIngredientSelect', { recipesOnly: true });
-
-			// Activate the drag function for the draggable elements
-
-			window.UiNode.dragElement("eatingHistoryFrame");
-			//Frame.UiNode.dragElement("addEntryFrame");
-			window.UiNode.dragElement("sumDigestionFrame");
-			window.UiNode.dragElement("startMenu");
-
-			var startPos = null;
-			document.querySelector('#startMenuToggle').addEventListener('mousedown', (e) => {
-				startPos = { 'x': e.clientX, 'y': e.clientY };
-			});
-			document.querySelector('#startMenuToggle').addEventListener('touchstart', (e) => {
-				startPos = { 'x': e.touches[0].clientX, 'y': e.touches[0].clientY };
-			});
-
-			const conditionalToggle = function (e){
-				setTimeout(() => {
-					const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-					const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-					const endPos = { 'x': endX, 'y': endY };
-					
-					//alert(`StartPos: ${JSON.stringify(startPos)}, Endpos: ${JSON.stringify(endPos)}`);
-					//if (startPos.x == endPos.x && startPos.y == endPos.y){
-					if (Math.abs(startPos.x - endPos.x) < 10 && Math.abs(startPos.y - endPos.y) < 10) {
-						//alert("Exactly equal, click!");
-						toggleWindow('startMenuList');
-					}
-					else {
-						e.preventDefault();
-					}
-				}, 100);
-			}
-			document.querySelector('#startMenuToggle').addEventListener('mouseup', conditionalToggle);
-
-			document.querySelector('#startMenuToggle').addEventListener('touchend', conditionalToggle);
-
-			// Example usage: call this after creating or rendering a window
-			document.querySelectorAll('.ui-frame .anchor-group')
-				.forEach(window.Fluency.addCloseButtonToAnchorGroup);
-
-			window.canvasFrame = document.querySelector(".flow-canvas");
-			window.loadFlowConnections();
-			window.demonstrateFlowPresence();
-
+			setTimeout(() => {
+				window.MacroAdder.Init.loadMainMacroWindow();
+				window.MacroAdder.Repaint.displayHistoryTable();
+				window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
+			}, 1000);
+		
 		});
-
-
-
 
 
 	</script>
 </head>
 
 <body>
-	<svg class="flow-canvas">
-	</svg>
-
 	<div id="externalWindowContainer">
 		<!-- Loaded external windows will appear here -->
 	</div>
-	<div id="startMenu" class="draggable">
-		<button id="startMenuToggle" class="circle-button"> M
-
-
-			<svg id="demonstrateActiveFlowsId" class="vibrating-orbit hidden" width="200" height="200">
-				<path>
-					<animate attributeName="d" dur="2s" repeatCount="indefinite" values="
-          M100,50 
-          C130,50 150,70 150,100 
-          C150,130 130,150 100,150 
-          C70,150 50,130 50,100 
-          C50,70 70,50 100,50 Z;
-
-          M100,45 
-          C135,55 155,75 155,100 
-          C155,125 135,145 100,155 
-          C65,145 45,125 45,100 
-          C45,75 65,55 100,45 Z;
-
-          M100,50 
-          C130,50 150,70 150,100 
-          C150,130 130,150 100,150 
-          C70,150 50,130 50,100 
-          C50,70 70,50 100,50 Z
-        "></animate>
-				</path>
-			</svg>
-		</button>
-
-
-
-		<div id="startMenuList" onmouseleave="toggleWindow('startMenuList')" class="draggable hidden">
-
-			<div class="menu-item-group">
-				<button onclick="toggleWindow('addEntryWindow')">Eat Fast</button>
-			</div>
-
-			<div class="menu-item-group">
-				<button onclick="toggleWindow('eatingHistoryWindow')">History</button>
-				<button onclick="toggleWindow('sumDigestionWindow')">Daily Totals</button>
-			</div>
-			
-		</div>
-	</div>
-
-	<div id="eatingHistoryFrame" class="draggable ui-frame">
-
-		<div class="anchor-group">
-			<div class="anchor" id="win2"> 📀 </div>
-			<div class="anchor" id="win3"> 📀 </div>
-			<div class="anchor" id="win4"> 📀 </div>
-			<div class="anchor" id="win2-up"> 💿 </div>
-			<div class="anchor" id="win3-up"> 💿 </div>
-		</div>
-
-		<div id="eatingHistoryWindow" class="ui-window">
-		
-
-				<h3 style="float:left">Eating History</h3>
-				<button class="eatingHistoryMem" onclick="window.MacroTracker.pasteEntries()">Load ...</button>
-				<button class="eatingHistoryMem" onclick="window.MacroTracker.getEntriesJSON()">Backup</button>
-
-				<div id="showMoreHistoryDiv">
-					<input type="checkbox" id="fullEatingHistoryCheckbox" style="margin-left: 10px; width: 20px;"
-						onchange="window.MacroTracker.displayHistoryTable()">
-
-					<label for="fullEatingHistoryCheckbox">show all</label>
-				</div>
-
-				<div style="clear: both;"></div>
-
-				<div>
-					<table id="historyEntries">
-						<tbody>
-							<tr>
-								<th>#</th>
-								<th>Date</th>
-								<th>Carbs</th>
-								<th>Protein</th>
-								<th>Fat</th>
-								<th>Note</th>
-							</tr>
-						</tbody>
-					</table>
-
-				</div>
-		</div>
-	</div>
-
-
-	<div id="sumDigestionFrame" class="ui-frame draggable">
-		<div class="anchor-group">
-			<div class="anchor" id="sum-digest-inup"> 💿 </div>
-		</div>
-		<div id="sumDigestionWindow" class="ui-window">
-		<h2>24 hour Window</h2>
-		<div class="totals24">
-			<div class="total-item">Calories (24h): <span id="t24calories">3086</span>kcal</div>
-			<div class="total-item">Mass-Entropy (24h): <span id="t24energy">693</span></div>
-			<div class="total-item">Free Ek (24h): <span id="t24kinetics">693</span></div>
-
-		</div>
-
-		<h2>Today's Totals</h2>
-		<div class="totals">
-
-			<div class="total-item">Protein: <span id="totalProtein" class="halfway-there"></span>g</div>
-			<div class="total-item">Carbs: <span id="totalCarbs" class=""></span>g</div>
-			<div class="total-item">Fat: <span id="totalFat" class="goal-reached"></span>g</div>
-			<div class="total-item">Calories: <span id="totalCalories" class="halfway-there"></span>kcal</div>
-		</div>
-
-
-		<h2>Today's Deficit</h2>
-		<div class="totals">
-
-			<div class="total-item">Protein: <span id="deficitProtein" class="halfway-there"></span>g</div>
-			<div class="total-item">Carbs: <span id="deficitCarbs" class=""></span>g</div>
-			<div class="total-item">Fat: <span id="deficitFat" class="goal-reached"></span>g</div>
-			<div class="total-item">Calories: <span id="deficitCalories" class="halfway-there"></span>kcal</div>
-		</div>
-		</div>
-	</div>
-
-
-
 </body>
 
 </html>

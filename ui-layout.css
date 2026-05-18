@@ -1,0 +1,19 @@
+#WindowStatConsumption {
+    max-width: 300px;
+    width: 400px;
+    left: 30px;
+    top: 200px;
+
+}
+
+#WindowMacroAdder {
+    width: 450px;
+    left: 30%;
+    top: 40%;
+}
+
+#WindowStatHistory {
+    width: 400px;
+    right: 30px;
+    top: 200px;
+}

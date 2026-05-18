@@ -1,0 +1,50 @@
+<div id="WindowMacroAdder" class="ui-window" style="z-index: 100;">
+    <h1 style="margin-bottom:20px">Macro Tracker</h1>
+
+
+    <label for="templateSelect" style="float: left">Choose an ingredient variant:</label>
+
+    <div id="ct-customTemplateSelect" class="ct-select" style="width:65%; float:left; margin-right:3%;">
+        <select id="ct-templateSelect" style="display:none" onchange="window.MacroTracker.handleFoodItemSelection()">
+            <option value="">Manual template...</option>
+        </select>
+
+        <header class="ct-selected">
+            <img class="ct-thumb" src="res/unknown.png" style="max-width: 50px; max-height: 50px;" alt="thumb" />
+            <div>Choose an ingredient variant...</div>
+            <span>&#8597;</span>
+        </header>
+
+        <aside class="ct-select-dropdown">
+            <section class="ct-item-search">
+                <input type="text" placeholder="Search ingredient..." autocomplete="off">
+            </section>
+            <section class="ct-items"></section>
+        </aside>
+    </div>
+
+    <div style="clear: both;"></div>
+    <div id="macro-actions-row">
+        <button onclick="window.MacroAdder.Act.AddEntry()"> Eat </button>
+        <button onclick=""> Bundle </button>
+
+    </div>
+
+    <label for="fat">Fat (g)</label>
+    <input type="number" id="fat" placeholder="Fat (g)" value="0">
+
+    <label for="carbs">Carbs (g)</label>
+    <input type="number" id="carbs" placeholder="Carbs (g)" value="0">
+
+    <label for="protein">Protein (g)</label>
+    <input type="number" id="protein" placeholder="Protein (g)" value="0">
+
+    <label for="multiplier">Amount (100g):</label>
+    <input type="number" id="multiplier" placeholder="1=100g" step="0.5" value="0.5"
+        onchange="window.MacroAdder.Act.frontend_handle_WindowMacroAdder_reselection(bypass_multiplier_change=true)">
+
+    <label for="comment">Comment</label>
+    <textarea id="comment" placeholder="Describe food nuance..."></textarea>
+
+    <button class="subtle" onclick="window.MacroAdder.Act.user_undo_last_entry()">Undo Eat</button>
+</div>
