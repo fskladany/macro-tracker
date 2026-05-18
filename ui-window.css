@@ -114,11 +114,6 @@
 
 
 
-#recipeWindow {
-     width: 400px;
-     height: 350px;
-}
-
 
 /* --- Start Menu Sidebar --- */
 #startMenu {
@@ -198,76 +193,7 @@
      display: block;
 }
 
-.intention-item {
-     display: flex;
-     justify-content: space-between;
-     align-items: center;
-     padding: 12px 8px;
-     border-bottom: 1px solid #a0a18480;
-     background-color: #ffffff1c;
-}
 
-.intention-timer {
-     font-size: 13px;
-     background-color: #e9e8d24d;
-     padding: 3px 6px;
-     border-radius: 4px;
-}
-
-
-
-.action-item {
-     padding: 12px 8px;
-     border-bottom: 1px solid #a0a18480;
-     background-color: #ffffff1c;
-}
-
-.action-meta {
-     display: block;
-     font-size: 13px;
-     color: #555;
-     margin-top: 4px;
-}
-
-#syncWindow {
-    width: 450px;
-    height: auto;
-}
-
-#syncWindow textarea {
-    width: 100%;
-    height: 150px;
-    margin-top: 15px;
-}
-
-.user-management {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.user-management select {
-    width: 50%;
-    margin: 0 10px 0 0;
-}
-
-.user-management button {
-    width: auto;
-    padding: 5px 10px;
-    margin: 0;
-}
-
-.sync-actions button {
-    width: 100%;
-    margin: 0;
-}
-
-.sync-status {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #555;
-    text-align: center;
-}
 
 /* Custom Template Dropdown - Scoped to avoid conflicts */
 .ct-selected span {

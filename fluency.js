@@ -212,7 +212,7 @@ function addCloseButtonToAnchorGroup(anchorGroup) {
 
     closeBtn.onclick = function () {
         toggleWindow(frame.id);
-        window.saveWindowState();
+    
     };
 
     // Collapse button
@@ -232,6 +232,33 @@ function addCloseButtonToAnchorGroup(anchorGroup) {
     anchorGroup.prepend(closeBtn);
     anchorGroup.prepend(colBtn);
 }
+     function demonstrateFlowPresence() {
+          const stored = localStorage.getItem('flows');
+          if (stored) {
+               const arr = JSON.parse(stored);
+               if (arr.length > 0) {
+                    document.getElementById('demonstrateActiveFlowsId').classList.remove('hidden');
+               } else {
+                    document.getElementById('demonstrateActiveFlowsId').classList.add('hidden');
+               }
+          }
+     }
+
+
+     // Utility: Ensure window is always appended to top-level container
+     function ensureWindowIsTopLevel(windowElement) {
+          const topLevelContainer = document.querySelector('.window-container') || document.body;
+          if (windowElement.parentElement !== topLevelContainer) {
+               topLevelContainer.appendChild(windowElement);
+          }
+     }
+
+     // Save state on drag or toggle
+     window.addEventListener('mouseup', function () {
+          document.querySelectorAll('.ui-frame').forEach(win => ensureWindowIsTopLevel(win));
+     });
+
+     window.demonstrateFlowPresence=demonstrateFlowPresence;
 
      window.Fluency = {
           addCloseButtonToAnchorGroup: addCloseButtonToAnchorGroup

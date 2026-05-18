@@ -11,7 +11,6 @@
 	<link rel="stylesheet" href="ui-unform.css">
 	<link rel="stylesheet" href="ui-window.css">
 	<link rel="stylesheet" href="ui-construction.css">
-	<link rel="stylesheet" href="recipe.css">
 
 	<style>
 		body {
@@ -31,11 +30,6 @@
 	<script src="macro-distribution.js"></script>
 	<script src="fluency.js"></script>
 	<script src="relation.js"></script>
-	<script src="window-state.js"></script>
-	<script src="sync.js"></script>
-
-
-
 	<script>
 
 		// This forced me to python -m http.server
@@ -66,8 +60,6 @@
 
 					targetDivElem.querySelectorAll('.anchor-group')
 						.forEach(window.Fluency.addCloseButtonToAnchorGroup);
-
-					window.restoreWindowState();
 
 
 				})
@@ -100,8 +92,6 @@
 				wndElem.classList.remove('hidden');
 			}
 
-			window.saveWindowState();
-			window.restoreWindowState();
 			updateFlowsForWindow(windowNameId);
 		};
 
@@ -127,11 +117,8 @@
 
 			
 
-			demonstrateFlowPresence();
+			window.demonstrateFlowPresence();
 
-
-			window.saveWindowState();
-			window.restoreWindowState();
 			updateFlowsForWindow(windowNameId);
 		};
 
@@ -139,7 +126,6 @@
 			const windowEl = document.getElementById(windowId);
 			if (windowEl) {
 				windowEl.classList.toggle('collapsed');
-				window.saveWindowState();
 				updateFlowsForWindow(windowId);
 			}
 			
@@ -153,13 +139,12 @@
 
 		// Call this function on page load to populate the select dropdown
 		document.addEventListener('DOMContentLoaded', function () {
-			window.Sync.init();
+			window.MacroTracker.loadMainMacroWindow();
 			
 			// Alternatively (not verified) document.queryFirst('#templateSelector.addEventListner () => {
 			//    LoadTemplateItems(self.id)
 			//})
 
-			window.restoreWindowState();
 			window.MacroTracker.LoadFoodItemTemplates('recipeIngredientSelect', { recipesOnly: true });
 
 			// Activate the drag function for the draggable elements
@@ -308,26 +293,6 @@
 					</table>
 
 				</div>
-		</div>
-	</div>
-
-	<div id="monthlyTrailFrame" class="ui-frame draggable">
-		<div class="anchor-group">
-			<div class="anchor" id="day-list-over"> 💿 </div>
-		</div>
-		<div id="monthlyTrailWindow" class="ui-window">
-			<h3>Trail marathon (28d)</h3>
-			<p>Caloric deficit (window): <span id="caloricDeficit28Window">Undetermined</span></p>
-
-			<div id="monthlyTrailTableWrapper">
-				<!--
-				Day one ...
-				Day two ...
-				Day three ...
-				...
-				Day twenty eight ...
-			-->
-			</div>
 		</div>
 	</div>
 

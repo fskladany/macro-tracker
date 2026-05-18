@@ -126,11 +126,11 @@
           const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
 
           const hitElements = document.elementsFromPoint(clientX, clientY);
-          alert("Hit elements: " + hitElements.map(el => el.className).join(', '));
+         // alert("Hit elements: " + hitElements.map(el => el.className).join(', '));
           const targetAnchorElement = hitElements.find(el => el.classList && el.classList.contains('anchor'));
 
           if (targetAnchorElement) {
-               alert("Has target anchor", targetAnchorElement);
+            //   alert("Has target anchor", targetAnchorElement);
                const toAnchorId = targetAnchorElement.id;
                if (toAnchorId === currentSourceAnchorId || flowConnections.some(f => f.fromAnchorId === toAnchorId || f.toAnchorId === toAnchorId)) {
                     alert(`Invalid connection: same anchor ${currentSourceAnchorId} anchor or already connected ${toAnchorId}`);
@@ -149,7 +149,7 @@
                htmlPathElement = null;
                currentSourceAnchorId = null;
           } else {
-               alert("No target anchor found, cancelling connection");
+              // alert("No target anchor found, cancelling connection");
                htmlPathElement.remove();
                htmlPathElement = null;
                currentSourceAnchorId = null;
@@ -210,7 +210,7 @@
           if (animationFrameId) {
                cancelAnimationFrame(animationFrameId);
           }
-          console.log("Window id: ", windowId);
+         // console.log("Window id: ", windowId);
 
           const windowElement = document.getElementById(windowId);
           if (!windowElement) {
@@ -261,8 +261,7 @@
      }
 
      function saveFlowConnections() {
-          const storageKey = window.Sync.getStorageKey('flows');
-          localStorage.setItem(storageKey, JSON.stringify(flowConnections.map(f => ({ fromAnchorId: f.fromAnchorId, toAnchorId: f.toAnchorId }))));
+          localStorage.setItem('flows', JSON.stringify(flowConnections.map(f => ({ fromAnchorId: f.fromAnchorId, toAnchorId: f.toAnchorId }))));
      }
 
      function processFlowList(flowList) {
@@ -289,8 +288,7 @@
 
      function loadFlowConnections() {
           flowConnections.length = 0;
-          const storageKey = window.Sync.getStorageKey('flows');
-          const stored = localStorage.getItem(storageKey);
+          const stored = localStorage.getItem('flows');
           window.canvasFrame.innerHTML = ''; // Clear existing paths
           if (stored) {
                const arr = JSON.parse(stored);

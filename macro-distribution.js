@@ -15,31 +15,30 @@
           var carbs = parseFloat(document.getElementById('carbs').value) || 0;
           var protein = parseFloat(document.getElementById('protein').value) || 0;
           var fat = parseFloat(document.getElementById('fat').value) || 0;
-          const comment = document.getElementById('comment').value;
+          var comment = document.getElementById('comment').value;
           const ts = new Date().getTime();
 
           const amount = parseFloat(document.getElementById('multiplier').value) || 1;
           carbs*=amount;
           fat*=amount;
-          fat*=amount;
+          protein *=amount;
+          comment += "*" + amount;
 
           let type = "eat";
           if (comment.toLowerCase().includes('kcal')) {
                type = "sport";
           }
           const entry = { ts, carbs, protein, fat, comment, type: type };
-          const storageKey = window.Sync.getStorageKey('macroEntries');
-          const entries = JSON.parse(localStorage.getItem(storageKey)) || [];
+          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
           entries.push(entry);
-          localStorage.setItem(storageKey, JSON.stringify(entries));
+          localStorage.setItem('macroEntries', JSON.stringify(entries));
           displayHistoryTable();
           updateDailyTotals();
      }
 
      // Function to update the table with entries
-          function displayHistoryTable() {
-          const storageKey = window.Sync.getStorageKey('macroEntries');
-          const entries = JSON.parse(localStorage.getItem(storageKey)) || [];
+     function displayHistoryTable() {
+          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
           entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
           let whistle_index = entries.length;
@@ -48,7 +47,7 @@
                entry['index'] = whistle_index;
           })
           // Save back to local storage
-          localStorage.setItem(storageKey, JSON.stringify(entries));
+          localStorage.setItem('macroEntries', JSON.stringify(entries));
 
           const historyTable = document.getElementById('historyEntries');
 
@@ -122,7 +121,7 @@
                     })
                     if (found_edit){
                          updated_entries.push({ ...entry,     date: d_date, ts: new_ts,})
-                         localStorage.setItem(storageKey, JSON.stringify(updated_entries));
+                         localStorage.setItem('macroEntries', JSON.stringify(updated_entries));
                          displayHistoryTable();
                     }     
 
@@ -170,8 +169,7 @@
      // Function to update the daily stats in the sidebar
      function updateDailyTotals() {
           const today = new Date().toISOString().split('T')[0];
-          const storageKey = window.Sync.getStorageKey('macroEntries');
-          const entries_list = JSON.parse(localStorage.getItem(storageKey)) || [];
+          const entries_list = JSON.parse(localStorage.getItem('macroEntries') || []);
           let totalCarbs = 0, totalProtein = 0, totalFat = 0;
           let totalWeight = 0; // More accurate total weight
           let totalCalories = 0; // Total calories
@@ -240,133 +238,35 @@
           //updateTotalWithThreshold('t24calories', totalCalories, dailyGoals.calories);
           document.getElementById('t24calories').textContent = totalCalories.toFixed(0);
 
-          DisplayDailyTotals();
-     }
-
-     function insertMonthlyTrailTable() {
-          const table = document.createElement('table');
-          const thead = table.createTHead();
-          const headerRow = thead.insertRow();
-          const headers = ['Date', 'Protein (g)', 'Calories (kcal)', 'Weight (g)' ];
-
-          headers.forEach(headerText => {
-               const header = document.createElement('th');
-               header.textContent = headerText;
-               headerRow.appendChild(header);
-          });
-
-          const tbody = table.createTBody();
-
-          const storageKey = window.Sync.getStorageKey('macroEntries');
-          let entries = JSON.parse(localStorage.getItem(storageKey) || []);
-          const dailyTotals = {};
-          entries.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-
-          const dayDelta = 24 * 60 * 60 * 1000;
-          // Get the last 28 days
-          entries = entries.filter(entry => {
-               const entryDate = new Date(entry.ts);
-               return entryDate >= new Date(Date.now() - 28 * dayDelta);
-          });
-
-          const monthlyCaloricReference = 28 * dailyGoals.calories;
-          let monthlyCaloricDefficit = monthlyCaloricReference;
-
-          entries.forEach(entry => {
-               const { ts, carbs, protein, fat } = entry;
-               const date = new Date(ts).toISOString().split('T')[0]
-               // Initialize the object for the date if it doesn't exist
-               if (!dailyTotals[date]) {
-                    dailyTotals[date] = { carbs: 0, protein: 0, fat: 0, calories: 0, weight: 0 };
-               }
-
-               const verCarbs = Number(carbs) || 0;
-               const verProtein = Number(protein) || 0;
-               const verFat = Number(fat) || 0;
-               const verCalories = ((Number(carbs) || 0) + (Number(protein) || 0)) * 4 + (Number(fat) || 0) * 9;
-
-               monthlyCaloricDefficit -= verCalories;
-
-               // Add checks to ensure the properties are numbers
-               dailyTotals[date].carbs += verCarbs;
-               dailyTotals[date].protein += verProtein;
-               dailyTotals[date].fat += verFat;
-               // Calculate calories and weight
-               dailyTotals[date].calories += verCalories;
-               dailyTotals[date].weight += (Number(carbs) || 0) + (Number(protein) || 0) * 1.35 + (Number(fat) || 0) * 1.1;
-          });
-
-          caloricDeficitSpan = document.querySelector("#caloricDeficit28Window");
-          caloricDeficitSpan.textContent = monthlyCaloricDefficit.toFixed(0) + " kcal";
-
-
-          Object.keys(dailyTotals).forEach(date => {
-               const totals = dailyTotals[date];
-               
-               const row = tbody.insertRow();
-               row.insertCell().textContent = date;
-
-               // Row Protein
-               const prot = row.insertCell()
-               prot.textContent = totals.protein.toFixed(0);
-               if (totals.protein >= dailyGoals.protein) {
-                    prot.textContent = "✅" + totals.protein.toFixed(0);
-               }
-
-               // Row Calories
-               const calories = row.insertCell()
-               calories.textContent = totals.calories.toFixed(0); // Add calories
-               if (totals.calories >= dailyGoals.calories) {
-                    calories.textContent = "✅" + totals.calories.toFixed(0);
-               }
-
-               // Row Weight
-               row.insertCell().textContent = (totals.carbs * 1 + totals.fat * 1.1 + totals.protein * 1.35).toFixed(0);
-               
-
-
-          });
-
-          return table;
      }
 
 
 
-     function DisplayDailyTotals() {
-          // Implementation for displaying daily totals
 
-          const monthly_trail_table = insertMonthlyTrailTable();
-          const elem_table_parent = document.getElementById('monthlyTrailTableWrapper');
-          elem_table_parent.innerHTML = ''; // Clear any existing table
-          elem_table_parent.appendChild(monthly_trail_table);
-     }
 
      function undoLastEntry() {
-          const storageKey = window.Sync.getStorageKey('macroEntries');
-          const entries = JSON.parse(localStorage.getItem(storageKey)) || [];
+          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
           const poppedEntry = entries.shift();
           alert("Removed entry: " + JSON.stringify(poppedEntry));
-          localStorage.setItem(storageKey, JSON.stringify(entries));
+          localStorage.setItem('macroEntries', JSON.stringify(entries));
           displayHistoryTable();
           updateDailyTotals();
      }
 
      function pasteEntries() {
-               let entries_string = prompt("Paste entries JSON", "");
-               if (entries_string != null) {
-                    const entries = JSON.parse(entries_string) || [];
-                    const storageKey = window.Sync.getStorageKey('macroEntries');
-                    // Save back to local storage
-                    localStorage.setItem(storageKey, JSON.stringify(entries));
+          let entries_string = prompt("Paste entries JSON", "");
+          if (entries_string != null) {
+               const entries = JSON.parse(entries_string) || [];
+               // Save back to local storage
+               localStorage.setItem('macroEntries', JSON.stringify(entries));
 
-               }
-               displayHistoryTable();
-               updateDailyTotals();
           }
+          displayHistoryTable();
+          updateDailyTotals();
+     }
 
      function getEntriesJSON() {
-          const storageKey = window.Sync.getStorageKey('macroEntries');
-          var entries = localStorage.getItem(storageKey);
+          const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
           // Copy the text inside the text field
           navigator.clipboard.writeText(entries);
 
@@ -470,7 +370,7 @@ function LoadFoodItemTemplates() {
 
     // reset list
     itemsContainer.innerHTML = '';
-
+    
     Object.keys(window.MacroIngredients).forEach(foodKey => {
 
         const itemData = window.MacroIngredients[foodKey];
@@ -512,9 +412,9 @@ function LoadFoodItemTemplates() {
                 </div>
                 <div>${multiplier}g</div>
             `;
-
-            item.appendChild(img);
             item.appendChild(content);
+            item.appendChild(img);
+
 
             // selection
             item.addEventListener('click', () => {
@@ -528,6 +428,7 @@ function LoadFoodItemTemplates() {
                 if (searchInput) searchInput.value = '';
 
                 handleFoodItemSelection(foodKey, variantKey);
+     
             });
 
             itemsContainer.appendChild(item);
@@ -553,36 +454,41 @@ function LoadFoodItemTemplates() {
     }
 }
 
-     function editGoal(nutrient) {
-          const currentValue = dailyGoals[nutrient];
-          let newValue = prompt(`Enter new daily goal for ${nutrient} (current: ${currentValue})`, currentValue);
-          if (newValue !== null) {
-               newValue = parseInt(newValue);
-               if (!isNaN(newValue) && newValue > 0) {
-                    dailyGoals[nutrient] = newValue;
-                    const storageKey = window.Sync.getStorageKey('businessDailyGoals');
-                    localStorage.setItem(storageKey, JSON.stringify(dailyGoals));
-                    updateDailyTotals();
-               } else {
-                    alert("Please enter a valid positive number.");
-               }
-          }
-     }
+    function loadMainMacroWindow(retries = 10) {
+        const addEntryWindow = document.getElementById('ct-templateSelect');
+
+        if (!addEntryWindow) {
+            if (retries > 0) {
+                setTimeout(() => loadMainMacroWindow(retries - 1), 500);
+            } else {
+                console.error("Could not load addEntryWindow");
+            }
+            return;
+        }
+
+        window.MacroTracker.LoadFoodItemTemplates('ct-templateSelect');
+        window.MacroTracker.displayHistoryTable();
+        window.MacroTracker.updateDailyTotals();
+        window.MacroTracker.hookDropdownEvents();
+
+        window.KeyboardPermission.SetKeyboardEvents();
+
+    }
 
      // Optionally expose a global object for integration
      // How does this expose objects?
      window.MacroTracker = {
           displayHistoryTable,
           updateDailyTotals,
-          DisplayDailyTotals,
+     
           AddEntry: addEntry,
           UndoLastEntry: undoLastEntry,
           pasteEntries,
           getEntriesJSON,
           LoadFoodItemTemplates,
           handleFoodItemSelection,
-          editGoal,
-          hookDropdownEvents
+          hookDropdownEvents,
+          loadMainMacroWindow
           // ...add more exports as needed...
      };
 })(window, document);
