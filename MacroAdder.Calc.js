@@ -1,5 +1,14 @@
 (function (window, document) {
 
+    window.MacroAdder.Calc = {
+        function_pure_scaled_goals,
+        compute_deficit_json,
+        function_filter_cut_time_window,
+        get_entries_sum,
+        get_userfirendly_timestring,
+        function_scale_macro_template
+    };
+
     var dailyGoals = {
         carbs: 320,          // Example goal
         protein: 160,      // Example goal
@@ -24,6 +33,31 @@
         };
     }
 
+    function get_userfirendly_timestring(ts) {
+        if (!ts) return "No data";
+        const time_delta = new Date().getTime() - ts;
+        var long_date = new Date(ts).toLocaleString();
+        console.log(long_date)
+
+        minutes = Math.floor((time_delta / (60 * 1000)) % 60);
+        hours = Math.floor(time_delta / (60 * 60 * 1000));
+        const pad = (num) => ("0" + num).slice(-2);
+        if (time_delta < 60 * 1000)
+            return "just now";
+        else if (time_delta < 2 * 60 * 1000) {
+            entry_timestring = 'a minute ago';
+        }
+        else if (time_delta < 60 * 60 * 1000) {
+            entry_timestring = minutes + ' minutes ago';
+        } else if (time_delta < 4 * 60 * 60 * 1000) {
+            grammar_hour = (hours > 1 ? ' hours' : ' hour');
+            grammar_minute = (minutes > 1 ? ' minutes' : ' minute');
+            entry_timestring = hours + grammar_hour + ' and ' + minutes + grammar_minute + ' ago';
+        } else {
+            entry_timestring = long_date;
+        }
+        return entry_timestring;
+    }
 
     function compute_deficit_json(carbs, protein, fat, calories) {
         scaledDailyGoals = function_pure_scaled_goals(deficitWindowHours / 40);
@@ -36,15 +70,33 @@
         if (proteinDeficit < 0) proteinDeficit = 0;
         if (fatDeficit < 0) fatDeficit = 0;
         if (carbDeficit < 0) carbDeficit = 0;
-        console.log("Returning deficits: " + JSON.stringify({ calorieDeficit, proteinDeficit, fatDeficit, carbDeficit }));
+
         return {
-            calorieDeficit: -calorieDeficit,
-            proteinDeficit: -proteinDeficit,
-            fatDeficit: -fatDeficit,
-            carbDeficit: -carbDeficit,
+            calorieDeficit: calorieDeficit,
+            proteinDeficit: proteinDeficit,
+            fatDeficit: fatDeficit,
+            carbDeficit: carbDeficit,
         }
     }
 
+    function function_scale_macro_template(ingredientKeyName, multiplierInput) {
+        if (!window.IngredientItems[ingredientKeyName]) return;
+        ingredientValues = window.IngredientItems[ingredientKeyName];
+
+        const multiplier =
+            multiplierInput || ((ingredientValues.servingSize || 100) / 100);
+
+        const carbs = (ingredientValues.carbs || 0) * multiplier;
+        const protein = (ingredientValues.protein || 0) * multiplier;
+        const fat = (ingredientValues.fat || 0) * multiplier;
+
+        const totalWeight = multiplier * 100;
+
+        const comment =
+            `${ingredientValues.name} (${totalWeight.toFixed(0)}g` + `)`;
+
+        return { carbs, protein, fat, comment };
+    }
 
     function function_filter_cut_time_window(entries_list, hours) {
         const ts = new Date().getTime();
@@ -62,17 +114,10 @@
             totals.protein += parseFloat(entry.protein);
             totals.fat += parseFloat(entry.fat);
             totals.calories += (parseFloat(entry.carbs) + parseFloat(entry.protein)) * 4 + parseFloat(entry.fat) * 9;
+            totals.comment += entry.comment + "; ";
+            totals.weight += parseFloat(entry.weight) || 0;
             return totals;
-        }, { carbs: 0, protein: 0, fat: 0, calories: 0 });
+        }, { carbs: 0, protein: 0, fat: 0, calories: 0, comment: "", weight: 0 });
     }
 
-    // Optionally expose a global object for integration
-    // How does this expose objects?
-    window.MacroAdder.Calc = {
-        function_pure_scaled_goals,
-        compute_deficit_json,
-        function_filter_cut_time_window,
-        get_entries_sum
-    };
-
-}) (window, document);
+})(window, document);

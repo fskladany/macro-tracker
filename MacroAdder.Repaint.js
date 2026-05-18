@@ -1,5 +1,16 @@
 (function (window, document) {
 
+    window.MacroAdder.Repaint = {
+        frontend_repaint_WindowStatHistory_table_repaint,
+        frontend_repaint_WindowStatConsumption_totals_today,
+        frontend_repaint_WindowStatConsumption_deficit_today,
+        frontend_repaint_WindowStatConsumption_window,
+        frontend_repaint_WindowStatHistory_undo_entry,
+        frontend_repaint_WindowStatHistory_paste_entries,
+        frontend_repaint_WindowMacroAdder_form_values,
+        frontend_repaint_WindowMacroAdder_dropdown_templates,
+        frontend_repaint_WindowBundle_repaint
+    };
 
     function frontend_repaint_WindowMacroAdder_dropdown_templates() {
         const root = document.getElementById('search-Element-container');
@@ -11,9 +22,9 @@
     }
 
 
- // Function to update the table with entries
-     function frontend_repaint_WindowStatHistory_table_repaint() {
-        range_time =(document.getElementById('fullEatingHistoryCheckbox').checked == false) ? 24 : 10E6; 
+    // Function to update the table with entries
+    function frontend_repaint_WindowStatHistory_table_repaint() {
+        range_time = (document.getElementById('fullEatingHistoryCheckbox').checked == false) ? 24 : 10E6;
 
         var entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
         entries = window.MacroAdder.Calc.function_filter_cut_time_window(entries, range_time);
@@ -31,7 +42,7 @@
         scaledDailyGoals = window.MacroAdder.Calc.function_pure_scaled_goals(window.MacroAdder.Calc.dayWindowHours / 16);
         console.log("sdg:" + JSON.stringify(scaledDailyGoals));
         console.log({ carbs, protein, fat, calories });
-        
+
 
         frontend_repaint_WindowStatHistory_treshold_element_label('totalCalories', calories, scaledDailyGoals.calories);
         frontend_repaint_WindowStatHistory_treshold_element_label('totalCarbs', carbs, scaledDailyGoals.carbs);
@@ -47,7 +58,7 @@
         const fatDeficit = tresholds.fatDeficit;
         const carbDeficit = tresholds.carbDeficit;
 
-        console.log("Deficits: " + JSON.stringify({carbs, protein, fat, calories}));
+        console.log("Deficits: " + JSON.stringify({ carbs, protein, fat, calories }));
 
         frontend_repaint_WindowStatHistory_treshold_element_label('deficitCalories', -calorieDeficit, scaledDailyGoals.calories);
         frontend_repaint_WindowStatHistory_treshold_element_label('deficitProtein', -proteinDeficit, scaledDailyGoals.protein);
@@ -102,70 +113,44 @@
         }
     }
 
-    function function_template_WindowMacroAdder_form(ingredientKeyName) {
-        if (!window.IngredientItems[ingredientKeyName]) return;
-        ingredientValues = window.IngredientItems[ingredientKeyName];
-
-        const multiplierInput =
-            parseFloat(document.getElementById('multiplier').value);
-
-        const multiplier =
-            multiplierInput || ((ingredientValues.servingSize || 100) / 100);
-
-        const carbs = (ingredientValues.carbs || 0) * multiplier;
-        const protein = (ingredientValues.protein || 0) * multiplier;
-        const fat = (ingredientValues.fat || 0) * multiplier;
-
-        const totalWeight = multiplier * (ingredientValues.servingSize || 100);
-
-        const comment =
-            `${ingredientValues.name} (${totalWeight.toFixed(0)}g` + `)`;
-
-        return { carbs, protein, fat, comment };
-    }
-
-
-    function frontend_repaint_WindowMacroAdder_form_values(ingredientKeyName, bypass_multiplier_change) {
-
-        const { carbs, protein, fat, comment } = function_template_WindowMacroAdder_form(ingredientKeyName, bypass_multiplier_change);
+    function frontend_repaint_WindowMacroAdder_form_values(ingredientKeyName) {
+        const multiplierInput = parseFloat(document.getElementById('multiplier').value);
+        const { carbs, protein, fat, comment } = window.MacroAdder.Calc.function_scale_macro_template(ingredientKeyName, multiplierInput);
 
         let servingSize = parseInt(window.IngredientItems[ingredientKeyName].servingSize) || 100;
-
-        if (!servingSize || servingSize === 0) {
-            servingSize = 100;
-        }
-
-        if (!bypass_multiplier_change) {
-            document.getElementById('multiplier').value = servingSize / 100;
-        }
 
         document.getElementById('carbs').value = carbs.toFixed(2);
         document.getElementById('protein').value = protein.toFixed(2);
         document.getElementById('fat').value = fat.toFixed(2);
-        document.getElementById('comment').value = comment;
-
-        document.querySelector('.search-Element-base-image').src="res/" + ingredientKeyName + ".png";
+        document.getElementById('multiplier').value = servingSize / 100;   
+        document.getElementById('comment').value = "";
+        document.querySelector('.search-Element-base-image').src = "res/" + ingredientKeyName + ".png";
     }
 
-    function frontend_assert_WindowMacroAdder_serving_size(foodKey) {
-        const multiplier = parseFloat(document.getElementById('multiplier').value);
-        if (isNaN(multiplier)) {
-            document.getElementById('multiplier').value = entry.multiplier || 1;
-        }
+    function frontend_repaint_WindowBundle_repaint() {
+        const entries = JSON.parse(localStorage.getItem('bundleEntries')) || [];
+        MacroAdder.Calc.get_entries_sum(entries);
+
+        const { carbs, protein, fat, comment, weight } = MacroAdder.Calc.get_entries_sum(entries);
+
+        document.getElementById('carbs_bundle').value = carbs.toFixed(2);
+        document.getElementById('protein_bundle').value = protein.toFixed(2);
+        document.getElementById('fat_bundle').value = fat.toFixed(2);
+        document.getElementById('comment_bundle').value = comment;
+        document.getElementById('weight_bundle').value = weight.toFixed(2);
     }
 
-    // Optionally expose a global object for integration
-    // How does this expose objects?
-    window.MacroAdder.Repaint = {
-        frontend_repaint_WindowStatHistory_table_repaint,
-        frontend_repaint_WindowStatConsumption_totals_today,
-        frontend_repaint_WindowStatConsumption_deficit_today,
-        frontend_repaint_WindowStatConsumption_window,
-        frontend_repaint_WindowStatHistory_undo_entry,
-        frontend_repaint_WindowStatHistory_paste_entries,
-        frontend_repaint_WindowMacroAdder_form_values,
-        frontend_assert_WindowMacroAdder_serving_size,
-        frontend_repaint_WindowMacroAdder_dropdown_templates
-        // ...add more exports as needed...
-    };
+    function frontend_repaint_WindowBundle_clear() {
+        const entries = JSON.parse(localStorage.getItem('bundleEntries')) || [];
+        MacroAdder.Calc.get_entries_sum(entries);
+
+        const { carbs, protein, fat, comment } = MacroAdder.Calc.get_entries_sum(entries);
+
+        document.getElementById('carbs_bundle').value = carbs.toFixed(2);
+        document.getElementById('protein_bundle').value = protein.toFixed(2);
+        document.getElementById('fat_bundle').value = fat.toFixed(2);
+        document.getElementById('comment_bundle').value = comment;
+    }
+
+
 })(window, document);

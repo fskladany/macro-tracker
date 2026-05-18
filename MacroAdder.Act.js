@@ -1,42 +1,116 @@
 (function (window, document) {
 
-
-    function pasteEntries() {
-        let entries_string = prompt("Paste entries JSON", "");
-        if (entries_string != null) {
-            const entries = JSON.parse(entries_string) || [];
-            // Save back to local storage
-            localStorage.setItem('macroEntries', JSON.stringify(entries));
-
-        }
-        window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
-        window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
-    }
+    window.MacroAdder.Act = {
+        user_add_record,
+        hookDropdownEvents,
+        hookDropdownListItemEvents,
+        frontend_handle_WindowMacroAdder_reselection,
+        user_paste_entries,
+        user_undo_last_entry,
+        user_bundle_item,
+        user_bundle_undo,
+        user_bundle_clear,
+        user_export_caloric_history
+    };
+    window.userSelection = null; // Global variable to store the current selection
 
     // Function to add an entry
-    function AddEntry() {
-        var carbs = parseFloat(document.getElementById('carbs').value) || 0;
-        var protein = parseFloat(document.getElementById('protein').value) || 0;
-        var fat = parseFloat(document.getElementById('fat').value) || 0;
-        var comment = document.getElementById('comment').value;
-        const ts = new Date().getTime();
-
-        const amount = parseFloat(document.getElementById('multiplier').value) || 1;
-        carbs *= amount;
-        fat *= amount;
-        protein *= amount;
-        comment += "*" + amount;
-
-        let type = "eat";
-        if (comment.toLowerCase().includes('kcal')) {
-            type = "sport";
+    function user_add_record() {
+        //alert("User selection: " + window.userSelection);
+        if (!window.userSelection) {
+            alert("No ingredient selected! Please select an ingredient before adding an entry.");
+            return false;
         }
-        const entry = { ts, carbs, protein, fat, comment, type: type };
-        const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+
+        if (!window.IngredientItems[window.userSelection ]) {
+            alert("Selected ingredient not found in IngredientItems! Please check your selection.");
+            return false;
+        }
+
+        const entry=parse_macro_entry_values(); 
+        var entries = JSON.parse(localStorage.getItem('macroEntries'));
+
+
         entries.push(entry);
         localStorage.setItem('macroEntries', JSON.stringify(entries));
         window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
         window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
+    }
+
+    function parse_macro_entry_values(){
+
+        if (!window.userSelection) {
+            alert("No ingredient selected! Please select an ingredient before adding an entry.");
+            throw new Error("No ingredient selected");
+        }
+
+        if (!window.IngredientItems[window.userSelection ]) {
+            alert("Selected ingredient not found in IngredientItems! Please check your selection.")
+            return false;
+        }
+
+        const ingredient = window.IngredientItems[window.userSelection];
+        
+        // here an opportunity to ditch ... ah nevermind, user can modify values...
+        var carbs = parseFloat(document.getElementById('carbs').value) || 0;
+        var protein = parseFloat(document.getElementById('protein').value) || 0;
+        var fat = parseFloat(document.getElementById('fat').value) || 0;
+        const amount = parseFloat(document.getElementById('multiplier').value) || 1;
+        carbs *= amount;
+        fat *= amount;
+        protein *= amount;
+
+        
+        const appendComment = document.getElementById('comment').value;
+
+        var comment =  ingredient.name + "(" + amount*100 + 'g)';
+        comment += appendComment ? ' - ' + appendComment: '';
+        var entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
+        var weight = parseFloat(document.getElementById('multiplier').value) || 1;
+        const ts = new Date().getTime();
+
+        return { ts, carbs, protein, fat, comment, weight};
+    }
+
+    // Function to add an entry
+    function user_bundle_item() {
+        if (!window.userSelection) {
+            alert("No ingredient selected! Please select an ingredient before adding an entry.");
+            return false;
+        }
+
+        if (!window.IngredientItems[window.userSelection ]) {
+            alert("Selected ingredient not found in IngredientItems! Please check your selection.");
+            return false;
+        }
+
+        const { ts, carbs, protein, fat, comment, weight } = parse_macro_entry_values();
+
+        const entry = { ts, carbs, protein, fat, comment, weight: weight };
+        const entries = JSON.parse(localStorage.getItem('bundleEntries')) || [];
+        entries.push(entry);
+        localStorage.setItem('bundleEntries', JSON.stringify(entries));
+        
+        window.MacroAdder.Repaint.frontend_repaint_WindowBundle_repaint();
+    }
+
+    // Function to add an entry
+    function user_bundle_clear() {
+        var entries = JSON.parse(localStorage.getItem('bundleEntries')) || [];
+        entries = [];
+        localStorage.setItem('bundleEntries', JSON.stringify(entries));
+        
+        window.MacroAdder.Repaint.frontend_repaint_WindowBundle_repaint();
+    }
+
+    // Function to add an entry
+    function user_bundle_undo() {
+        var entries = JSON.parse(localStorage.getItem('bundleEntries')) || [];
+        entries=entries.sort((b,a) => b.ts - a.ts); // sort descending by timestamp
+        entries.pop()
+        localStorage.setItem('bundleEntries', JSON.stringify(entries));
+        
+        window.MacroAdder.Repaint.frontend_repaint_WindowBundle_repaint();
     }
 
     function hookDropdownEvents() {
@@ -51,19 +125,20 @@
         const searchInput = dropdown.querySelector('input');
 
         selectHeader.addEventListener('click', () => {
-            dropdown.classList.toggle('ct-opened');
-            if (dropdown.classList.contains('ct-opened') && searchInput) {
+            dropdown.classList.toggle('search-Element-condition-opened');
+            if (dropdown.classList.contains('search-Element-condition-opened') && searchInput) {
                 searchInput.focus();
             }
         });
     }
 
-    function frontend_handle_WindowMacroAdder_reselection(ingredientKeyName, bypass_multiplier_change = false) {
+    function frontend_handle_WindowMacroAdder_reselection(ingredientKeyName) {
 
         if (!ingredientKeyName) return;
         if (!window.IngredientItems[ingredientKeyName]) return;
+        window.userSelection = ingredientKeyName; // Store the selected ingredient key globally for access in other functions
 
-        window.MacroAdder.Repaint.frontend_repaint_WindowMacroAdder_form_values(ingredientKeyName, bypass_multiplier_change = true);
+        window.MacroAdder.Repaint.frontend_repaint_WindowMacroAdder_form_values(ingredientKeyName);
 
     }
 
@@ -84,9 +159,8 @@
             item.addEventListener('click', () => {
                 console.log("Clicked item with foodKey: ", item);
                 selected.textContent = item.dataset.foodKey;
-                dropdown.classList.remove('ct-opened');
+                dropdown.classList.remove('search-Element-condition-opened');
                 if (searchInput) searchInput.value = '';
-
                 frontend_handle_WindowMacroAdder_reselection(item.dataset.foodKey);
 
             });
@@ -126,29 +200,16 @@
                localStorage.setItem('macroEntries', JSON.stringify(entries));
 
           }
-          window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_paste_entries();
+        window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_paste_entries();
     }
 
     function user_undo_last_entry() {
         var entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
         entries=entries.sort((b,a) => b.ts - a.ts); // sort descending by timestamp
-        const poppedEntry = entries.pop();         
+        entries.pop();         
         localStorage.setItem('macroEntries', JSON.stringify(entries));
         window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_undo_entry();
         alert("Removed entry: " + JSON.stringify(poppedEntry)); 
     }
 
-    // Optionally expose a global object for integration
-    // How does this expose objects?
-    window.MacroAdder.Act = {
-        AddEntry,
-        hookDropdownEvents,
-        hookDropdownListItemEvents,
-        frontend_handle_WindowMacroAdder_reselection,
-        user_paste_entries,
-        user_undo_last_entry,
-        user_export_caloric_history,
-
-        // ...add more exports as needed...
-    };
 })(window, document);

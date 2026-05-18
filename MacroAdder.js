@@ -1,5 +1,9 @@
 (function(window, document) {
 
+    window.MacroAdder.Init = {
+        loadMainMacroWindow
+    };
+
     function loadMainMacroWindow(retries = 5) {
         const WindowMacroAdder = document.getElementById('search-Element-Bar');
 
@@ -17,10 +21,4 @@
         window.MacroAdder.Act.hookDropdownListItemEvents();
     }
 
-     // Optionally expose a global object for integration
-     // How does this expose objects?
-     window.MacroAdder.Init = {
-          loadMainMacroWindow
-          // ...add more exports as needed...
-     };
 })(window, document);
