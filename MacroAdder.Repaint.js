@@ -1,7 +1,7 @@
 (function (window, document) {
 
 
-    function load_dropdown_template_items() {
+    function frontend_repaint_WindowMacroAdder_dropdown_templates() {
         const root = document.getElementById('ct-customTemplateSelect');
         const dropdown = root.querySelector('.ct-select-dropdown');
         const itemsContainer = dropdown.querySelector('.ct-items');
@@ -12,7 +12,7 @@
 
 
  // Function to update the table with entries
-     function displayHistoryTable() {
+     function frontend_repaint_WindowStatHistory_table_repaint() {
         range_time =(document.getElementById('fullEatingHistoryCheckbox').checked == false) ? 24 : 10E6; 
 
         var entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
@@ -33,10 +33,10 @@
         console.log({ carbs, protein, fat, calories });
         
 
-        updateTotalWithThreshold('totalCalories', calories, scaledDailyGoals.calories);
-        updateTotalWithThreshold('totalCarbs', carbs, scaledDailyGoals.carbs);
-        updateTotalWithThreshold('totalProtein', protein, scaledDailyGoals.protein);
-        updateTotalWithThreshold('totalFat', fat, scaledDailyGoals.fat);
+        frontend_repaint_WindowStatHistory_treshold_element_label('totalCalories', calories, scaledDailyGoals.calories);
+        frontend_repaint_WindowStatHistory_treshold_element_label('totalCarbs', carbs, scaledDailyGoals.carbs);
+        frontend_repaint_WindowStatHistory_treshold_element_label('totalProtein', protein, scaledDailyGoals.protein);
+        frontend_repaint_WindowStatHistory_treshold_element_label('totalFat', fat, scaledDailyGoals.fat);
     }
 
     function frontend_repaint_WindowStatConsumption_deficit_today(carbs, protein, fat, calories) {
@@ -49,10 +49,10 @@
 
         console.log("Deficits: " + JSON.stringify({carbs, protein, fat, calories}));
 
-        updateTotalWithThreshold('deficitCalories', -calorieDeficit, scaledDailyGoals.calories);
-        updateTotalWithThreshold('deficitProtein', -proteinDeficit, scaledDailyGoals.protein);
-        updateTotalWithThreshold('deficitFat', -fatDeficit, scaledDailyGoals.fat);
-        updateTotalWithThreshold('deficitCarbs', -carbDeficit, scaledDailyGoals.carbs);
+        frontend_repaint_WindowStatHistory_treshold_element_label('deficitCalories', -calorieDeficit, scaledDailyGoals.calories);
+        frontend_repaint_WindowStatHistory_treshold_element_label('deficitProtein', -proteinDeficit, scaledDailyGoals.protein);
+        frontend_repaint_WindowStatHistory_treshold_element_label('deficitFat', -fatDeficit, scaledDailyGoals.fat);
+        frontend_repaint_WindowStatHistory_treshold_element_label('deficitCarbs', -carbDeficit, scaledDailyGoals.carbs);
     }
 
 
@@ -75,17 +75,17 @@
     }
 
     function frontend_repaint_WindowStatHistory_undo_entry() {
-        displayHistoryTable();
+        frontend_repaint_WindowStatHistory_table_repaint();
         frontend_repaint_WindowStatConsumption_window();
     }
 
     function frontend_repaint_WindowStatHistory_paste_entries() {
-        displayHistoryTable();
+        frontend_repaint_WindowStatHistory_table_repaint();
         frontend_repaint_WindowStatConsumption_window();
     }
 
     // Function to update the total with a threshold
-    function updateTotalWithThreshold(elementId, total, goal) {
+    function frontend_repaint_WindowStatHistory_treshold_element_label(elementId, total, goal) {
         const element = document.getElementById(elementId);
         element.textContent = total.toFixed(0);
         const percentage = (total / goal) * 100;
@@ -157,7 +157,7 @@
     // Optionally expose a global object for integration
     // How does this expose objects?
     window.MacroAdder.Repaint = {
-        displayHistoryTable,
+        frontend_repaint_WindowStatHistory_table_repaint,
         frontend_repaint_WindowStatConsumption_totals_today,
         frontend_repaint_WindowStatConsumption_deficit_today,
         frontend_repaint_WindowStatConsumption_window,
@@ -165,7 +165,7 @@
         frontend_repaint_WindowStatHistory_paste_entries,
         frontend_repaint_WindowMacroAdder_form_values,
         frontend_assert_WindowMacroAdder_serving_size,
-        load_dropdown_template_items
+        frontend_repaint_WindowMacroAdder_dropdown_templates
         // ...add more exports as needed...
     };
 })(window, document);

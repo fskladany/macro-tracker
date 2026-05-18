@@ -9,7 +9,7 @@
             localStorage.setItem('macroEntries', JSON.stringify(entries));
 
         }
-        window.MacroAdder.Repaint.displayHistoryTable();
+        window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
         window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
     }
 
@@ -35,7 +35,7 @@
         const entries = JSON.parse(localStorage.getItem('macroEntries')) || [];
         entries.push(entry);
         localStorage.setItem('macroEntries', JSON.stringify(entries));
-        window.MacroAdder.Repaint.displayHistoryTable();
+        window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
         window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
     }
 

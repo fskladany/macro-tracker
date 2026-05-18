@@ -12,7 +12,7 @@
             return;
         }
 
-        window.MacroAdder.Repaint.load_dropdown_template_items();
+        window.MacroAdder.Repaint.frontend_repaint_WindowMacroAdder_dropdown_templates();
         window.MacroAdder.Act.hookDropdownEvents();
         window.MacroAdder.Act.hookDropdownListItemEvents();
     }

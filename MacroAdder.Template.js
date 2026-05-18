@@ -1,15 +1,4 @@
 (function (window, document) {
-    var dailyGoals = {
-        carbs: 320,          // Example goal
-        protein: 160,      // Example goal
-        fat: 60,               // Example goal
-        calories: 2500,     // Example goal
-        fiber: 50,
-        salt: 1.5
-    }
-
-    const dayWindowHours = 16;
-    const deficitWindowHours = 40;
 
     function onCellClick(entries, entry) {
    
@@ -27,9 +16,9 @@
 
         var found_edit = false;
 
-        const without_old_entry = entries.filter(static_entry => {
-            const filter_opt = 'hrow-' + static_entry['ts']
-            return filter_opt == static_entry['id']
+        const without_old_entry = entries.filter(historic_entry => {
+            const filter_opt = 'hrow-' + historic_entry['ts']
+            return filter_opt == this['id']
         })
 
         if (without_old_entry.length < entries.length) {
@@ -37,7 +26,7 @@
             alert("Entry date changed to: " + new Date(new_date).toLocaleString());
             without_old_entry.push(entry)
             localStorage.setItem('macroEntries', JSON.stringify(without_old_entry));
-            window.MacroAdder.Repaint.displayHistoryTable();
+            window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
         } else{
             alert("Original entry not found, no changes applied!");
         }
@@ -57,7 +46,7 @@
             return "just now";
         else if (time_delta < 60 * 60 * 1000) {
             entry_timestring = pad(minutes) + 'min ago';
-        } else if (time_delta < dayWindowHours * 60 * 60 * 1000) {
+        } else if (time_delta < window.MacroAdder.Calc.dayWindowHours * 60 * 60 * 1000) {
             entry_timestring = pad(hours) + ":" + pad(minutes) + 'ago'
         } else {
             entry_timestring = long_date;
@@ -106,7 +95,7 @@
             
             row.append(cell);
             rows.push(row);
-            //  cell.onclick= onCellClick.bind(cell, entries, entry);
+           
         });
         return rows;
     }
