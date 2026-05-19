@@ -45,17 +45,16 @@
         if (time_delta < 60 * 1000)
             return "just now";
         else if (time_delta < 2 * 60 * 1000) {
-            entry_timestring = 'a minute ago';
+            return 'a minute ago';
         }
         else if (time_delta < 60 * 60 * 1000) {
-            entry_timestring = minutes + ' minutes ago';
+            return minutes + ' minutes ago';
         } else if (time_delta < 4 * 60 * 60 * 1000) {
             grammar_hour = (hours > 1 ? ' hours' : ' hour');
             grammar_minute = (minutes > 1 ? ' minutes' : ' minute');
-            entry_timestring = hours + grammar_hour + ' and ' + minutes + grammar_minute + ' ago';
-        } else {
-            entry_timestring = long_date;
-        }
+            return hours + grammar_hour + ' and ' + minutes + grammar_minute + ' ago';
+        } 
+        
         return entry_timestring;
     }
 

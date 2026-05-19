@@ -20,3 +20,8 @@ input.input-minimized {
 span.span-align-bundle{
     padding-right:30%;
 }
+
+button:disabled,
+button[disabled]{
+    background-color: #777;
+}

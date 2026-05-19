@@ -76,25 +76,39 @@
     function user_record_bundle() {
         var bundle_entries = JSON.parse(localStorage.getItem('bundleEntries'));
         var entries = JSON.parse(localStorage.getItem('macroEntries'));
+        const button = document.getElementById('bundleButton-eat')
+        button.disabled=true;
+        bundle_entries = bundle_entries.sort((a, b) => b.ts - a.ts);
 
+        const BOUND=bundle_entries.length-1;
+        console.log(bundle_entries);
 
-        const delta_to_now = 1 + new Date().getTime() - bundle_entries[0].ts;
+        const delta_to_now = new Date().getTime() - bundle_entries[0].ts;
+
+        var new_entries=[];
         bundle_entries.forEach(item => {
+            console.log("INcresing bundle time by " + delta_to_now);
             item.ts += delta_to_now;
+            new_entries.push(item);
         })
+
         
-        bundle_entries=bundle_entries.sort((a,b) => b.ts - a.ts); // sort descending by timestamp
-        bundle_entries.unshift({skip:true, comment: "---begin-bundle---", ts: bundle_entries[0].ts-10});
-        bundle_entries.push({skip: true, comment: "---end-bundle---", ts: bundle_entries[bundle_entries.length-1].ts+10});
+        new_entries = new_entries.sort((b, a) => b.ts - a.ts);
+        localStorage.setItem('bundleEntries', JSON.stringify(new_entries));
+        const PRECEEDING_TS = new_entries[0].ts -501;
+        const LAST_TS = new_entries[BOUND].ts+501;
 
-  
+        new_entries.push({skip:true, comment: "---end-bundle---", ts: LAST_TS});
+        new_entries.push({skip:true, comment: "---begin-bundle---", ts: PRECEEDING_TS});
 
-        entries.push(...bundle_entries);
-        entries=entries.sort((b,a) => b.ts - a.ts); // sort descending by timestamp
+        entries.push(...new_entries);
+        //entries=entries.sort((a,b) => b.ts - a.ts); // sort descending by timestamp
 
         localStorage.setItem('macroEntries', JSON.stringify(entries));
         window.MacroAdder.Repaint.frontend_repaint_WindowStatHistory_table_repaint();
         window.MacroAdder.Repaint.frontend_repaint_WindowStatConsumption_window();
+
+        setTimeout(()=> {button.disabled=false;}, 4000);
     }
     // Function to add an entry
     function user_bundle_item() {
